@@ -17,7 +17,7 @@ Authors:
 |-----------------------------------------------------------|------|----------|-------|
 | main (only modified after changes are verified on test)   |      |          |       |
 | test (for testing purposes)                               |      |          |       |
-| backup (only modified if changes made to main are desired |      |          |       |
+| backup (only modified if changes made to main are desired)|      |          |       |
 
 
 ### File structure

@@ -78,21 +78,15 @@ System zarządzający kursami i szkoleniami obsługuje różnorodne formy kszta�
 - Rejestracja na kursy - Uczestnicy mogą się rejestrować na kursy, webinary oraz studia, przy czym system zarządza dostępnością miejsc. 
 - Możliwość wykreślenia się z listy kursantów/ studentów 
 - Przydzielanie wykładowców i tłumaczy - Administrator przydziela wykładowców i tłumaczy do poszczególnych wydarzeń. 
-
 - Ustawienia dostępności nagrań - Administrator i wykładowca mogą decydować, czy nagranie jest dostępne (płatne/darmowe) i przez jaki okres. 
-
 - Ustawianie limitów miejsc dla kursów hybrydowych i stacjonarnych, czy studiów 
-
 - Zmienianie limitów i możliwość dodawania osób z zewnątrz 
-
 - Frekwencja i zaliczenia - System automatycznie monitoruje obecność uczestników i sprawdza, czy spełniają wymagania (np. 80% frekwencji). 
 
 #### Zarządzanie treścią 
 
 - Zarządzanie modułami kursów - Wykładowcy mają możliwość tworzenia, edytowania i usuwania modułów kursów. 
-
 - Dodawanie nagrań i materiałów edukacyjnych - Wykładowcy mogą dodawać materiały edukacyjne i nagrania do swoich kursów. 
-
 - Monitorowanie postępów - System śledzi postępy uczestników w zaliczaniu modułów, zarówno online, jak i stacjonarnych. 
 
  
