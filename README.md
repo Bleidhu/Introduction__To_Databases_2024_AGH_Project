@@ -11,6 +11,7 @@ Authors:
 - Database diagrams: https://vertabelo.com/
 - MD notes: https://hackmd.io/
 - File structure generator: https://tree.nathanfriend.com/
+- Files in the repo can be directly edited throught this link: [Edit In Browser](https://vscode.dev/github/Bleidhu/Introduction__To_Databases_2024_AGH_Project/tree/main?vscode-lang=pl-pl)
 
 ### Used Databases
 | Database                                                  | user | password | owner |

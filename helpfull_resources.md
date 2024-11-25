@@ -2,7 +2,7 @@
 ## Markdown
 https://www.markdownguide.org/cheat-sheet/
 
-proponowany edytor:
+Markdown Editor:
 
 https://hackmd.io/
 
