@@ -9,7 +9,7 @@ Authors:
 ## Technical details
 ### Tools used:  
 - Database diagrams: https://vertabelo.com/
-- MD notes: not_decided
+- MD notes: https://hackmd.io/
 - File structure generator: https://tree.nathanfriend.com/
 
 ### Used Databases
