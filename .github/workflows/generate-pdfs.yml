@@ -1,0 +1,50 @@
+name: Generate PDFs
+
+on:
+  push:
+    branches:
+      - '**' # Trigger on every branch
+
+jobs:
+  generate-pdfs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up the environment (install tools)
+      - name: Set up Pandoc (for Markdown to PDF)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex
+
+      # Step 3: Generate PDFs from files in /docs
+      - name: Generate PDFs
+        run: |
+          mkdir -p pdf_output
+          for file in $(find ./docs -name "*.md"); do
+            base_name=$(basename "$file" .md)
+            pandoc "$file" -o "pdf_output/$base_name.pdf"
+          done
+
+      # Optional: Upload PDFs as artifacts
+      - name: Upload PDFs as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: generated-pdfs
+          path: pdf_output/
+
+      # Optional: Commit PDFs back to the repository
+      - name: Commit and push PDFs
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          mkdir -p docs/pdf_output
+          mv pdf_output/* docs/pdf_output/
+          git add docs/pdf_output
+          git commit -m "Add generated PDFs"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
