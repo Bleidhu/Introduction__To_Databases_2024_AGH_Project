@@ -1,9 +1,7 @@
 name: Generate PDFs
 
 on:
-  push:
-    branches:
-      - '**' # Trigger on every branch
+  workflow_dispatch: # Allows the workflow to be triggered manually
 
 jobs:
   generate-pdfs:
