@@ -1,0 +1,57 @@
+name: Generate PDFs and Attach to Release
+
+on:
+  workflow_dispatch: # Allows the workflow to be triggered manually
+
+jobs:
+  generate-pdfs:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the code
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      # Step 2: Set up the environment (install tools)
+      - name: Set up Pandoc (for Markdown to PDF)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-xetex
+
+      # Step 3: Generate PDFs from files in /docs
+      - name: Generate PDFs
+        run: |
+          mkdir -p pdf_output
+          for file in $(find ./docs -name "*.md"); do
+            base_name=$(basename "$file" .md)
+            pandoc "$file" -o "pdf_output/$base_name.pdf"
+          done
+
+      # Step 4: Generate a dynamic tag
+      - name: Generate Tag
+        id: tag
+        run: |
+          TAG_NAME="v$(date +'%Y%m%d')-$(git rev-parse --short HEAD)"
+          echo "tag_name=$TAG_NAME" >> $GITHUB_ENV
+
+      # Step 5: Create a release with the dynamic tag
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        with:
+          tag_name: ${{ env.tag_name }}
+          release_name: "Generated PDFs Release - ${{ env.tag_name }}"
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # Step 6: Upload each PDF to the release
+      - name: Upload PDFs to Release
+        run: |
+          for pdf in pdf_output/*.pdf; do
+            echo "Uploading $pdf"
+            gh release upload ${{ env.tag_name }} "$pdf"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
