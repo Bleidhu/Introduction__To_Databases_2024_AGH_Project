@@ -1,4 +1,7 @@
 from dummy_values import countries
+from faker import Faker
+
+fk = Faker()
 
 class Person:
     def __init__ (self, first_name, last_name, city_id, country_id, phone, street, house_number):
@@ -11,7 +14,9 @@ class Person:
         self.house_number = house_number
 
 def generate_random_person():
-    pass
+    person = Person(fk.name(), fk.last_name(), 0, fk.phone_number(), fk.street(), fk.street_address())
+
+    return person
 
 class Employee(Person):
     def __init__ (self, first_name, last_name, city_id, country_id, phone, street, house_number):
