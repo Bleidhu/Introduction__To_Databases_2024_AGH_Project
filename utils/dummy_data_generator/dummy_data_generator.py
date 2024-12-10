@@ -62,7 +62,7 @@ def generate_module(id, module_meetings_size, course_start_date):
     return module, module_meetings
 
 
-def generate_course(id):
+def generate_course(id, modules_table_size, module_meetings_table_size):
     modules = []
     meetings = []
     enrolled_students = []
@@ -75,10 +75,11 @@ def generate_course(id):
     module_amount = random.randint(1, COURSE_MODULES_LIMIT)
 
     for i in range(module_amount+1):
-        module = 
-        meetings.append()
+        module, tmp_meetings = generate_module(i+modules_table_size, module_meetings_table_size, course.start_date)
+        modules.append(module)
+        meetings += tmp_meetings
 
-    return course
+    return course, modules, meetings
 
     
 
