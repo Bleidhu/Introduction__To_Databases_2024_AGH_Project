@@ -31,30 +31,62 @@ def generate_users_table():
 def generate_role_id():
     return 0
 
-def generate_employee(id):
-    tmp = db_model.Employee(id,  fk.first_name(), fk.last_name(), fk.date_of_birth(minimum_age=18, maximum_age=60), fk.date_this_decade() ,fk.phone_number(), fk.email(), generate_role_id(),random.randint(0, CITIES_AMOUNT), random.randint(0, COUNTRIES_AMOUNT))
+def generate_employee(id, role):
+    tmp = db_model.Employee(id,  fk.first_name(), fk.last_name(), fk.date_of_birth(minimum_age=18, maximum_age=60), fk.date_this_decade() ,fk.phone_number(), fk.email(), role ,random.randint(0, CITIES_AMOUNT), random.randint(0, COUNTRIES_AMOUNT))
 
     
 
     return tmp
 
 def generate_employees_table():
-    tmp = [generate_employee(i) for i in range(EMPLOYEES_LIMIT)]
+    teachers = [generate_employee(i, 1) for i in range(EMPLOYEES_LIMIT)]
+    translators = [generate_employee(i+len(teachers), 2) for i in range(EMPLOYEES_LIMIT*0,5)]
+    translators_table = [db_model.Translator(i, i+len(teachers)) for i in range(EMPLOYEES_LIMIT*0,5)]
+    translators_language_used = []
+    ceo = generate_employee(len(teachers) + len(translators), 0)
     #translators =  look for translators and append them here
-    return tmp
+    all_employees = teachers + translators
+    all_employees.append(ceo)
+    return all_employees, translators_table, translators_language_used
 
 
 
 
-def generate_meeting(id, course_id, course_start_date, previous_meeting_date):
+def generate_meeting(id, course_id, course_start_date, previous_meeting_date, type_number):
     # add dates so they won't overlap
-    meeting = db_model.CourseModuleMeeting(course_id, id, fk.date_between_dates(date_start=previous_meeting_date), "Stationary", random.randint(0, LANGUAGES_AMOUNt), None, random.randint(0, EMPLOYEES_LIMIT),
-                                           str(random.randint(2,10)), 10)
-    
-    return meeting
+    meeting_type_number = 0
+    if(type_number != 3):
+        meeting_type_number = type_number
+    else:
+        meeting_type_number = random.randint(0,2)
 
-def generate_module(id, module_meetings_size, course_start_date, stationary_meetings_size, sync_async_meetings_size, meetings_atendance_list_size):
-    module = db_model.CourseModule(id, 0, "Stationary")
+
+    meeting = db_model.CourseModuleMeeting(course_id, id, fk.date_between_dates(date_start=previous_meeting_date), dval.meeting_types[meeting_type_number] , random.randint(0, LANGUAGES_AMOUNt), None, random.randint(0, EMPLOYEES_LIMIT),
+                                           str(random.randint(2,10)), 10)
+    stationary = None
+    sync_async = None
+
+    if meeting_type_number == 0:
+        stationary = db_model.CourseModuleMeetingStationary(id, course_id, 0, 0)
+    elif meeting_type_number == 1:
+        sync_async = db_model.CourseSyncAsyncMeeting(id, course_id, 0, "something", fk.url(), fk.url())
+    else:
+        sync_async = db_model.CourseSyncAsyncMeeting(id, course_id, 0, "something", fk.url())
+
+    presence = []
+
+    return meeting, stationary , sync_async, presence
+
+def generate_module(id, course_id, course_start_date):
+
+    type_number = random.randint(0, 3)
+
+    type_string = dval.module_types[type_number]
+
+    
+
+
+    module = db_model.CourseModule(id, 0, type_string)
 
     module_meetings = []
     stationary_meetings = []
@@ -64,16 +96,24 @@ def generate_module(id, module_meetings_size, course_start_date, stationary_meet
     meetings_amount = random.randint(1, COURSE_MODULE_MEETINGS_LIMIT)
     last_meeting_date = course_start_date
     for i in range(meetings_amount + 1):
-        tmp_meeting , tmp_module_meetings, tmp_stationary, tmp_sync_async, tmp_attendance = generate_meeting(i+module_meetings_size, 
-        course_start_date, last_meeting_date, module_meetings_size + len(module_meetings), stationary_meetings_size + len(stationary_meetings),
-        sync_async_meetings_size + len(sync_async_meetings), meetings_atendance_list_size + len(meetings_atendance_list))
+        tmp_meeting, tmp_stationary, tmp_sync_async, tmp_attendance = generate_meeting(i, course_id,
+        course_start_date, last_meeting_date, type_number)
+
+        module_meetings.append(tmp_meeting)
+        if(tmp_stationary):
+            stationary_meetings.append(tmp_stationary)
+        if(tmp_sync_async):
+            sync_async_meetings.append(tmp_sync_async)
+        meetings_atendance_list += tmp_attendance
+
         last_meeting_date = tmp_meeting.meeting_date
+
         module_meetings.append(tmp_meeting)
     
-    return module, module_meetings
+    return module, module_meetings, stationary_meetings, sync_async_meetings, meetings_atendance_list
 
 
-def generate_course(id, modules_table_size, module_meetings_table_size, enrolled_students_size, stationary_meetings_size, sync_async_meetings_size):
+def generate_course(id):
     modules = []
     meetings = []
     enrolled_students = []
@@ -81,14 +121,12 @@ def generate_course(id, modules_table_size, module_meetings_table_size, enrolled
     sync_async_meetings = []
     meetings_atendance_list = []
 
-    course = db_model.Course(id, fk.catch_phrase(), "Opis", fk.date_this_century(), random.randint(1, COURSE_STUDENTS_LIMIT), random.random()*100, random.randint(0,EMPLOYEES_LIMIT))
+    course = db_model.Course(id, fk.catch_phrase(), "Opis", fk.date_this_century(), random.randint(1, COURSE_STUDENTS_LIMIT), random.random()*100, random.randint(0,USERS_LIMIT))
 
     module_amount = random.randint(1, COURSE_MODULES_LIMIT)
 
     for i in range(module_amount+1):
-        module, tmp_meetings, tmp_meeting_attendance_list, tmp_stationary_meetings, tmp_sync_async_meetings, tmp_meeting_attendance_list = generate_module(i+modules_table_size, 
-        module_meetings_table_size, course.start_date, enrolled_students_size + len(enrolled_students)
-        , stationary_meetings_size + len(stationary_meetings), sync_async_meetings_size + len(sync_async_meetings))
+        module, tmp_meetings, tmp_stationary_meetings, tmp_sync_async_meetings, tmp_meeting_attendance_list = generate_module(i, id, course.start_date)
         modules.append(module)
         meetings += tmp_meetings
         stationary_meetings += tmp_stationary_meetings
@@ -108,15 +146,28 @@ def generate_courses_table():
 
     courses = []
     for i in range(COURSES_LIMIT):
-        tmp_course, tmp_modules, tmp_meetings, tmp_enrolled_students, tmp_stationary_meetings, tmp_sync_async_meetings, tmp_meetings_attendance_list = generate_course(i, len(modules_all), len(meetings_all), len(enrolled_students_all), len(stationary_meetings), len(sync_async_meeting_all))
+        tmp_course, tmp_modules, tmp_meetings, tmp_enrolled_students, tmp_stationary_meetings, tmp_sync_async_meetings, tmp_meetings_attendance_list = generate_course(i)
 
         modules_all += tmp_modules
         meetings_all += tmp_meetings
         enrolled_students_all += tmp_enrolled_students 
         sync_async_meeting_all += tmp_sync_async_meetings
         meetings_atendace_list_all += tmp_meetings_attendance_list
+        stationary_meetings += tmp_stationary_meetings
         
         courses.append(tmp_course)
+    i = 0
+    for meeting in meetings_all:
+        meeting.meeting_id = i
+        i += 1
+
+    i = 0
+
+    for met in sync_async_meeting_all:
+        met.meeting_id = i
+        i += 1
+
+    return courses, modules_all, meetings_all, enrolled_students_all, sync_async_meeting_all, meetings_atendace_list_all, stationary_meetings
     
 
 
@@ -126,10 +177,26 @@ def main():
     for user in users:
         print("(" + str(user) + ")")
 
-    employees = generate_employees_table()
+    employees, translators, translators_languages = generate_employees_table()
     for employee in employees:
-        print(employee)
+        print(str(employee) + " " + dval.employee_roles[employee.role_id])
+
+    courses, course_modules, course_meetings, course_enrolled_students, course_sync_async_meetings, course_attendance_list, course_stationary_meetings = generate_courses_table()
     
+    for module in course_modules:
+        print(module)
+
+    for course in courses:
+        print(course)
+
+    for meeting in course_meetings:
+        print(meeting)
+    
+    for met in course_sync_async_meetings:
+        print(met)
+    
+    for statio in course_stationary_meetings:
+        print(statio)
 
 if __name__ == "__main__":
     main()
