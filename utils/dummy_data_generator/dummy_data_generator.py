@@ -31,6 +31,18 @@ def generate_employees_table():
 
     return tmp
 
+def generate_course(id):
+    modules = []
+    meetings = []
+    enrolled_students = []
+    stationary_meetings = []
+    sync_async_meetings = []
+    meetings_atendance_list = []
+
+
+    
+
+
 def main():
     users = generate_users_table()
     for user in users:
