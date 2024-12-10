@@ -42,7 +42,7 @@ def generate_employees_table():
 
 def generate_meeting(id, course_id, course_start_date, previous_meeting_date):
     # add dates so they won't overlap
-    meeting = db_model.CourseModuleMeeting(course_id, id, fk.date(), "Stationary", random.randint(0, LANGUAGES_AMOUNt), None, random.randint(0, EMPLOYEES_LIMIT),
+    meeting = db_model.CourseModuleMeeting(course_id, id, fk.date_between_dates(date_start=previous_meeting_date), "Stationary", random.randint(0, LANGUAGES_AMOUNt), None, random.randint(0, EMPLOYEES_LIMIT),
                                            "90min", 10)
     
     return meeting
@@ -81,6 +81,22 @@ def generate_course(id, modules_table_size, module_meetings_table_size):
 
     return course, modules, meetings
 
+def generate_courses_table():
+    modules_all = []
+    meetings_all = []
+    enrolled_students_all = []
+    sync_async_meeting_all = []
+    meetings_atendace_list_all = []
+
+    courses = []
+    for i in range(COURSES_LIMIT):
+        tmp_course, tmp_modules, tmp_meetings, tmp_enrolled_students, tmp_stationary_meetings, tmp_sync_async_meetings, tmp_meetings_attendance_list = generate_course(i, len(modules_all), len(meetings_all), len(enrolled_students_all), len(sync_async_meeting_all))
+
+        modules_all += tmp_modules
+        meetings_all += tmp_meetings
+        enrolled_students_all += tmp_enrolled_students 
+        sync_async_meeting_all += tmp_sync_async_meetings
+        meetings_atendace_list_all += tmp_meetings_attendance_list
     
 
 
@@ -90,6 +106,9 @@ def main():
         print(user)
 
     employees = generate_employees_table()
+    for employee in employees:
+        print(employee)
+    
 
 if __name__ == "__main__":
     main()
