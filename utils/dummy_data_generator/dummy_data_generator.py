@@ -43,24 +43,32 @@ def generate_employees_table():
     #translators =  look for translators and append them here
     return tmp
 
+
+
+
 def generate_meeting(id, course_id, course_start_date, previous_meeting_date):
     # add dates so they won't overlap
     meeting = db_model.CourseModuleMeeting(course_id, id, fk.date_between_dates(date_start=previous_meeting_date), "Stationary", random.randint(0, LANGUAGES_AMOUNt), None, random.randint(0, EMPLOYEES_LIMIT),
-                                           "90min", 10)
+                                           str(random.randint(2,10)), 10)
     
     return meeting
 
-def generate_module(id, module_meetings_size, course_start_date):
+def generate_module(id, module_meetings_size, course_start_date, stationary_meetings_size, sync_async_meetings_size, meetings_atendance_list_size):
     module = db_model.CourseModule(id, 0, "Stationary")
 
     module_meetings = []
+    stationary_meetings = []
+    sync_async_meetings = []
+    meetings_atendance_list = []
 
     meetings_amount = random.randint(1, COURSE_MODULE_MEETINGS_LIMIT)
     last_meeting_date = course_start_date
     for i in range(meetings_amount + 1):
-        meeting = generate_meeting(i+module_meetings_size, course_start_date, last_meeting_date)
-        last_meeting_date = meeting.meeting_date
-        module_meetings.append(meeting)
+        tmp_meeting , tmp_module_meetings, tmp_stationary, tmp_sync_async, tmp_attendance = generate_meeting(i+module_meetings_size, 
+        course_start_date, last_meeting_date, module_meetings_size + len(module_meetings), stationary_meetings_size + len(stationary_meetings),
+        sync_async_meetings_size + len(sync_async_meetings), meetings_atendance_list_size + len(meetings_atendance_list))
+        last_meeting_date = tmp_meeting.meeting_date
+        module_meetings.append(tmp_meeting)
     
     return module, module_meetings
 
