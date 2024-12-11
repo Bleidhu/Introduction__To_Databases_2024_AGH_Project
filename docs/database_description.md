@@ -1,17 +1,3 @@
-# Raport 2
-Zespół 1  
-
-Skład zespołu :  
-Paweł Czajczyk  
-Julia Demitraszek  
-Szymon Rybski  
-
-# Diagram bazy danych
-
-![diagram](./docs/images/diagram.png)
-
-[diagram w wersji svg](https://bleidhu.github.io/Introduction__To_Databases_2024_AGH_Project/images/diagram.svg)
-
 # Tabele w bazie danych
 
 ## Webinar

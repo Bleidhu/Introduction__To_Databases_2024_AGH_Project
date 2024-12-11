@@ -1,12 +1,3 @@
-# Raport 1
-Zespół 1  
-
-Skład zespołu :  
-Paweł Czajczyk  
-Julia Demitraszek  
-Szymon Rybski  
-
-
 # Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
 
 ## Role Użytkowników i Funkcje Systemu 
