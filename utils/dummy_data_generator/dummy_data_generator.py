@@ -12,8 +12,12 @@ COURSE_STUDENTS_LIMIT = 10
 CITIES_AMOUNT = len(dval.cities)
 COUNTRIES_AMOUNT = len(dval.countries)
 LANGUAGES_AMOUNt = len(dval.languages)
+WEBINARS_AMOUNT = 10
 
 fk = Faker()
+
+## Users and employees
+# To do:
 
 def generate_email_from_name(first_name: str, last_name: str):
     return first_name.lower() + last_name.lower() + "@" + fk.domain_name()
@@ -44,14 +48,26 @@ def generate_employees_table():
     translators_table = [db_model.Translator(i, i+len(teachers)) for i in range(EMPLOYEES_LIMIT*0,5)]
     translators_language_used = []
     ceo = generate_employee(len(teachers) + len(translators), 0)
-    #translators =  look for translators and append them here
     all_employees = teachers + translators
     all_employees.append(ceo)
     return all_employees, translators_table, translators_language_used
 
+## Webinars
+# To do: Better descriptions (maybe from chatgpt)
+# Better start date 
+# Assigning teachers
+
+def generate_webinar(id):
+    start_date = fk.date_this_decade()
+    return db_model.Webinar(id, fk.catch_phrase(), "Lorem ipsum", 0, random.randint(0, 500) ,start_date, fk.url(), start_date)
+def generate_webinars():
+    webinars = []
+    for i in range(WEBINARS_AMOUNT):
+        webinars.append(generate_webinar(i))
+    return webinars
 
 
-
+## Courses
 def generate_meeting(id, course_id, course_start_date, previous_meeting_date, type_number):
     # add dates so they won't overlap
     meeting_type_number = 0
@@ -61,8 +77,8 @@ def generate_meeting(id, course_id, course_start_date, previous_meeting_date, ty
         meeting_type_number = random.randint(0,2)
 
 
-    meeting = db_model.CourseModuleMeeting(course_id, id, fk.date_between_dates(date_start=previous_meeting_date), dval.meeting_types[meeting_type_number] , random.randint(0, LANGUAGES_AMOUNt), None, random.randint(0, EMPLOYEES_LIMIT),
-                                           str(random.randint(2,10)), 10)
+    meeting = db_model.CourseModuleMeetings(course_id, id, fk.date_between_dates(date_start=previous_meeting_date), dval.meeting_types[meeting_type_number] , random.randint(0, LANGUAGES_AMOUNt), None, random.randint(0, EMPLOYEES_LIMIT),
+                                           str(random.randint(2,10)), 10, meeting_type_number, "Name")
     stationary = None
     sync_async = None
 
@@ -71,7 +87,7 @@ def generate_meeting(id, course_id, course_start_date, previous_meeting_date, ty
     elif meeting_type_number == 1:
         sync_async = db_model.CourseSyncAsyncMeeting(id, course_id, 0, "something", fk.url(), fk.url())
     else:
-        sync_async = db_model.CourseSyncAsyncMeeting(id, course_id, 0, "something", fk.url())
+        sync_async = db_model.CourseSyncAsyncMeeting(id, course_id, 0, "something", fk.url(), "")
 
     presence = []
 
@@ -86,7 +102,7 @@ def generate_module(id, course_id, course_start_date):
     
 
 
-    module = db_model.CourseModule(id, 0, type_string)
+    module = db_model.CourseModules(id, 0, type_string, course_id)
 
     module_meetings = []
     stationary_meetings = []
@@ -121,7 +137,9 @@ def generate_course(id):
     sync_async_meetings = []
     meetings_atendance_list = []
 
-    course = db_model.Course(id, fk.catch_phrase(), "Opis", fk.date_this_century(), random.randint(1, COURSE_STUDENTS_LIMIT), random.random()*100, random.randint(0,USERS_LIMIT))
+    start_date = fk.date_this_century()
+
+    course = db_model.Course(id, fk.catch_phrase(), "Opis", start_date, random.randint(1, COURSE_STUDENTS_LIMIT), random.random()*100, random.randint(0,USERS_LIMIT), start_date)
 
     module_amount = random.randint(1, COURSE_MODULES_LIMIT)
 
@@ -198,5 +216,9 @@ def main():
     for statio in course_stationary_meetings:
         print(statio)
 
+    webinars = generate_webinars()
+
+    for webinar in webinars:
+        print(webinar)
 if __name__ == "__main__":
     main()
