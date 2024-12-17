@@ -331,16 +331,20 @@ class StudyType:
 
 
 class User:
-    def __init__(self, user_id, user_name, email, phone, city_id, country_id):
+    def __init__(self, user_id, email, first_name, last_name, city_id, country_id, phone, street, house_number, birth_date):
         self.user_id = user_id
-        self.user_name = user_name
         self.email = email
+        self.first_name = first_name
+        self.last_name = last_name
         self.phone = phone
         self.city_id = city_id
         self.country_id = country_id
+        self.street = street
+        self.house_number = house_number
+        self.birth_date = birth_date
 
     def __str__(self):
-        return f"{self.user_id}, {self.user_name}, {self.email}, {self.phone}, {self.city_id}, {self.country_id}"
+        return f"{self.user_id}, '{self.email}', '{self.first_name}', '{self.last_name}', {self.city_id}, {self.country_id}, '{self.street}', {self.phone}, '{self.house_number}', '{self.birth_date}'"
 
 
 class Webinar:

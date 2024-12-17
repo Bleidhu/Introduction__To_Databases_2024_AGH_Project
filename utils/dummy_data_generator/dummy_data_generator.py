@@ -3,7 +3,7 @@ import db_tables_classes as db_model
 from faker import Faker
 import random
 import dummy_values as dval
-USERS_LIMIT = 10
+USERS_LIMIT = 100
 EMPLOYEES_LIMIT = 10
 COURSES_LIMIT = 10
 COURSE_MODULES_LIMIT = 10
@@ -23,7 +23,7 @@ def generate_email_from_name(first_name: str, last_name: str):
     return first_name.lower() + last_name.lower() + "@" + fk.domain_name()
 def generate_user(id):
     name, last_name = fk.first_name(), fk.last_name()
-    tmp = db_model.User(id, generate_email_from_name(name, last_name), name, last_name, random.randint(0, CITIES_AMOUNT), random.randint(0, COUNTRIES_AMOUNT))
+    tmp = db_model.User(id, generate_email_from_name(name, last_name), name, last_name, random.randint(0, CITIES_AMOUNT), random.randint(0, COUNTRIES_AMOUNT), random.randint(100000000, 999999999), fk.street_name(), fk.building_number(), fk.date_of_birth(minimum_age=16, maximum_age=80))
 
     return tmp
 
@@ -191,34 +191,34 @@ def generate_courses_table():
 
 def main():
     users = generate_users_table()
-    print("INSERT INTO Users (user_id, email, first_name, last_name, city_id, country_id, phone, street, house_number)")
+    print("INSERT INTO Users (user_id, email, first_name, last_name, city_id, country_id, street, phone, house_number, birth_date) VALUES")
     for user in users:
-        print("(" + str(user) + ")")
+        print("(" + str(user) + "),")
 
-    employees, translators, translators_languages = generate_employees_table()
-    for employee in employees:
-        print(str(employee) + " " + dval.employee_roles[employee.role_id])
+    # employees, translators, translators_languages = generate_employees_table()
+    # for employee in employees:
+    #     print(str(employee) + " " + dval.employee_roles[employee.role_id])
 
     courses, course_modules, course_meetings, course_enrolled_students, course_sync_async_meetings, course_attendance_list, course_stationary_meetings = generate_courses_table()
     
-    for module in course_modules:
-        print(module)
+    # for module in course_modules:
+    #     print(module)
 
-    for course in courses:
-        print(course)
+    # for course in courses:
+    #     print(course)
 
-    for meeting in course_meetings:
-        print(meeting)
+    # for meeting in course_meetings:
+    #     print(meeting)
     
-    for met in course_sync_async_meetings:
-        print(met)
+    # for met in course_sync_async_meetings:
+    #     print(met)
     
-    for statio in course_stationary_meetings:
-        print(statio)
+    # for statio in course_stationary_meetings:
+    #     print(statio)
 
-    webinars = generate_webinars()
+    # webinars = generate_webinars()
 
-    for webinar in webinars:
-        print(webinar)
+    # for webinar in webinars:
+    #     print(webinar)
 if __name__ == "__main__":
     main()
