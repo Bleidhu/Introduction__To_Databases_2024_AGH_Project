@@ -1,4 +1,10 @@
-# Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
+# Raport 3
+Zespół 1  
+
+Skład zespołu :  
+Paweł Czajczyk  
+Julia Demitraszek  
+Szymon Rybski  # Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
 
 ## Role Użytkowników i Funkcje Systemu 
 
@@ -90,3 +96,9 @@ System zarządzający kursami i szkoleniami obsługuje różnorodne formy kszta�
 - Monitorowanie postępów - System śledzi postępy uczestników w zaliczaniu modułów, zarówno online, jak i stacjonarnych. 
 
  
+# Diagram bazy danych
+
+![diagram](./docs/images/diagram.png)
+
+[diagram w wersji svg](https://bleidhu.github.io/Introduction__To_Databases_2024_AGH_Project/images/diagram.svg)
+

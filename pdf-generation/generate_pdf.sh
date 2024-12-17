@@ -1,0 +1,1 @@
+../docs/pbd_13_15_zesp_1_raportx.md ../docs/generatinon_code.md
