@@ -1,0 +1,4 @@
+./pbd_13_15_zesp_1_raportx.md
+./functionalities.md
+./database_diagram.md
+./generation_code.md
