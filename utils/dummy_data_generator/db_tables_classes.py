@@ -119,7 +119,7 @@ class Employee:
         self.country_id = country_id
 
     def __str__(self):
-        return f"{self.employee_id}, {self.first_name}, {self.last_name}, {self.hire_date}, {self.birth_date}, {self.phone}, {self.email}, {self.role_id}, {self.city_id}, {self.country_id}"
+        return f"{self.employee_id}, '{self.first_name}', '{self.last_name}', '{self.hire_date}', '{self.birth_date}', {self.phone}, '{self.email}', {self.role_id}, {self.city_id}, {self.country_id}"
 
 
 class EventType:
@@ -368,4 +368,12 @@ class Translator:
         self.employee_id = employee_id
 
     def __str__(self):
-        return f"{self.translator_id}, {self.first_name}, {self.last_name}, {self.email}, {self.phone}, {self.language_id}"
+        return f"{self.translator_id}, {self.employee_id}"
+    
+class TranslatorsLanguagesUsed:
+    def __init__ (self, id, translator_id, language_id):
+        self.id = id
+        self.translator_id = translator_id
+        self.language_id = language_id
+    def __str__(self):
+        return f"{self.id}, {self.translator_id}, {self.language_id}"
