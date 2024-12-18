@@ -1,6 +1,7 @@
 
 import db_tables_classes as db_model
 from faker import Faker
+import datetime
 import random
 import dummy_values as dval
 USERS_LIMIT = 100
@@ -186,6 +187,47 @@ def generate_courses_table():
         i += 1
 
     return courses, modules_all, meetings_all, enrolled_students_all, sync_async_meeting_all, meetings_atendace_list_all, stationary_meetings
+    
+def generate_courses():
+    courses = []
+    course_modules = []
+    corse_enrolled_students = []
+    course_module_meetings = []
+    course_module_meeting_attendance_list = []
+    corse_module_meetings_stationary = []
+    course_sync_async_meetings = []
+
+    def generate_course():
+        start_date = fk.date_between(start_date=datetime.datetime(2010, 4, 12), end_date=datetime(2024, 10, 10))
+        tmp_course = db_model.Course(id, 
+                                     fk.catch_phrase(), 
+                                     "Lorem Ipsum", 
+                                     start_date, 
+                                     COURSE_STUDENTS_LIMIT,
+                                     course_coordinator_id=0,
+                                     visible_from=start_date)
+        courses.append(tmp_course)
+        generate_course_modules(courses[-1].course_id)
+        
+
+    def generate_course_module(course_id):
+        tmp_module = db_model.CourseModules(len(course_modules), random.randint(0, len(dval.module_types) - 1), fk.catch_phrase(), course_id)
+        course_modules.append(tmp_module)
+
+        generate_course_module_meeting(course_id)
+
+    def generate_course_module_meeting(course_id):
+        pass
+    
+    def generate_course_modules(course_id):
+        modules_amount = random.randint(1, COURSE_MODULES_LIMIT)
+
+        for i in range(modules_amount):
+            generate_course_module(course_id)
+
+
+    def generate_course_module_meetings(course_id):
+        pass
     
 
 
