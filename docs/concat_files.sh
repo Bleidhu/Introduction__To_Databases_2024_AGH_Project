@@ -13,7 +13,7 @@ if [ ! -f "$1" ]; then
 fi
 
 # Output file where concatenated content will be stored
-output_file="concatenated_output.txt"
+output_file="concatenated_output.md"
 
 # Clear the output file if it exists
 > "$output_file"

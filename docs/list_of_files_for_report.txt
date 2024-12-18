@@ -2,3 +2,4 @@
 ./functionalities.md
 ./database_diagram.md
 ./generation_code.md
+./views.md
