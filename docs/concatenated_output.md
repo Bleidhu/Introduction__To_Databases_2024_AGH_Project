@@ -6,6 +6,8 @@ Paweł Czajczyk
 Julia Demitraszek  
 Szymon Rybski  
 
+# Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
+
 - [Raport 4](#raport-4)
 - [Opis funkcji systemu dla firmy oferującej kursy i szkolenia](#opis-funkcji-systemu-dla-firmy-oferującej-kursy-i-szkolenia)
   - [Role Użytkowników i Funkcje Systemu](#role-użytkowników-i-funkcje-systemu)
@@ -23,13 +25,13 @@ Szymon Rybski
       - [Zarządzanie treścią](#zarządzanie-treścią)
 - [Diagram bazy danych](#diagram-bazy-danych)
 - [Kod do generowania bazy danych:](#kod-do-generowania-bazy-danych)
+  - [Widoki w bazie danych](#widoki-w-bazie-danych)
+    - [Wypisanie użytkowników, którzy ukończyli dane studia z wynikiem pozytywnym](#wypisanie-użytkowników-którzy-ukończyli-dane-studia-z-wynikiem-pozytywnym)
     - [Liczba zamówień dla poszczególnych użytkowników](#liczba-zamówień-dla-poszczególnych-użytkowników)
     - [Użytkownicy zapisani na dany kurs](#użytkownicy-zapisani-na-dany-kurs)
     - [Użytkownicy zapisani na dane studia](#użytkownicy-zapisani-na-dane-studia)
     - [Użytkownicy zapisani na dany webinar](#użytkownicy-zapisani-na-dany-webinar)
 
-
-# Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
 
 ## Role Użytkowników i Funkcje Systemu 
 
@@ -123,7 +125,7 @@ System zarządzający kursami i szkoleniami obsługuje różnorodne formy kszta�
  
 # Diagram bazy danych
 
-![diagram](./docs/images/diagram.png)
+![diagram](./images/diagram.png)
 
 [diagram w wersji svg](https://bleidhu.github.io/Introduction__To_Databases_2024_AGH_Project/images/diagram.svg)
 
@@ -131,595 +133,729 @@ System zarządzający kursami i szkoleniami obsługuje różnorodne formy kszta�
 
 ```SQL
 -- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-12-09 14:33:15.629
+-- Last modification date: 2024-12-17 22:38:54.732
 
 -- tables
 -- Table: Cities
-CREATE TABLE Cities (
-    city_id int  NOT NULL,
-    city_name nvarchar  NOT NULL,
-    CONSTRAINT Cities_pk PRIMARY KEY  (city_id)
+CREATE TABLE Cities
+(
+    city_id   int          NOT NULL,
+    city_name nvarchar(30) NOT NULL,
+    CONSTRAINT Cities_pk PRIMARY KEY (city_id)
 );
 
 -- Table: Countries
-CREATE TABLE Countries (
-    country_id int  NOT NULL,
-    country_name nvarchar  NOT NULL,
-    CONSTRAINT Countries_pk PRIMARY KEY  (country_id)
-);
-
--- Table: Course_enrolled_studends
-CREATE TABLE Course_enrolled_studends (
-    course_id int  NOT NULL,
-    user_id int  NOT NULL,
-    is_paid bit  NOT NULL,
-    order_id int  NOT NULL,
-    CONSTRAINT Course_enrolled_studends_pk PRIMARY KEY  (course_id,user_id)
+CREATE TABLE Countries
+(
+    country_id   int          NOT NULL,
+    country_name nvarchar(30) NOT NULL,
+    CONSTRAINT Countries_pk PRIMARY KEY (country_id)
 );
 
 -- Table: Course_meeting_attendance_list
-CREATE TABLE Course_meeting_attendance_list (
-    user_id int  NOT NULL,
-    course_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    was_present bit  NOT NULL,
-    CONSTRAINT Course_meeting_attendance_list_pk PRIMARY KEY  (user_id,meeting_id,course_id)
+CREATE TABLE Course_meeting_attendance_list
+(
+    user_id     int NOT NULL,
+    course_id   int NOT NULL,
+    meeting_id  int NOT NULL,
+    was_present bit NOT NULL,
+    CONSTRAINT Course_meeting_attendance_list_pk PRIMARY KEY (user_id, meeting_id, course_id)
 );
 
--- Table: Course_module
-CREATE TABLE Course_module (
-    course_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    module_type nvarchar  NOT NULL,
-    CONSTRAINT Course_module_pk PRIMARY KEY  (course_id,meeting_id)
-);
+-- Reference: Course_meeting_attendance_list_Course_module_meetings (table: Course_meeting_attendance_list)
+ALTER TABLE Course_meeting_attendance_list
+    ADD CONSTRAINT Course_meeting_attendance_list_Course_module_meetings
+        FOREIGN KEY (meeting_id, course_id)
+            REFERENCES Course_module_meetings (meeting_id, course_id);
+
+-- Reference: Course_meeting_attendance_list_Users (table: Course_meeting_attendance_list)
+ALTER TABLE Course_meeting_attendance_list
+    ADD CONSTRAINT Course_meeting_attendance_list_Users
+        FOREIGN KEY (user_id)
+            REFERENCES Users (user_id);
+
 
 -- Table: Course_module_meeting_stationary
-CREATE TABLE Course_module_meeting_stationary (
-    id int  NOT NULL,
-    course_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    classroom int  NOT NULL,
-    CONSTRAINT Course_module_meeting_stationary_pk PRIMARY KEY  (id)
+CREATE TABLE Course_module_meeting_stationary
+(
+    id         int          NOT NULL,
+    course_id  int          NOT NULL,
+    meeting_id int          NOT NULL,
+    classroom  nvarchar(10) NOT NULL,
+    CONSTRAINT Course_module_meeting_stationary_pk PRIMARY KEY (id)
 );
+
+-- Reference: Course_module_meetings_Course_module_meeting_stationary (table: Course_module_meeting_stationary)
+ALTER TABLE Course_module_meeting_stationary
+    ADD CONSTRAINT Course_module_meetings_Course_module_meeting_stationary
+        FOREIGN KEY (meeting_id, course_id)
+            REFERENCES Course_module_meetings (meeting_id, course_id);
+
 
 -- Table: Course_module_meetings
-CREATE TABLE Course_module_meetings (
-    course_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    meeting_date datetime  NOT NULL,
-    meeting_type nvarchar  NOT NULL,
-    language_id nvarchar  NOT NULL,
-    translator_id int  NOT NULL,
-    lecturer_id int  NOT NULL,
-    duration time  NOT NULL,
-    place_limit int  NOT NULL,
-    CONSTRAINT Course_module_meetings_pk PRIMARY KEY  (meeting_id,course_id)
+CREATE TABLE Course_module_meetings
+(
+    course_id       int          NOT NULL,
+    meeting_id      int          NOT NULL,
+    meeting_date    datetime     NOT NULL,
+    language_id     int          NOT NULL,
+    translator_id   int          NOT NULL,
+    lecturer_id     int          NOT NULL,
+    duration        time         NOT NULL,
+    place_limit     int          NOT NULL,
+    module_id       int          NOT NULL,
+    meeting_type_id int          NOT NULL,
+    meeting_name    nvarchar(30) NOT NULL,
+    CONSTRAINT place_limit CHECK (place_limit >= 0),
+    CONSTRAINT Course_module_meetings_pk PRIMARY KEY (meeting_id, course_id)
 );
+
+-- Reference: Course_module_Course_module_meetings (table: Course_module_meetings)
+ALTER TABLE Course_module_meetings
+    ADD CONSTRAINT Course_module_Course_module_meetings
+        FOREIGN KEY (module_id)
+            REFERENCES module_type (module_type_id);
+
+-- Reference: Course_module_meetings_Course_modules (table: Course_module_meetings)
+ALTER TABLE Course_module_meetings
+    ADD CONSTRAINT Course_module_meetings_Course_modules
+        FOREIGN KEY (module_id)
+            REFERENCES Course_modules (course_module_id);
+
+-- Reference: Course_module_meetings_Employees (table: Course_module_meetings)
+ALTER TABLE Course_module_meetings
+    ADD CONSTRAINT Course_module_meetings_Employees
+        FOREIGN KEY (lecturer_id)
+            REFERENCES Employees (employee_id);
+
+-- Reference: Course_module_meetings_Languages (table: Course_module_meetings)
+ALTER TABLE Course_module_meetings
+    ADD CONSTRAINT Course_module_meetings_Languages
+        FOREIGN KEY (language_id)
+            REFERENCES Languages (language_id);
+
+-- Reference: Translators_Course_module_meetings (table: Course_module_meetings)
+ALTER TABLE Course_module_meetings
+    ADD CONSTRAINT Translators_Course_module_meetings
+        FOREIGN KEY (translator_id)
+            REFERENCES Translators (translator_id);
+
+-- Reference: meeting_type_Course_module_meetings (table: Course_module_meetings)
+ALTER TABLE Course_module_meetings
+    ADD CONSTRAINT meeting_type_Course_module_meetings
+        FOREIGN KEY (meeting_type_id)
+            REFERENCES meeting_type (meeting_type_id);
+
+
+-- Table: Course_modules
+CREATE TABLE Course_modules
+(
+    course_module_id int      NOT NULL,
+    module_type_id   int      NOT NULL,
+    module_name      nvarchar NOT NULL,
+    course_id        int      NOT NULL,
+    CONSTRAINT course_module_id PRIMARY KEY (course_module_id)
+);
+
+-- Reference: Course_modules_module_type (table: Course_modules)
+ALTER TABLE Course_modules
+    ADD CONSTRAINT Course_modules_module_type
+        FOREIGN KEY (module_type_id)
+            REFERENCES module_type (module_type_id);
+
+-- Reference: Courses_Course_modules (table: Course_modules)
+ALTER TABLE Course_modules
+    ADD CONSTRAINT Courses_Course_modules
+        FOREIGN KEY (course_id)
+            REFERENCES Courses (course_id);
+
 
 -- Table: Course_sync_async_meeting
-CREATE TABLE Course_sync_async_meeting (
-    id int  NOT NULL,
-    course_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    accessTo datetime  NOT NULL,
-    video_link nvarchar  NOT NULL,
-    stream_link nvarchar  NULL,
-    CONSTRAINT Course_sync_async_meeting_pk PRIMARY KEY  (id)
+CREATE TABLE Course_sync_async_meeting
+(
+    id          int          NOT NULL,
+    course_id   int          NOT NULL,
+    meeting_id  int          NOT NULL,
+    accessTo    datetime     NOT NULL,
+    video_link  nvarchar(30) NOT NULL,
+    stream_link nvarchar(30) NULL,
+    CONSTRAINT Course_sync_async_meeting_pk PRIMARY KEY (id)
 );
+
+
+-- Reference: Course_video_access_Course_module_meetings (table: Course_sync_async_meeting)
+ALTER TABLE Course_sync_async_meeting
+    ADD CONSTRAINT Course_video_access_Course_module_meetings
+        FOREIGN KEY (meeting_id, course_id)
+            REFERENCES Course_module_meetings (meeting_id, course_id);
 
 -- Table: Courses
-CREATE TABLE Courses (
-    course_id int  NOT NULL,
-    course_name nvarchar  NOT NULL,
-    course_description nvarchar  NOT NULL,
-    start_date date  NOT NULL,
-    students_limit int  NOT NULL,
-    price money  NOT NULL,
-    course_coordinator_id int  NOT NULL,
-    CONSTRAINT Courses_pk PRIMARY KEY  (course_id)
+CREATE TABLE Courses
+(
+    course_id             int           NOT NULL,
+    course_name           nvarchar(30)  NOT NULL,
+    course_description    nvarchar(300) NOT NULL,
+    start_date            date          NOT NULL,
+    students_limit        int           NOT NULL,
+    price                 money         NOT NULL,
+    course_coordinator_id int           NOT NULL,
+    visible_from          date          NOT NULL,
+    CONSTRAINT courses_price_check CHECK (price >= 0),
+    CONSTRAINT Courses_pk PRIMARY KEY (course_id)
 );
+-- Reference: Courses_Employees (table: Courses)
+ALTER TABLE Courses
+    ADD CONSTRAINT Courses_Employees
+        FOREIGN KEY (course_coordinator_id)
+            REFERENCES Employees (employee_id);
+
 
 -- Table: Employee_Roles
-CREATE TABLE Employee_Roles (
-    role_id int  NOT NULL,
-    employee_id int  NOT NULL,
-    role_name int  NOT NULL,
-    CONSTRAINT Employee_Roles_pk PRIMARY KEY  (role_id)
+CREATE TABLE Employee_Roles
+(
+    role_id     int NOT NULL,
+    employee_id int NOT NULL,
+    role_name   int NOT NULL,
+    CONSTRAINT Employee_Roles_pk PRIMARY KEY (role_id)
 );
 
 -- Table: Employees
-CREATE TABLE Employees (
-    employee_id int  NOT NULL,
-    first_name nvarchar  NOT NULL,
-    last_name nvarchar  NOT NULL,
-    hire_date date  NOT NULL,
-    birth_date date  NOT NULL,
-    phone int  NOT NULL,
-    email nvarchar  NOT NULL,
-    role_id int  NOT NULL,
-    city_id int  NOT NULL,
-    country_id int  NOT NULL,
-    CONSTRAINT Employees_pk PRIMARY KEY  (employee_id)
+CREATE TABLE Employees
+(
+    employee_id int          NOT NULL,
+    first_name  nvarchar(30) NOT NULL,
+    last_name   nvarchar(30) NOT NULL,
+    hire_date   date         NOT NULL,
+    birth_date  date         NOT NULL,
+    phone       nvarchar(9)  NOT NULL CHECK ((PATINDEX('%[^0-9]%', phone) = 0 AND LEN(phone) = 9)),
+    email       nvarchar(50) NOT NULL,
+    role_id     int          NOT NULL,
+    city_id     int          NOT NULL,
+    country_id  int          NOT NULL,
+    CONSTRAINT employee_birth_date_check CHECK (year(getdate()) - year(birth_date) < 100),
+    CONSTRAINT Employees_pk PRIMARY KEY (employee_id)
 );
+
+
+-- Reference: Employees_Cities (table: Employees)
+ALTER TABLE Employees
+    ADD CONSTRAINT Employees_Cities
+        FOREIGN KEY (city_id)
+            REFERENCES Cities (city_id);
+
+-- Reference: Employees_Countries (table: Employees)
+ALTER TABLE Employees
+    ADD CONSTRAINT Employees_Countries
+        FOREIGN KEY (country_id)
+            REFERENCES Countries (country_id);
+
+-- Reference: Employees_Employee_Roles (table: Employees)
+ALTER TABLE Employees
+    ADD CONSTRAINT Employees_Employee_Roles
+        FOREIGN KEY (role_id)
+            REFERENCES Employee_Roles (role_id);
+
 
 -- Table: Event_types
-CREATE TABLE Event_types (
-    type_id int  NOT NULL,
-    event_name nvarchar  NOT NULL,
-    CONSTRAINT Event_types_pk PRIMARY KEY  (type_id)
+CREATE TABLE Event_types
+(
+    type_id    int          NOT NULL,
+    event_name nvarchar(30) NOT NULL,
+    CONSTRAINT Event_types_pk PRIMARY KEY (type_id)
 );
+
+-- Table: Exams
+CREATE TABLE Exams
+(
+    studies_id int           NOT NULL,
+    user_id    int           NOT NULL,
+    grade      numeric(2, 1) NOT NULL,
+    CONSTRAINT grade_check CHECK (grade in (2.0, 3.0, 3.5, 4.0, 4.5, 5.0)),
+    CONSTRAINT Exams_pk PRIMARY KEY (studies_id, user_id)
+);
+
+
+-- Reference: Exams_Studies (table: Exams)
+ALTER TABLE Exams
+    ADD CONSTRAINT Exams_Studies
+        FOREIGN KEY (studies_id)
+            REFERENCES Studies (studies_id);
+
+-- Reference: Exams_Users (table: Exams)
+ALTER TABLE Exams
+    ADD CONSTRAINT Exams_Users
+        FOREIGN KEY (user_id)
+            REFERENCES Users (user_id);
+
 
 -- Table: Intership_meeting_attendance_list
-CREATE TABLE Intership_meeting_attendance_list (
-    inter_meeting_id int  NOT NULL,
-    user_id int  NOT NULL,
-    was_present bit  NOT NULL,
-    CONSTRAINT Intership_meeting_attendance_list_pk PRIMARY KEY  (inter_meeting_id,user_id)
+CREATE TABLE Intership_meeting_attendance_list
+(
+    inter_meeting_id int NOT NULL,
+    user_id          int NOT NULL,
+    was_present      bit NOT NULL,
+    CONSTRAINT Intership_meeting_attendance_list_pk PRIMARY KEY (inter_meeting_id, user_id)
 );
+
+-- Reference: Intership_meeting_attendance_list_Intership_meetings (table: Intership_meeting_attendance_list)
+ALTER TABLE Intership_meeting_attendance_list
+    ADD CONSTRAINT Intership_meeting_attendance_list_Intership_meetings
+        FOREIGN KEY (inter_meeting_id)
+            REFERENCES Intership_meetings (inter_meeting_id);
+
+-- Reference: Intership_meeting_attendance_list_Users (table: Intership_meeting_attendance_list)
+ALTER TABLE Intership_meeting_attendance_list
+    ADD CONSTRAINT Intership_meeting_attendance_list_Users
+        FOREIGN KEY (user_id)
+            REFERENCES Users (user_id);
 
 -- Table: Intership_meetings
-CREATE TABLE Intership_meetings (
-    inter_meeting_id int  NOT NULL,
-    studies_id int  NOT NULL,
-    intership_id int  NOT NULL,
-    meetind_date datetime  NOT NULL,
-    CONSTRAINT Intership_meetings_pk PRIMARY KEY  (inter_meeting_id)
+CREATE TABLE Intership_meetings
+(
+    inter_meeting_id int      NOT NULL,
+    studies_id       int      NOT NULL,
+    intership_id     int      NOT NULL,
+    meetind_date     datetime NOT NULL,
+    CONSTRAINT Intership_meetings_pk PRIMARY KEY (inter_meeting_id)
 );
 
+
+-- Reference: Intership_meetings_Studies (table: Intership_meetings)
+ALTER TABLE Intership_meetings
+    ADD CONSTRAINT Intership_meetings_Studies
+        FOREIGN KEY (studies_id)
+            REFERENCES Studies (studies_id);
+
+
 -- Table: Languages
-CREATE TABLE Languages (
-    language_id nvarchar  NOT NULL,
-    language_name int  NOT NULL,
-    CONSTRAINT Languages_pk PRIMARY KEY  (language_id)
+CREATE TABLE Languages
+(
+    language_id   int          NOT NULL,
+    language_name nvarchar(30) NOT NULL,
+    CONSTRAINT Languages_pk PRIMARY KEY (language_id)
 );
 
 -- Table: Order_course
-CREATE TABLE Order_course (
-    order_detail_id int  NOT NULL,
-    course_id int  NOT NULL,
-    CONSTRAINT Order_course_pk PRIMARY KEY  (order_detail_id)
+CREATE TABLE Order_course
+(
+    order_detail_id int NOT NULL,
+    course_id       int NOT NULL,
+    CONSTRAINT Order_course_pk PRIMARY KEY (order_detail_id)
 );
+
+
+-- Reference: Order_course_Courses (table: Order_course)
+ALTER TABLE Order_course
+    ADD CONSTRAINT Order_course_Courses
+        FOREIGN KEY (course_id)
+            REFERENCES Courses (course_id);
+
+-- Reference: Order_course_Order_details (table: Order_course)
+ALTER TABLE Order_course
+    ADD CONSTRAINT Order_course_Order_details
+        FOREIGN KEY (order_detail_id)
+            REFERENCES Order_details (order_detail_id);
+
 
 -- Table: Order_details
-CREATE TABLE Order_details (
-    order_detail_id int  NOT NULL,
-    order_id int  NOT NULL,
-    type_id int  NOT NULL,
-    CONSTRAINT Order_details_pk PRIMARY KEY  (order_detail_id)
+CREATE TABLE Order_details
+(
+    order_detail_id int NOT NULL,
+    order_id        int NOT NULL,
+    type_id         int NOT NULL,
+    CONSTRAINT Order_details_pk PRIMARY KEY (order_detail_id)
 );
 
--- Table: Order_meeting_studies
-CREATE TABLE Order_meeting_studies (
-    order_detail_id int  NOT NULL,
-    studies_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    CONSTRAINT Order_meeting_studies_pk PRIMARY KEY  (order_detail_id)
+
+-- Reference: Order_details_Event_types (table: Order_details)
+ALTER TABLE Order_details
+    ADD CONSTRAINT Order_details_Event_types
+        FOREIGN KEY (type_id)
+            REFERENCES Event_types (type_id);
+
+-- Reference: Order_details_Orders (table: Order_details)
+ALTER TABLE Order_details
+    ADD CONSTRAINT Order_details_Orders
+        FOREIGN KEY (order_id)
+            REFERENCES Orders (order_id);
+
+
+-- Table: Order_module_studies
+CREATE TABLE Order_module_studies
+(
+    order_detail_id int NOT NULL,
+    module_id       int NOT NULL,
+    CONSTRAINT Order_module_studies_pk PRIMARY KEY (order_detail_id)
 );
+
+
+-- Reference: Order_meeting_studies_Order_details (table: Order_module_studies)
+ALTER TABLE Order_module_studies
+    ADD CONSTRAINT Order_meeting_studies_Order_details
+        FOREIGN KEY (order_detail_id)
+            REFERENCES Order_details (order_detail_id);
+
+-- Reference: Studies_Module_Order_meeting_studies (table: Order_module_studies)
+ALTER TABLE Order_module_studies
+    ADD CONSTRAINT Studies_Module_Order_meeting_studies
+        FOREIGN KEY (module_id)
+            REFERENCES Studies_Module (studies_module_id);
 
 -- Table: Order_studies
-CREATE TABLE Order_studies (
-    order_detail_id int  NOT NULL,
-    studies_id int  NOT NULL,
-    CONSTRAINT Order_studies_pk PRIMARY KEY  (order_detail_id)
+CREATE TABLE Order_studies
+(
+    order_detail_id int NOT NULL,
+    studies_id      int NOT NULL,
+    CONSTRAINT Order_studies_pk PRIMARY KEY (order_detail_id)
 );
+
+-- Reference: Order_studies_Order_details (table: Order_studies)
+ALTER TABLE Order_studies
+    ADD CONSTRAINT Order_studies_Order_details
+        FOREIGN KEY (order_detail_id)
+            REFERENCES Order_details (order_detail_id);
+
+-- Reference: Order_studies_Studies (table: Order_studies)
+ALTER TABLE Order_studies
+    ADD CONSTRAINT Order_studies_Studies
+        FOREIGN KEY (studies_id)
+            REFERENCES Studies (studies_id);
+
 
 -- Table: Order_webinars
-CREATE TABLE Order_webinars (
-    order_detail_id int  NOT NULL,
-    webinar_id int  NOT NULL,
-    CONSTRAINT Order_webinars_pk PRIMARY KEY  (order_detail_id)
+CREATE TABLE Order_webinars
+(
+    order_detail_id int NOT NULL,
+    webinar_id      int NOT NULL,
+    CONSTRAINT Order_webinars_pk PRIMARY KEY (order_detail_id)
 );
 
+-- Reference: Order_webinars_Order_details (table: Order_webinars)
+ALTER TABLE Order_webinars
+    ADD CONSTRAINT Order_webinars_Order_details
+        FOREIGN KEY (order_detail_id)
+            REFERENCES Order_details (order_detail_id);
+
+-- Reference: Order_webinars_Webinar_info (table: Order_webinars)
+ALTER TABLE Order_webinars
+    ADD CONSTRAINT Order_webinars_Webinar_info
+        FOREIGN KEY (webinar_id)
+            REFERENCES Webinar_info (webinar_id);
+
+
 -- Table: Orders
-CREATE TABLE Orders (
-    order_id int  NOT NULL,
-    user_id int  NOT NULL,
-    is_paid bit  NOT NULL,
-    price money  NOT NULL,
-    CONSTRAINT Orders_pk PRIMARY KEY  (order_id)
+CREATE TABLE Orders
+(
+    order_id      int      NOT NULL,
+    user_id       int      NOT NULL,
+    is_paid       bit      NOT NULL,
+    price         money    NOT NULL,
+    max_paid_date datetime NOT NULL,
+    CONSTRAINT orders_price_check CHECK (price >= 0),
+    CONSTRAINT Orders_pk PRIMARY KEY (order_id)
 );
 
 -- Table: Studies
-CREATE TABLE Studies (
-    studies_id int  NOT NULL,
-    studies_name nvarchar  NOT NULL,
-    studies_description nvarchar  NOT NULL,
-    start_date date  NOT NULL,
-    students_limit int  NOT NULL,
-    price money  NOT NULL,
-    studies_coordinator_id int  NOT NULL,
-    CONSTRAINT Studies_pk PRIMARY KEY  (studies_id)
+CREATE TABLE Studies
+(
+    studies_id             int           NOT NULL,
+    studies_name           nvarchar(30)  NOT NULL,
+    studies_description    nvarchar(300) NOT NULL,
+    start_date             date          NOT NULL,
+    students_limit         int           NOT NULL,
+    price                  money         NOT NULL,
+    studies_coordinator_id int           NOT NULL,
+    visible_from           date          NOT NULL,
+    CONSTRAINT studies_price_check CHECK (price >= 0),
+    CONSTRAINT Studies_pk PRIMARY KEY (studies_id)
 );
-
--- Table: Studies_enrolled_studends
-CREATE TABLE Studies_enrolled_studends (
-    studies_id int  NOT NULL,
-    user_id int  NOT NULL,
-    only_meeting bit  NOT NULL,
-    order_id int  NOT NULL,
-    CONSTRAINT Studies_enrolled_studends_pk PRIMARY KEY  (studies_id,user_id)
-);
-
--- Table: Studies_meeting_attendance_list
-CREATE TABLE Studies_meeting_attendance_list (
-    user_id int  NOT NULL,
-    studies_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    was_present bit  NOT NULL,
-    CONSTRAINT Studies_meeting_attendance_list_pk PRIMARY KEY  (user_id,meeting_id,studies_id)
-);
-
--- Table: Studies_module
-CREATE TABLE Studies_module (
-    studies_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    module_type nvarchar  NOT NULL,
-    CONSTRAINT Studies_module_pk PRIMARY KEY  (studies_id,meeting_id)
-);
-
--- Table: Studies_module_meeting_stationary
-CREATE TABLE Studies_module_meeting_stationary (
-    id int  NOT NULL,
-    studies_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    classroom int  NOT NULL,
-    CONSTRAINT Studies_module_meeting_stationary_pk PRIMARY KEY  (id)
-);
-
--- Table: Studies_module_meetings
-CREATE TABLE Studies_module_meetings (
-    meeting_id int  NOT NULL,
-    studies_id int  NOT NULL,
-    meeting_date datetime  NOT NULL,
-    meeting_type nvarchar  NOT NULL,
-    language_id nvarchar  NOT NULL,
-    translator_id int  NOT NULL,
-    lecturer_id int  NOT NULL,
-    duration time  NOT NULL,
-    place_limit int  NOT NULL,
-    price_for_free_listener money  NOT NULL,
-    CONSTRAINT Studies_module_meetings_pk PRIMARY KEY  (meeting_id,studies_id)
-);
-
--- Table: Studies_sync_async_meeting
-CREATE TABLE Studies_sync_async_meeting (
-    id int  NOT NULL,
-    studies_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    accessTo datetime  NOT NULL,
-    video_link nvarchar  NOT NULL,
-    stream_link nvarchar  NOT NULL,
-    CONSTRAINT Studies_sync_async_meeting_pk PRIMARY KEY  (id)
-);
-
--- Table: Translators
-CREATE TABLE Translators (
-    translator_id int  NOT NULL,
-    employee_id int  NOT NULL,
-    CONSTRAINT Translators_pk PRIMARY KEY  (translator_id)
-);
-
--- Table: Translators_languages_used
-CREATE TABLE Translators_languages_used (
-    id int  NOT NULL,
-    translator_id int  NOT NULL,
-    language_id nvarchar  NOT NULL,
-    CONSTRAINT Translators_languages_used_pk PRIMARY KEY  (id)
-);
-
--- Table: Users
-CREATE TABLE Users (
-    user_id int  NOT NULL,
-    email nvarchar(max)  NOT NULL,
-    first_name nvarchar  NOT NULL,
-    last_name nvarchar  NOT NULL,
-    city_id int  NOT NULL,
-    country_id int  NOT NULL,
-    phone int  NOT NULL,
-    street nvarchar  NOT NULL,
-    house_number int  NOT NULL,
-    CONSTRAINT Users_pk PRIMARY KEY  (user_id)
-);
-
--- Table: Webinar_enrolled_students
-CREATE TABLE Webinar_enrolled_students (
-    webinar_id int  NOT NULL,
-    user_id int  NOT NULL,
-    order_id int  NOT NULL,
-    purashed_date money  NOT NULL,
-    CONSTRAINT Webinar_enrolled_students_pk PRIMARY KEY  (webinar_id,user_id)
-);
-
--- Table: Webinar_info
-CREATE TABLE Webinar_info (
-    webinar_id int  NOT NULL,
-    user_id int  NOT NULL,
-    teacher_id int  NOT NULL,
-    price money  NOT NULL,
-    CONSTRAINT Webinar_info_pk PRIMARY KEY  (webinar_id)
-);
-
--- Table: Webinars_detail
-CREATE TABLE Webinars_detail (
-    webinar_id int  NOT NULL,
-    recording_link nvarchar  NOT NULL,
-    CONSTRAINT Webinars_detail_pk PRIMARY KEY  (webinar_id)
-);
-
--- Table: enrolled_for_meeting
-CREATE TABLE enrolled_for_meeting (
-    studies_id int  NOT NULL,
-    meeting_id int  NOT NULL,
-    user_id int  NOT NULL,
-    CONSTRAINT enrolled_for_meeting_pk PRIMARY KEY  (studies_id,meeting_id,user_id)
-);
-
--- foreign keys
--- Reference: Cities_Users (table: Users)
-ALTER TABLE Users ADD CONSTRAINT Cities_Users
-    FOREIGN KEY (city_id)
-    REFERENCES Cities (city_id);
-
--- Reference: Countries_Users (table: Users)
-ALTER TABLE Users ADD CONSTRAINT Countries_Users
-    FOREIGN KEY (country_id)
-    REFERENCES Countries (country_id);
-
--- Reference: Course_enrolled_studends_Courses (table: Course_enrolled_studends)
-ALTER TABLE Course_enrolled_studends ADD CONSTRAINT Course_enrolled_studends_Courses
-    FOREIGN KEY (course_id)
-    REFERENCES Courses (course_id);
-
--- Reference: Course_enrolled_studends_Orders (table: Course_enrolled_studends)
-ALTER TABLE Course_enrolled_studends ADD CONSTRAINT Course_enrolled_studends_Orders
-    FOREIGN KEY (order_id)
-    REFERENCES Orders (order_id);
-
--- Reference: Course_enrolled_studends_Users (table: Course_enrolled_studends)
-ALTER TABLE Course_enrolled_studends ADD CONSTRAINT Course_enrolled_studends_Users
-    FOREIGN KEY (user_id)
-    REFERENCES Users (user_id);
-
--- Reference: Course_meeting_attendance_list_Course_module_meetings (table: Course_meeting_attendance_list)
-ALTER TABLE Course_meeting_attendance_list ADD CONSTRAINT Course_meeting_attendance_list_Course_module_meetings
-    FOREIGN KEY (meeting_id,course_id)
-    REFERENCES Course_module_meetings (meeting_id,course_id);
-
--- Reference: Course_meeting_attendance_list_Users (table: Course_meeting_attendance_list)
-ALTER TABLE Course_meeting_attendance_list ADD CONSTRAINT Course_meeting_attendance_list_Users
-    FOREIGN KEY (user_id)
-    REFERENCES Users (user_id);
-
--- Reference: Course_module_Course_module_meetings (table: Course_module)
-ALTER TABLE Course_module ADD CONSTRAINT Course_module_Course_module_meetings
-    FOREIGN KEY (meeting_id,course_id)
-    REFERENCES Course_module_meetings (meeting_id,course_id);
-
--- Reference: Course_module_meetings_Course_module_meeting_stationary (table: Course_module_meeting_stationary)
-ALTER TABLE Course_module_meeting_stationary ADD CONSTRAINT Course_module_meetings_Course_module_meeting_stationary
-    FOREIGN KEY (meeting_id,course_id)
-    REFERENCES Course_module_meetings (meeting_id,course_id);
-
--- Reference: Course_module_meetings_Courses (table: Course_module_meetings)
-ALTER TABLE Course_module_meetings ADD CONSTRAINT Course_module_meetings_Courses
-    FOREIGN KEY (course_id)
-    REFERENCES Courses (course_id);
-
--- Reference: Course_module_meetings_Employees (table: Course_module_meetings)
-ALTER TABLE Course_module_meetings ADD CONSTRAINT Course_module_meetings_Employees
-    FOREIGN KEY (lecturer_id)
-    REFERENCES Employees (employee_id);
-
--- Reference: Course_module_meetings_Languages (table: Course_module_meetings)
-ALTER TABLE Course_module_meetings ADD CONSTRAINT Course_module_meetings_Languages
-    FOREIGN KEY (language_id)
-    REFERENCES Languages (language_id);
-
--- Reference: Course_video_access_Course_module_meetings (table: Course_sync_async_meeting)
-ALTER TABLE Course_sync_async_meeting ADD CONSTRAINT Course_video_access_Course_module_meetings
-    FOREIGN KEY (meeting_id,course_id)
-    REFERENCES Course_module_meetings (meeting_id,course_id);
-
--- Reference: Courses_Employees (table: Courses)
-ALTER TABLE Courses ADD CONSTRAINT Courses_Employees
-    FOREIGN KEY (course_coordinator_id)
-    REFERENCES Employees (employee_id);
-
--- Reference: Employees_Cities (table: Employees)
-ALTER TABLE Employees ADD CONSTRAINT Employees_Cities
-    FOREIGN KEY (city_id)
-    REFERENCES Cities (city_id);
-
--- Reference: Employees_Countries (table: Employees)
-ALTER TABLE Employees ADD CONSTRAINT Employees_Countries
-    FOREIGN KEY (country_id)
-    REFERENCES Countries (country_id);
-
--- Reference: Employees_Employee_Roles (table: Employees)
-ALTER TABLE Employees ADD CONSTRAINT Employees_Employee_Roles
-    FOREIGN KEY (role_id)
-    REFERENCES Employee_Roles (role_id);
-
--- Reference: Intership_meeting_attendance_list_Intership_meetings (table: Intership_meeting_attendance_list)
-ALTER TABLE Intership_meeting_attendance_list ADD CONSTRAINT Intership_meeting_attendance_list_Intership_meetings
-    FOREIGN KEY (inter_meeting_id)
-    REFERENCES Intership_meetings (inter_meeting_id);
-
--- Reference: Intership_meeting_attendance_list_Users (table: Intership_meeting_attendance_list)
-ALTER TABLE Intership_meeting_attendance_list ADD CONSTRAINT Intership_meeting_attendance_list_Users
-    FOREIGN KEY (user_id)
-    REFERENCES Users (user_id);
-
--- Reference: Intership_meetings_Studies (table: Intership_meetings)
-ALTER TABLE Intership_meetings ADD CONSTRAINT Intership_meetings_Studies
-    FOREIGN KEY (studies_id)
-    REFERENCES Studies (studies_id);
-
--- Reference: Order_course_Courses (table: Order_course)
-ALTER TABLE Order_course ADD CONSTRAINT Order_course_Courses
-    FOREIGN KEY (course_id)
-    REFERENCES Courses (course_id);
-
--- Reference: Order_course_Order_details (table: Order_course)
-ALTER TABLE Order_course ADD CONSTRAINT Order_course_Order_details
-    FOREIGN KEY (order_detail_id)
-    REFERENCES Order_details (order_detail_id);
-
--- Reference: Order_details_Event_types (table: Order_details)
-ALTER TABLE Order_details ADD CONSTRAINT Order_details_Event_types
-    FOREIGN KEY (type_id)
-    REFERENCES Event_types (type_id);
-
--- Reference: Order_details_Orders (table: Order_details)
-ALTER TABLE Order_details ADD CONSTRAINT Order_details_Orders
-    FOREIGN KEY (order_id)
-    REFERENCES Orders (order_id);
-
--- Reference: Order_meeting_studies_Order_details (table: Order_meeting_studies)
-ALTER TABLE Order_meeting_studies ADD CONSTRAINT Order_meeting_studies_Order_details
-    FOREIGN KEY (order_detail_id)
-    REFERENCES Order_details (order_detail_id);
-
--- Reference: Order_meeting_studies_Studies_module_meetings (table: Order_meeting_studies)
-ALTER TABLE Order_meeting_studies ADD CONSTRAINT Order_meeting_studies_Studies_module_meetings
-    FOREIGN KEY (meeting_id,studies_id)
-    REFERENCES Studies_module_meetings (meeting_id,studies_id);
-
--- Reference: Order_studies_Order_details (table: Order_studies)
-ALTER TABLE Order_studies ADD CONSTRAINT Order_studies_Order_details
-    FOREIGN KEY (order_detail_id)
-    REFERENCES Order_details (order_detail_id);
-
--- Reference: Order_studies_Studies (table: Order_studies)
-ALTER TABLE Order_studies ADD CONSTRAINT Order_studies_Studies
-    FOREIGN KEY (studies_id)
-    REFERENCES Studies (studies_id);
-
--- Reference: Order_webinars_Order_details (table: Order_webinars)
-ALTER TABLE Order_webinars ADD CONSTRAINT Order_webinars_Order_details
-    FOREIGN KEY (order_detail_id)
-    REFERENCES Order_details (order_detail_id);
-
--- Reference: Order_webinars_Webinar_info (table: Order_webinars)
-ALTER TABLE Order_webinars ADD CONSTRAINT Order_webinars_Webinar_info
-    FOREIGN KEY (webinar_id)
-    REFERENCES Webinar_info (webinar_id);
 
 -- Reference: Studies_Employees (table: Studies)
-ALTER TABLE Studies ADD CONSTRAINT Studies_Employees
-    FOREIGN KEY (studies_coordinator_id)
-    REFERENCES Employees (employee_id);
+ALTER TABLE Studies
+    ADD CONSTRAINT Studies_Employees
+        FOREIGN KEY (studies_coordinator_id)
+            REFERENCES Employees (employee_id);
 
--- Reference: Studies_enrolled_studends_Orders (table: Studies_enrolled_studends)
-ALTER TABLE Studies_enrolled_studends ADD CONSTRAINT Studies_enrolled_studends_Orders
-    FOREIGN KEY (order_id)
-    REFERENCES Orders (order_id);
 
--- Reference: Studies_enrolled_studends_Studies (table: Studies_enrolled_studends)
-ALTER TABLE Studies_enrolled_studends ADD CONSTRAINT Studies_enrolled_studends_Studies
-    FOREIGN KEY (studies_id)
-    REFERENCES Studies (studies_id);
+-- Table: Studies_Module
+CREATE TABLE Studies_Module
+(
+    studies_module_id        int          NOT NULL,
+    module_type_id           int          NOT NULL,
+    module_name              nvarchar(30) NOT NULL,
+    studies_id               int          NOT NULL,
+    price_for_free_listeners money        NOT NULL,
+    CONSTRAINT price_check CHECK (price_for_free_listeners >= 0),
+    CONSTRAINT studies_module_id PRIMARY KEY (studies_module_id)
+);
 
--- Reference: Studies_enrolled_studends_Users (table: Studies_enrolled_studends)
-ALTER TABLE Studies_enrolled_studends ADD CONSTRAINT Studies_enrolled_studends_Users
-    FOREIGN KEY (user_id)
-    REFERENCES Users (user_id);
+-- Reference: Studiies_Module_Studies (table: Studies_Module)
+ALTER TABLE Studies_Module
+    ADD CONSTRAINT Studiies_Module_Studies
+        FOREIGN KEY (studies_id)
+            REFERENCES Studies (studies_id);
+
+-- Reference: Studiies_Module_module_type (table: Studies_Module)
+ALTER TABLE Studies_Module
+    ADD CONSTRAINT Studiies_Module_module_type
+        FOREIGN KEY (module_type_id)
+            REFERENCES module_type (module_type_id);
+
+
+-- Table: Studies_makeup_meeting_attendance_list
+CREATE TABLE Studies_makeup_meeting_attendance_list
+(
+    makeup_list_id int NOT NULL,
+    user_id        int NOT NULL,
+    studies_id     int NOT NULL,
+    meeting_id     int NOT NULL,
+    topic_id       int NOT NULL,
+    CONSTRAINT Studies_makeup_meeting_attendance_list_pk PRIMARY KEY (makeup_list_id)
+);
+
+-- Reference: Studies_makeup_meeting_attendacne_list_Studies_module_meetings (table: Studies_makeup_meeting_attendance_list)
+ALTER TABLE Studies_makeup_meeting_attendance_list
+    ADD CONSTRAINT Studies_makeup_meeting_attendacne_list_Studies_module_meetings
+        FOREIGN KEY (meeting_id, studies_id)
+            REFERENCES Studies_module_meetings (meeting_id, studies_id);
+
+-- Reference: Studies_makeup_meeting_attendacne_list_Users (table: Studies_makeup_meeting_attendance_list)
+ALTER TABLE Studies_makeup_meeting_attendance_list
+    ADD CONSTRAINT Studies_makeup_meeting_attendacne_list_Users
+        FOREIGN KEY (user_id)
+            REFERENCES Users (user_id);
+
+-- Table: Studies_meeting_attendance_list
+CREATE TABLE Studies_meeting_attendance_list
+(
+    user_id     int NOT NULL,
+    studies_id  int NOT NULL,
+    meeting_id  int NOT NULL,
+    was_present bit NOT NULL,
+    topic_id    int NOT NULL,
+    CONSTRAINT Studies_meeting_attendance_list_pk PRIMARY KEY (user_id, studies_id, meeting_id)
+);
+
 
 -- Reference: Studies_meeting_attendance_list_Studies_module_meetings (table: Studies_meeting_attendance_list)
-ALTER TABLE Studies_meeting_attendance_list ADD CONSTRAINT Studies_meeting_attendance_list_Studies_module_meetings
-    FOREIGN KEY (meeting_id,studies_id)
-    REFERENCES Studies_module_meetings (meeting_id,studies_id);
+ALTER TABLE Studies_meeting_attendance_list
+    ADD CONSTRAINT Studies_meeting_attendance_list_Studies_module_meetings
+        FOREIGN KEY (meeting_id, studies_id)
+            REFERENCES Studies_module_meetings (meeting_id, studies_id);
 
 -- Reference: Studies_meeting_attendance_list_Users (table: Studies_meeting_attendance_list)
-ALTER TABLE Studies_meeting_attendance_list ADD CONSTRAINT Studies_meeting_attendance_list_Users
-    FOREIGN KEY (user_id)
-    REFERENCES Users (user_id);
+ALTER TABLE Studies_meeting_attendance_list
+    ADD CONSTRAINT Studies_meeting_attendance_list_Users
+        FOREIGN KEY (user_id)
+            REFERENCES Users (user_id);
 
--- Reference: Studies_module_Studies_module_meetings (table: Studies_module)
-ALTER TABLE Studies_module ADD CONSTRAINT Studies_module_Studies_module_meetings
-    FOREIGN KEY (meeting_id,studies_id)
-    REFERENCES Studies_module_meetings (meeting_id,studies_id);
+
+-- Table: Studies_module_meeting_stationary
+CREATE TABLE Studies_module_meeting_stationary
+(
+    id         int         NOT NULL,
+    studies_id int         NOT NULL,
+    meeting_id int         NOT NULL,
+    classroom  nvarchar(6) NOT NULL,
+    CONSTRAINT Studies_module_meeting_stationary_pk PRIMARY KEY (id)
+);
+
 
 -- Reference: Studies_module_meeting_stationary_Studies_module_meetings (table: Studies_module_meeting_stationary)
-ALTER TABLE Studies_module_meeting_stationary ADD CONSTRAINT Studies_module_meeting_stationary_Studies_module_meetings
-    FOREIGN KEY (meeting_id,studies_id)
-    REFERENCES Studies_module_meetings (meeting_id,studies_id);
+ALTER TABLE Studies_module_meeting_stationary
+    ADD CONSTRAINT Studies_module_meeting_stationary_Studies_module_meetings
+        FOREIGN KEY (meeting_id, studies_id)
+            REFERENCES Studies_module_meetings (meeting_id, studies_id);
+
+-- Table: Studies_module_meetings
+CREATE TABLE Studies_module_meetings
+(
+    meeting_id      int          NOT NULL,
+    studies_id      int          NOT NULL,
+    meeting_date    datetime     NOT NULL,
+    language_id     nvarchar(30) NOT NULL,
+    translator_id   int          NOT NULL,
+    lecturer_id     int          NOT NULL,
+    duration        time         NOT NULL,
+    place_limit     int          NOT NULL,
+    module_id       int          NOT NULL,
+    topic_id        int          NOT NULL,
+    meeting_name    nvarchar(30) NOT NULL,
+    meeting_type_id int          NOT NULL,
+    CONSTRAINT Studies_module_meetings_pk PRIMARY KEY (meeting_id, studies_id)
+);
+
 
 -- Reference: Studies_module_meetings_Employees (table: Studies_module_meetings)
-ALTER TABLE Studies_module_meetings ADD CONSTRAINT Studies_module_meetings_Employees
-    FOREIGN KEY (lecturer_id)
-    REFERENCES Employees (employee_id);
+ALTER TABLE Studies_module_meetings
+    ADD CONSTRAINT Studies_module_meetings_Employees
+        FOREIGN KEY (lecturer_id)
+            REFERENCES Employees (employee_id);
 
--- Reference: Studies_module_meetings_Studies (table: Studies_module_meetings)
-ALTER TABLE Studies_module_meetings ADD CONSTRAINT Studies_module_meetings_Studies
-    FOREIGN KEY (studies_id)
-    REFERENCES Studies (studies_id);
+-- Reference: Studies_module_meetings_Studiies_Module (table: Studies_module_meetings)
+ALTER TABLE Studies_module_meetings
+    ADD CONSTRAINT Studies_module_meetings_Studiies_Module
+        FOREIGN KEY (module_id)
+            REFERENCES Studies_Module (studies_module_id);
 
 -- Reference: Studies_module_meetings_Translators (table: Studies_module_meetings)
-ALTER TABLE Studies_module_meetings ADD CONSTRAINT Studies_module_meetings_Translators
-    FOREIGN KEY (translator_id)
-    REFERENCES Translators (translator_id);
+ALTER TABLE Studies_module_meetings
+    ADD CONSTRAINT Studies_module_meetings_Translators
+        FOREIGN KEY (translator_id)
+            REFERENCES Translators (translator_id);
+
+-- Reference: Studies_module_meetings_meeting_type (table: Studies_module_meetings)
+ALTER TABLE Studies_module_meetings
+    ADD CONSTRAINT Studies_module_meetings_meeting_type
+        FOREIGN KEY (meeting_type_id)
+            REFERENCES meeting_type (meeting_type_id);
+
+-- Reference: module_type_Studies_module_meetings (table: Studies_module_meetings)
+ALTER TABLE Studies_module_meetings
+    ADD CONSTRAINT module_type_Studies_module_meetings
+        FOREIGN KEY (module_id)
+            REFERENCES module_type (module_type_id);
+
+-- Reference: topics_list_Studies_module_meetings (table: Studies_module_meetings)
+ALTER TABLE Studies_module_meetings
+    ADD CONSTRAINT topics_list_Studies_module_meetings
+        FOREIGN KEY (topic_id)
+            REFERENCES topics_list (topic_id);
+
+
+-- Table: Studies_sync_async_meeting
+CREATE TABLE Studies_sync_async_meeting
+(
+    id          int          NOT NULL,
+    studies_id  int          NOT NULL,
+    meeting_id  int          NOT NULL,
+    accessTo    datetime     NOT NULL,
+    video_link  nvarchar(30) NOT NULL,
+    stream_link nvarchar(30) NOT NULL,
+    CONSTRAINT Studies_sync_async_meeting_pk PRIMARY KEY (id)
+);
 
 -- Reference: Studies_sync_async_meeting_Studies_module_meetings (table: Studies_sync_async_meeting)
-ALTER TABLE Studies_sync_async_meeting ADD CONSTRAINT Studies_sync_async_meeting_Studies_module_meetings
-    FOREIGN KEY (meeting_id,studies_id)
-    REFERENCES Studies_module_meetings (meeting_id,studies_id);
+ALTER TABLE Studies_sync_async_meeting
+    ADD CONSTRAINT Studies_sync_async_meeting_Studies_module_meetings
+        FOREIGN KEY (meeting_id, studies_id)
+            REFERENCES Studies_module_meetings (meeting_id, studies_id);
 
--- Reference: Translators_Course_module_meetings (table: Course_module_meetings)
-ALTER TABLE Course_module_meetings ADD CONSTRAINT Translators_Course_module_meetings
-    FOREIGN KEY (translator_id)
-    REFERENCES Translators (translator_id);
+-- Table: Translators
+CREATE TABLE Translators
+(
+    translator_id int NOT NULL,
+    employee_id   int NOT NULL,
+    CONSTRAINT Translators_pk PRIMARY KEY (translator_id)
+);
+
 
 -- Reference: Translators_Employees (table: Translators)
-ALTER TABLE Translators ADD CONSTRAINT Translators_Employees
-    FOREIGN KEY (employee_id)
-    REFERENCES Employees (employee_id);
+ALTER TABLE Translators
+    ADD CONSTRAINT Translators_Employees
+        FOREIGN KEY (employee_id)
+            REFERENCES Employees (employee_id);
+
+-- Table: Translators_languages_used
+CREATE TABLE Translators_languages_used
+(
+    id            int NOT NULL,
+    translator_id int NOT NULL,
+    language_id   int NOT NULL,
+    CONSTRAINT Translators_languages_used_pk PRIMARY KEY (id)
+);
 
 -- Reference: Translators_languages_used_Languages (table: Translators_languages_used)
-ALTER TABLE Translators_languages_used ADD CONSTRAINT Translators_languages_used_Languages
-    FOREIGN KEY (language_id)
-    REFERENCES Languages (language_id);
+ALTER TABLE Translators_languages_used
+    ADD CONSTRAINT Translators_languages_used_Languages
+        FOREIGN KEY (language_id)
+            REFERENCES Languages (language_id);
 
 -- Reference: Translators_languages_used_Translators (table: Translators_languages_used)
-ALTER TABLE Translators_languages_used ADD CONSTRAINT Translators_languages_used_Translators
-    FOREIGN KEY (translator_id)
-    REFERENCES Translators (translator_id);
+ALTER TABLE Translators_languages_used
+    ADD CONSTRAINT Translators_languages_used_Translators
+        FOREIGN KEY (translator_id)
+            REFERENCES Translators (translator_id);
 
--- Reference: Webinar_acces_Users (table: Webinar_info)
-ALTER TABLE Webinar_info ADD CONSTRAINT Webinar_acces_Users
-    FOREIGN KEY (user_id)
-    REFERENCES Users (user_id);
+-- Table: Users
+CREATE TABLE Users
+(
+    user_id      int          NOT NULL,
+    email        nvarchar(50) NOT NULL,
+    first_name   nvarchar(30) NOT NULL,
+    last_name    nvarchar(30) NOT NULL,
+    city_id      int          NOT NULL,
+    country_id   int          NOT NULL,
+    phone        nvarchar(9)  NOT NULL CHECK (PATINDEX('%[^0-9]%', phone) = 0 AND LEN(phone) = 9),
+    street       nvarchar(30) NOT NULL,
+    house_number int          NOT NULL,
+    birth_date   date         NOT NULL,
+    CONSTRAINT users_birth_date_check CHECK (datediff(year, birth_date, getdate()) < 100),
+    CONSTRAINT Users_pk PRIMARY KEY (user_id)
+);
+ALTER TABLE Users
+    ADD CONSTRAINT Cities_Users
+        FOREIGN KEY (city_id)
+            REFERENCES Cities (city_id);
 
--- Reference: Webinar_enrolled_students_Orders (table: Webinar_enrolled_students)
-ALTER TABLE Webinar_enrolled_students ADD CONSTRAINT Webinar_enrolled_students_Orders
-    FOREIGN KEY (order_id)
-    REFERENCES Orders (order_id);
+-- Reference: Countries_Users (table: Users)
+ALTER TABLE Users
+    ADD CONSTRAINT Countries_Users
+        FOREIGN KEY (country_id)
+            REFERENCES Countries (country_id);
 
--- Reference: Webinar_enrolled_students_Webinar_info (table: Webinar_enrolled_students)
-ALTER TABLE Webinar_enrolled_students ADD CONSTRAINT Webinar_enrolled_students_Webinar_info
-    FOREIGN KEY (webinar_id)
-    REFERENCES Webinar_info (webinar_id);
+
+-- Table: Webinar_info
+CREATE TABLE Webinar_info
+(
+    webinar_id     int          NOT NULL,
+    teacher_id     int          NOT NULL,
+    price          money        NOT NULL,
+    can_buy_from   date         NOT NULL,
+    recording_link nvarchar(30) NOT NULL,
+    start_date     date         NOT NULL,
+    CONSTRAINT webinar_price_check CHECK (price >= 0),
+    CONSTRAINT Webinar_info_pk PRIMARY KEY (webinar_id)
+);
 
 -- Reference: Webinar_info_Employees (table: Webinar_info)
-ALTER TABLE Webinar_info ADD CONSTRAINT Webinar_info_Employees
-    FOREIGN KEY (teacher_id)
-    REFERENCES Employees (employee_id);
+ALTER TABLE Webinar_info
+    ADD CONSTRAINT Webinar_info_Employees
+        FOREIGN KEY (teacher_id)
+            REFERENCES Employees (employee_id);
 
--- Reference: Webinars_detail_Webinar_info (table: Webinars_detail)
-ALTER TABLE Webinars_detail ADD CONSTRAINT Webinars_detail_Webinar_info
-    FOREIGN KEY (webinar_id)
-    REFERENCES Webinar_info (webinar_id);
+-- Table: meeting_type
+CREATE TABLE meeting_type
+(
+    meeting_type_id int          NOT NULL,
+    meeting_type    nvarchar(30) NOT NULL,
+    CONSTRAINT meeting_type_pk PRIMARY KEY (meeting_type_id)
+);
 
--- Reference: enrolled_for_meeting_Studies_enrolled_studends (table: enrolled_for_meeting)
-ALTER TABLE enrolled_for_meeting ADD CONSTRAINT enrolled_for_meeting_Studies_enrolled_studends
-    FOREIGN KEY (studies_id,user_id)
-    REFERENCES Studies_enrolled_studends (studies_id,user_id);
+-- Table: module_type
+CREATE TABLE module_type
+(
+    module_type_id int          NOT NULL,
+    module_name    nvarchar(30) NOT NULL,
+    module_type    nvarchar(30) NOT NULL,
+    CONSTRAINT module_type_pk PRIMARY KEY (module_type_id)
+);
+
+-- Table: topics_list
+CREATE TABLE topics_list
+(
+    topic_id          int          NOT NULL,
+    topic_name        nvarchar(30) NOT NULL,
+    topic_description nvarchar(30) NOT NULL,
+    CONSTRAINT topics_list_pk PRIMARY KEY (topic_id)
+);
 
 -- End of file.
 
 
-```## Widoki w bazie danych
+
+```
+## Widoki w bazie danych
 
 ### Wypisanie użytkowników, którzy ukończyli dane studia z wynikiem pozytywnym
 ```sql
@@ -737,14 +873,14 @@ create view dbo.check_if_user_passed as
     select user_id, cast(0 as bit) as pass
     from Users u
     where user_id not in (select user_id
-                          from Users u
-                          where not exists(select 1
-                                           from Intership_meeting_attendance_list ia
-                                           where u.user_id = ia.user_id
-                                             and was_present = 0)
-                            and ((select SUM(IIF(was_present = 1, 1, 0)) from Studies_meeting_attendance_list sa)
-                              / (select count(was_present) from Studies_meeting_attendance_list sa)) >= 0.8
-                            and (select grade from Exams e where e.user_id = u.user_id) >= 3.0)
+                    from Users u
+                    where not exists(select 1
+                                    from Intership_meeting_attendance_list ia
+                                    where u.user_id = ia.user_id
+                                        and was_present = 0)
+                and ((select SUM(IIF(was_present = 1, 1, 0)) from Studies_meeting_attendance_list sa)
+                    / (select count(was_present) from Studies_meeting_attendance_list sa)) >= 0.8
+                and (select grade from Exams e where e.user_id = u.user_id) >= 3.0)
 go
 
 
