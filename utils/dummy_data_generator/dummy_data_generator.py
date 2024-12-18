@@ -214,7 +214,7 @@ def generate_courses():
         tmp_module = db_model.CourseModules(len(course_modules), random.randint(0, len(dval.module_types) - 1), fk.catch_phrase(), course_id)
         course_modules.append(tmp_module)
 
-        generate_course_module_meeting(course_id)
+        generate_course_module_meetings(course_id)
 
     def generate_course_module_meeting(course_id):
         pass
@@ -227,7 +227,7 @@ def generate_courses():
 
 
     def generate_course_module_meetings(course_id):
-        pass
+        tmp_module_meeting = generate_course_module_meeting()
     
 
 
