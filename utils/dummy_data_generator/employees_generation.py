@@ -48,13 +48,13 @@ def generate_employees_table():
     all_employees.append(ceo)
     return all_employees, translators_table, translators_language_used
 
-employes, translators, translators_langs = generate_employees_table()
+# employes, translators, translators_langs = generate_employees_table()
 
-print("INSER INTO Translators (translator_id, employee_id) VALUES")
+# print("INSER INTO Translators (translator_id, employee_id) VALUES")
 
-for translator in translators:
-    print("(" + translator.__str__() + "),")
+# for translator in translators:
+#     print("(" + translator.__str__() + "),")
 
-print("INSER INTO TranslatorsLanguagesUsed (id, translator_id, language_id) VALUES")
-for langs in translators_langs:
-    print("(" + langs.__str__() + "),")
+# print("INSER INTO TranslatorsLanguagesUsed (id, translator_id, language_id) VALUES")
+# for langs in translators_langs:
+#     print("(" + langs.__str__() + "),")

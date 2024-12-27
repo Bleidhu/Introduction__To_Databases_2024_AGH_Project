@@ -28,6 +28,8 @@ def main():
     print("INSERT INTO Employees (employee_id, first_name, last_name, hire_date, birth_date, phone, email, role_id, city_id, country_id) VALUES")
     for employee in employees:
         print("(" + str(employee) + "),")
+    
+    
 
     # courses, course_modules, course_meetings, course_enrolled_students, course_sync_async_meetings, course_attendance_list, course_stationary_meetings = generate_courses_table()
 

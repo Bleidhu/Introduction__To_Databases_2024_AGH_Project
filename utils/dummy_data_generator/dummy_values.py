@@ -4,3 +4,5 @@ employee_roles = {0:"Dyrektor", 1:"Nauczyciel", 2:"Tłumacz"}
 languages= {1:"Polski", 2:"Angielski"}
 module_types = {0: "Stationary", 1:"Asynchronous", 2: "Synchronous", 3: "Hybrid"}
 meeting_types = {0: "Stationary", 1:"Asynchronous", 2: "Synchronous"}
+
+START_DATE_ALL = "2021-10-10"
