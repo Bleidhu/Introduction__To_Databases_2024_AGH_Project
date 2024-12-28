@@ -1,7 +1,7 @@
 from db_tables_classes import *
 from typing import List
 def get_employees_not_working_on_date(employees: List[Employee],date, course_meetings_table: List[CourseModuleMeetings]=[], 
-                                      webinars_meetings: List[Webinar]=[], studies_meetings: List[StudyModuleMeeting]=[]):
+                                      webinars_meetings: List[Webinar]=[], studies_meetings: List[StudyModuleMeeting]=[]) -> List[Employee]:
 
     emp = []
     for e in employees:
@@ -18,7 +18,7 @@ def get_employees_not_working_on_date(employees: List[Employee],date, course_mee
              emp.append(e)
     return emp
     
-def get_employees_hired_after_date(employees: List[Employee], date):
+def get_employees_hired_after_date(employees: List[Employee], date) -> List[Employee]:
     emp = []
     for e in employees:
 

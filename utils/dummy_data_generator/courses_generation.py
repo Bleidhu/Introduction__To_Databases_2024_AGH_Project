@@ -3,18 +3,25 @@ from faker import Faker
 import datetime
 import random
 import dummy_values as dval
-COURSES_LIMIT = 10
-COURSE_MODULES_LIMIT = 10
-COURSE_MODULE_MEETINGS_LIMIT = 10
-COURSE_STUDENTS_LIMIT = 10
-CITIES_AMOUNT = len(dval.cities)
-COUNTRIES_AMOUNT = len(dval.countries)
-LANGUAGES_AMOUNt = len(dval.languages)
 import employees_generation as emp_gen
+import webinars_generation as w_gen
+import utility_functions as uf
+from typing import List, Tuple
 fk = Faker()
 
 ## Courses
-def generate_courses(translators):
+def generate_courses(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
+    COURSES_LIMIT = 10
+    COURSE_MODULES_LIMIT = 10
+    COURSE_MODULE_MEETINGS_LIMIT = 10
+    COURSE_STUDENTS_LIMIT = 10
+
+    COURSES_START_DATE = datetime.datetime(2022, 10, 10)
+    COURSES_INTERVAL = datetime.timedelta(14)
+
+    CITIES_AMOUNT = len(dval.cities)
+    COUNTRIES_AMOUNT = len(dval.countries)
+    LANGUAGES_AMOUNt = len(dval.languages)
     courses = []
     course_modules = []
     corse_enrolled_students = []
@@ -22,18 +29,24 @@ def generate_courses(translators):
     course_module_meeting_attendance_list = []
     corse_module_meetings_stationary = []
     course_sync_async_meetings = []
-    last_date = None
+    
+    last_course_date = COURSES_START_DATE
+    last_meeting_date = COURSES_START_DATE
+    
     def generate_course():
-        start_date = fk.date_between(start_date=datetime.datetime(2010, 4, 12), end_date=datetime.datetime(2024, 10, 10))
+        price = random.randint(50, 400)
+        nonlocal last_course_date
+        start_date = fk.date_between(start_date=last_course_date, end_date=last_course_date + COURSES_INTERVAL)
         tmp_course = db_model.Course(len(courses), 
-                                     fk.catch_phrase(), 
-                                     "Lorem Ipsum", 
-                                     start_date, 
-                                     COURSE_STUDENTS_LIMIT, 0,
-                                     course_coordinator_id=0,
-                                     visible_from=start_date)
-        nonlocal last_date
-        last_date = start_date
+                                     dval.courses_names[len(courses)][0], 
+                                     dval.courses_names[len(courses)][1], 
+                                     start_date.isoformat(), 
+                                     COURSE_STUDENTS_LIMIT, price,
+                                     course_coordinator_id=random.choice(uf.get_employees_hired_after_date(employees, start_date)).employee_id,
+                                     visible_from=start_date.isoformat())
+        nonlocal last_meeting_date
+        last_meeting_date = start_date
+        last_course_date += random.randint(2, 4)*COURSES_INTERVAL
         courses.append(tmp_course)
         generate_course_modules(courses[-1].course_id)
         
@@ -48,9 +61,14 @@ def generate_courses(translators):
 
     ## fix date to be realistic
     def generate_course_module_meeting(course_id, module_type, module_id):
-        nonlocal last_date
-        meeting_date = fk.date_between_dates(date_start=last_date)
-        last_date = meeting_date
+        nonlocal last_meeting_date
+        meeting_type = module_type
+
+        if(module_type == 3):
+            meeting_type = random.randint(0, len(dval.meeting_types) - 1)
+
+        meeting_date = fk.date_between_dates(date_start=last_meeting_date, date_end=last_meeting_date+datetime.timedelta(1)*random.randint(2,4))
+        last_meeting_date = meeting_date + datetime.timedelta(1)
         
         language_id = 0
         translators_id = None
@@ -58,13 +76,12 @@ def generate_courses(translators):
             language_id = 0
         else:
             language_id = random.randint(1, LANGUAGES_AMOUNt)
-            translators_of_lang = list(filter(lambda x: x.language_id == language_id, translators))
+        
+            translators_of_lang = list(filter(lambda x: x.language_id  == language_id, translators_languages))
             translators_id = translators_of_lang[random.randint(0,len(translators_of_lang) - 1)].translator_id
 
-        meeting_type = 0
-
         lecturer_id = 0
-        duration = 90
+        duration = random.randint(1,4) * 45
         students_limit = 10
 
         tmp_module_meeting = db_model.CourseModuleMeetings(course_id, 
@@ -75,7 +92,7 @@ def generate_courses(translators):
                                                            students_limit, 
                                                            module_id, 
                                                            meeting_type, 
-                                                           "tmp")
+                                                           dval.courses_names[course_id][2][len(course_module_meetings)%10])
         course_module_meetings.append(tmp_module_meeting)
     
     def generate_course_modules(course_id):
@@ -102,15 +119,28 @@ def main():
     # for user in users:
     #     print("(" + str(user) + "),")
 
+    # employees, translators, translators_languages = emp_gen.generate_employees_table()
+    # print("INSERT INTO Employees (employee_id, first_name, last_name, hire_date, birth_date, phone, email, role_id, city_id, country_id) VALUES")
+    # for employee in employees:
+    #     print("(" + str(employee) + "),")
+
+    # courses, c_mods, c_meetings = generate_courses(translators_languages)
+
+    # for c in c_meetings:
+    #     print(c)
+
     employees, translators, translators_languages = emp_gen.generate_employees_table()
-    print("INSERT INTO Employees (employee_id, first_name, last_name, hire_date, birth_date, phone, email, role_id, city_id, country_id) VALUES")
-    for employee in employees:
-        print("(" + str(employee) + "),")
+    webinars = w_gen.webinars_generator(employees)
+    courses, course_modules, course_module_meetings = generate_courses(webinars, employees, translators, translators_languages)
 
-    courses, c_mods, c_meetings = generate_courses(translators_languages)
+    for course in courses:
+        print(course)
+        meetings = list(filter(lambda x: (x.course_id == course.course_id), course_module_meetings)) 
+        for m in meetings:
+            print("   " + str(m))
+    # for course_meeting in course_module_meetings:
+    #     print(course_meeting)
 
-    for c in c_meetings:
-        print(c)
 
 if __name__ == "__main__":
     main()
