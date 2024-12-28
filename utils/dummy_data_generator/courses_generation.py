@@ -10,9 +10,11 @@ from typing import List, Tuple
 fk = Faker()
 
 ## Courses
+# To do - make sure translators are not multiplied (two meetings one date)
+# make better module names
 def generate_courses(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
     COURSES_LIMIT = 10
-    COURSE_MODULES_LIMIT = 10
+    COURSE_MODULES_LIMIT = 4
     COURSE_MODULE_MEETINGS_LIMIT = 10
     COURSE_STUDENTS_LIMIT = 10
 
@@ -80,9 +82,19 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
             translators_of_lang = list(filter(lambda x: x.language_id  == language_id, translators_languages))
             translators_id = translators_of_lang[random.randint(0,len(translators_of_lang) - 1)].translator_id
 
-        lecturer_id = 0
+        lecturer_id = random.choice(uf.get_employees_not_working_on_date(uf.get_employees_hired_after_date(employees, meeting_date), date=meeting_date.isoformat(), webinars_meetings=webinars, course_meetings_table=course_module_meetings)).employee_id
         duration = random.randint(1,4) * 45
         students_limit = 10
+
+        if(meeting_type == 0):
+            stationary_meeting = db_model.CourseModuleMeetingStationary(len(corse_module_meetings_stationary), course_id, len(course_module_meetings)-1, 0)
+            corse_module_meetings_stationary.append(stationary_meeting)
+        elif(meeting_type==1):
+            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings), course_id, len(course_module_meetings)-1, None, fk.url(), None)
+            course_sync_async_meetings.append(sync_meeting)
+        else:
+            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings), course_id, len(course_module_meetings)-1, None, None, fk.url())
+            course_sync_async_meetings.append(sync_meeting)
 
         tmp_module_meeting = db_model.CourseModuleMeetings(course_id, 
                                                            len(course_module_meetings), 
@@ -111,7 +123,7 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
     for i in range(COURSES_LIMIT):
         generate_course()
 
-    return courses, course_modules, course_module_meetings
+    return courses, course_modules, course_module_meetings, corse_module_meetings_stationary, course_sync_async_meetings
 
 def main():
     # users = generate_users_table()
@@ -131,15 +143,16 @@ def main():
 
     employees, translators, translators_languages = emp_gen.generate_employees_table()
     webinars = w_gen.webinars_generator(employees)
-    courses, course_modules, course_module_meetings = generate_courses(webinars, employees, translators, translators_languages)
+    courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = generate_courses(webinars, employees, translators, translators_languages)
 
     for course in courses:
         print(course)
-        meetings = list(filter(lambda x: (x.course_id == course.course_id), course_module_meetings)) 
-        for m in meetings:
+        modules = list(filter(lambda x: (x.course_id == course.course_id), course_modules)) 
+        for m in modules:
             print("   " + str(m))
-    # for course_meeting in course_module_meetings:
-    #     print(course_meeting)
+            meetings = list(filter(lambda x: (x.module_id == m.module_id and x.course_id == course.course_id ), course_module_meetings)) 
+            for m2 in meetings:
+                print("        " + str(m2))
 
 
 if __name__ == "__main__":
