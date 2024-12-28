@@ -12,7 +12,7 @@ fk = Faker()
 ## Courses
 # To do - make sure translators are not multiplied (two meetings one date)
 # make better module names
-def generate_courses(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
+def generate_courses(users: List[db_model.User], webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
     COURSES_LIMIT = 10
     COURSE_MODULES_LIMIT = 4
     COURSE_MODULE_MEETINGS_LIMIT = 10
@@ -119,10 +119,22 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
         for i in range(module_meetings_amount):
             generate_course_module_meeting(course_id, module_type, module_id)
         
-    
+    def generate_course_attendance_list(users):
+        course : db_model.Course
+        for  course in courses:
+            students_limit = course.students_limit
+
+            amount_of_students = students_limit - random.randint(1,10)
+
+            students_participating = random.sample(users, amount_of_students)
+
+            for s in students_participating:
+                
+
     for i in range(COURSES_LIMIT):
         generate_course()
 
+    
     return courses, course_modules, course_module_meetings, corse_module_meetings_stationary, course_sync_async_meetings
 
 def main():
