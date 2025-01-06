@@ -25,3 +25,7 @@ def get_employees_hired_after_date(employees: List[Employee], date) -> List[Empl
         if(e.hire_date < date):
              emp.append(e)
     return emp
+
+# def get_rooms_of_given_size(size, rooms):
+#     rooms = list(filter())
+# def get_rooms_free_date(date, course_meetings_tabble: List[CourseModuleMeetings]=[], studies_meetings: List[StudyModuleMeeting]=[]):

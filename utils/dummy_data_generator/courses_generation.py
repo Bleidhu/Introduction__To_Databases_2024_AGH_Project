@@ -7,13 +7,14 @@ import employees_generation as emp_gen
 import webinars_generation as w_gen
 import utility_functions as uf
 from typing import List, Tuple
+import course_names as cn
 fk = Faker()
 
 ## Courses
 # To do - make sure translators are not multiplied (two meetings one date)
 # make better module names
-def generate_courses(users: List[db_model.User], webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
-    COURSES_LIMIT = 10
+def generate_courses(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
+    COURSES_LIMIT = 4
     COURSE_MODULES_LIMIT = 4
     COURSE_MODULE_MEETINGS_LIMIT = 10
     COURSE_STUDENTS_LIMIT = 10
@@ -40,8 +41,8 @@ def generate_courses(users: List[db_model.User], webinars, employees, translator
         nonlocal last_course_date
         start_date = fk.date_between(start_date=last_course_date, end_date=last_course_date + COURSES_INTERVAL)
         tmp_course = db_model.Course(len(courses), 
-                                     dval.courses_names[len(courses)][0], 
-                                     dval.courses_names[len(courses)][1], 
+                                     cn.course_names[len(courses)][0], 
+                                     cn.course_names[len(courses)][1], 
                                      start_date.isoformat(), 
                                      COURSE_STUDENTS_LIMIT, price,
                                      course_coordinator_id=random.choice(uf.get_employees_hired_after_date(employees, start_date)).employee_id,
@@ -55,7 +56,7 @@ def generate_courses(users: List[db_model.User], webinars, employees, translator
 
     def generate_course_module(course_id):
         module_type = random.randint(0, len(dval.module_types) - 1)
-        tmp_module = db_model.CourseModules(len(course_modules), module_type, fk.catch_phrase(), course_id)
+        tmp_module = db_model.CourseModules(len(course_modules), module_type, cn.course_names[course_id][2][len(course_modules)%6][0], course_id)
         course_modules.append(tmp_module)
 
         generate_course_module_meetings(course_id, module_type, tmp_module.module_id)
@@ -104,7 +105,7 @@ def generate_courses(users: List[db_model.User], webinars, employees, translator
                                                            students_limit, 
                                                            module_id, 
                                                            meeting_type, 
-                                                           dval.courses_names[course_id][2][len(course_module_meetings)%10])
+                                                           cn.course_names[course_id][2][module_id%6][1][len(course_module_meetings)%10])
         course_module_meetings.append(tmp_module_meeting)
     
     def generate_course_modules(course_id):
@@ -119,16 +120,16 @@ def generate_courses(users: List[db_model.User], webinars, employees, translator
         for i in range(module_meetings_amount):
             generate_course_module_meeting(course_id, module_type, module_id)
         
-    def generate_course_attendance_list(users):
-        course : db_model.Course
-        for  course in courses:
-            students_limit = course.students_limit
+    # def generate_course_attendance_list(users):
+    #     course : db_model.Course
+    #     for  course in courses:
+    #         students_limit = course.students_limit
 
-            amount_of_students = students_limit - random.randint(1,10)
+    #         amount_of_students = students_limit - random.randint(1,10)
 
-            students_participating = random.sample(users, amount_of_students)
+    #         students_participating = random.sample(users, amount_of_students)
 
-            for s in students_participating:
+    #         for s in students_participating:
                 
 
     for i in range(COURSES_LIMIT):
