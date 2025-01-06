@@ -14,52 +14,51 @@ fk = Faker()
 # To do - make sure translators are not multiplied (two meetings one date)
 # make better module names
 def generate_courses(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
-    COURSES_LIMIT = 4
-    COURSE_MODULES_LIMIT = 4
-    COURSE_MODULE_MEETINGS_LIMIT = 10
-    COURSE_STUDENTS_LIMIT = 10
+    STUDIES_LIMIT = 4
+    STUDY_MODULES_LIMIT = 4
+    STUDY_MODULE_MEETINGS_LIMIT = 10
+    STUDY_STUDENTS_LIMIT = 10
 
-    COURSES_START_DATE = datetime.datetime(2022, 10, 10)
-    COURSES_INTERVAL = datetime.timedelta(14)
+    STUDIES_START_DATE = datetime.datetime(2022, 10, 10)
+    STUDIES_INTERVAL = datetime.timedelta(14)
 
     CITIES_AMOUNT = len(dval.cities)
     COUNTRIES_AMOUNT = len(dval.countries)
     LANGUAGES_AMOUNt = len(dval.languages)
-    courses = []
-    course_modules = []
-    corse_enrolled_students = []
-    course_module_meetings = []
-    course_module_meeting_attendance_list = []
-    corse_module_meetings_stationary = []
-    course_sync_async_meetings = []
+    studies = []
+    study_modules = []
+    studies_module_meetings = []
+    study_module_meeting_attendance_list = []
+    studiy_module_meetings_stationary = []
+    study_sync_async_meetings = []
     
-    last_course_date = COURSES_START_DATE
-    last_meeting_date = COURSES_START_DATE
+    last_course_date = STUDIES_START_DATE
+    last_meeting_date = STUDIES_START_DATE
     
-    def generate_course():
+    def generate_study():
         price = random.randint(50, 400)
         nonlocal last_course_date
-        start_date = fk.date_between(start_date=last_course_date, end_date=last_course_date + COURSES_INTERVAL)
-        tmp_course = db_model.Course(len(courses), 
-                                     cn.course_names[len(courses)][0], 
-                                     cn.course_names[len(courses)][1], 
+        start_date = fk.date_between(start_date=last_course_date, end_date=last_course_date + STUDIES_INTERVAL)
+        tmp_course = db_model.Course(len(studies), 
+                                     cn.course_names[len(studies)][0], 
+                                     cn.course_names[len(studies)][1], 
                                      start_date.isoformat(), 
-                                     COURSE_STUDENTS_LIMIT, price,
+                                     STUDY_STUDENTS_LIMIT, price,
                                      course_coordinator_id=random.choice(uf.get_employees_hired_after_date(employees, start_date)).employee_id,
                                      visible_from=start_date.isoformat())
         nonlocal last_meeting_date
         last_meeting_date = start_date
-        last_course_date += random.randint(2, 4)*COURSES_INTERVAL
-        courses.append(tmp_course)
-        generate_course_modules(courses[-1].course_id)
+        last_course_date += random.randint(2, 4)*STUDIES_INTERVAL
+        studies.append(tmp_course)
+        generate_course_modules(studies[-1].study_id)
         
 
-    def generate_course_module(course_id):
+    def generate_study_module(study_id):
         module_type = random.randint(0, len(dval.module_types) - 1)
-        tmp_module = db_model.CourseModules(len(course_modules), module_type, cn.course_names[course_id][2][len(course_modules)%6], course_id)
-        course_modules.append(tmp_module)
+        tmp_module = db_model.CourseModules(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6], study_id)
+        study_modules.append(tmp_module)
 
-        generate_course_module_meetings(course_id, module_type, tmp_module.module_id)
+        generate_course_module_meetings(study_id, module_type, tmp_module.module_id)
 
 
     ## fix date to be realistic

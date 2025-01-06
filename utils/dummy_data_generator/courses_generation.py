@@ -12,7 +12,6 @@ fk = Faker()
 
 ## Courses
 # To do - make sure translators are not multiplied (two meetings one date)
-# make better module names
 def generate_courses(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
     COURSES_LIMIT = 4
     COURSE_MODULES_LIMIT = 4
