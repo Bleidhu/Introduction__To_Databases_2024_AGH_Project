@@ -366,6 +366,7 @@ class User:
         self.last_name = last_name
         self.city_id = city_id
         self.country_id = country_id
+        self.phone = phone
         self.street = street
         self.house_number = house_number
         self.birth_date = birth_date
