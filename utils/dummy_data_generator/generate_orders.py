@@ -45,8 +45,42 @@ def generate_enrolled_lists_for_courses(courses: List[db_model.Course],
         for i in range(course.students_limit): 
             course_enrolled[c_name].append(users_by_collisions[i][1])
 
-def generate_orders_from_course_enrolled(course_enrolled)
+def generate_orders_from_course_enrolled(course_enrolled):
+    pass
 
+def generate_course_meetings_attendance_list_of_enrolled_students():
+    pass
+
+def generate_enrolled_lists_for_studies(courses: List[db_model.Course], 
+                                          course_meetings: List[db_model.CourseModuleMeetings], 
+                                          users: List[db_model.User]):
+    for c_name, course in enumerate(courses):
+        course_enrolled.append([])
+        current_course_meetings: List[db_model.CourseModuleMeetings] = list(filter(lambda m: m.course_id == course.course_id, course_meetings))
+        # imo we should take into account how many concflict each user has with courses meetings and if its over some treshold don't add him
+        users_by_collisions = []
+        for user in  users:
+            users_course_ids = []
+            for i, course_list in enumerate(course_enrolled):
+                if user.user_id in course_list:
+                    users_course_ids.append(i)
+            user_collisions = 0
+            for other_meeting in filter(lambda x: x.course_id in users_course_ids , course_meetings):
+                for c in current_course_meetings:
+                    if other_meeting.meeting_date == c.meeting_date:
+                        user_collisions += 1
+            users_by_collisions.append((user_collisions, user.user_id))
+        random.shuffle(users_by_collisions)
+        users_by_collisions.sort(key=lambda x: x[0])
+
+        # edit this so not every course is fully booked
+        for i in range(course.students_limit): 
+            course_enrolled[c_name].append(users_by_collisions[i][1])
+
+def generate_orders_from_studies_enrolled(studies_enrolled):
+    pass
+
+def generate_study_meetings_attendance_list_of_enrolled_students():
 
 def main():
     users = u_gen.generate_users_table()
