@@ -19,6 +19,9 @@ order_webinars = []
 order_course = []
 order_module_studies = []
 order_studies = []
+
+def generate_webinars_orders():
+    pass
 def generate_enrolled_lists_for_courses(courses: List[db_model.Course], 
                                           course_meetings: List[db_model.CourseModuleMeetings], 
                                           users: List[db_model.User]):
@@ -81,7 +84,7 @@ def generate_orders_from_studies_enrolled(studies_enrolled):
     pass
 
 def generate_study_meetings_attendance_list_of_enrolled_students():
-
+    pass
 def main():
     users = u_gen.generate_users_table()
     employees, translators, translators_languages = emp_gen.generate_employees_table()
