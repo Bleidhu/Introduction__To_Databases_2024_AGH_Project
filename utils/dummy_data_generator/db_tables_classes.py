@@ -174,62 +174,58 @@ class Language:
 
 
 class OrderCourse:
-    def __init__(self, order_detail_id, course_id, price):
+    def __init__(self, order_detail_id, course_id):
         self.order_detail_id = order_detail_id
         self.course_id = course_id
-        self.price = price
 
     def __str__(self):
-        return f"{self.order_detail_id}, {self.course_id}, {self.price}"
+        return f"{self.order_detail_id}, {self.course_id}"
 
 
 class OrderDetail:
-    def __init__(self, order_detail_id, order_id, type_id):
+    def __init__(self, order_detail_id, order_id, type_id, price):
         self.order_detail_id = order_detail_id
         self.order_id = order_id
         self.type_id = type_id
+        self.price = price
 
     def __str__(self):
-        return f"{self.order_detail_id}, {self.order_id}, {self.type_id}"
+        return f"{self.order_detail_id}, {self.order_id}, {self.type_id}, {self.price}"
 
 
 class OrderModuleStudy:
-    def __init__(self, order_detail_id, module_id, price):
+    def __init__(self, order_detail_id, module_id):
         self.order_detail_id = order_detail_id
         self.module_id = module_id
-        self.price = price
 
     def __str__(self):
-        return f"{self.order_detail_id}, {self.module_id}, {self.price}"
+        return f"{self.order_detail_id}, {self.module_id}"
 
 
 class OrderStudy:
-    def __init__(self, order_detail_id, studies_id, price):
+    def __init__(self, order_detail_id, studies_id):
         self.order_detail_id = order_detail_id
         self.studies_id = studies_id
-        self.price = price
 
     def __str__(self):
-        return f"{self.order_detail_id}, {self.studies_id}, {self.price}"
+        return f"{self.order_detail_id}, {self.studies_id}"
 
 
 class OrderWebinar:
-    def __init__(self, order_detail_id, webinar_id, price):
+    def __init__(self, order_detail_id, webinar_id):
         self.order_detail_id = order_detail_id
         self.webinar_id = webinar_id
-        self.price = price
 
     def __str__(self):
-        return f"{self.order_detail_id}, {self.webinar_id}, {self.price}"
+        return f"{self.order_detail_id}, {self.webinar_id}"
 
 
 class Order:
-    def __init__(self, order_id, user_id, is_paid, max_paid_date, paid_date):
+    def __init__(self, order_id, user_id, is_paid, max_paid_date):
         self.order_id = order_id
         self.user_id = user_id
         self.is_paid = is_paid
         self.max_paid_date = max_paid_date
-        self.paid_date = paid_date
 
     def __str__(self):
         return f"{self.order_id}, {self.user_id}, {self.is_paid}, {self.max_paid_date}"
@@ -264,25 +260,27 @@ class StudyModule:
 
 
 class StudyMakeupMeetingAttendanceList:
-    def __init__(self, makeup_list_id, user_id, studies_id, meeting_id):
+    def __init__(self, makeup_list_id, user_id, studies_id, meeting_id, used):
         self.makeup_list_id = makeup_list_id
         self.user_id = user_id
         self.studies_id = studies_id
         self.meeting_id = meeting_id
+        self.used = used
 
     def __str__(self):
-        return f"{self.makeup_list_id}, {self.user_id}, {self.studies_id}, {self.meeting_id}"
+        return f"{self.makeup_list_id}, {self.user_id}, {self.studies_id}, {self.meeting_id}, {self.used}"
 
 
 class StudyMeetingAttendanceList:
-    def __init__(self, user_id, studies_id, meeting_id, was_present):
+    def __init__(self, user_id, studies_id, meeting_id, was_present, did_makeup):
         self.user_id = user_id
         self.studies_id = studies_id
         self.meeting_id = meeting_id
         self.was_present = was_present
+        self.did_makeup = did_makeup
 
     def __str__(self):
-        return f"{self.user_id}, {self.studies_id}, {self.meeting_id}, {self.was_present}"
+        return f"{self.user_id}, {self.studies_id}, {self.meeting_id}, {self.was_present}, {self.did_makeup}"
 
 
 class StudyStationaryMeeting:
