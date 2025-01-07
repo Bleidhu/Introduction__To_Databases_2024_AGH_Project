@@ -6,6 +6,48 @@ Paweł Czajczyk
 Julia Demitraszek  
 Szymon Rybski  # Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
 
+- [Raport 5](#raport-5)
+  - [Role Użytkowników i Funkcje Systemu](#role-użytkowników-i-funkcje-systemu)
+    - [1. Role Użytkowników](#1-role-użytkowników)
+      - [Administrator](#administrator)
+      - [Wykładowca](#wykładowca)
+      - [Uczestnik (Student)](#uczestnik-student)
+      - [Tłumacz](#tłumacz)
+      - [Dyrektor Szkoły](#dyrektor-szkoły)
+    - [2. Funkcje Systemu i Uprawnienia](#2-funkcje-systemu-i-uprawnienia)
+      - [Funkcje ogólne](#funkcje-ogólne)
+      - [Płatności](#płatności)
+      - [Raportowanie i analiza](#raportowanie-i-analiza)
+      - [Uczestnictwo i zarządzanie](#uczestnictwo-i-zarządzanie)
+      - [Zarządzanie treścią](#zarządzanie-treścią)
+- [Diagram bazy danych](#diagram-bazy-danych)
+- [Kod do generowania bazy danych:](#kod-do-generowania-bazy-danych)
+  - [Widoki w bazie danych](#widoki-w-bazie-danych)
+    - [Wypisanie użytkowników, którzy ukończyli dane studia z wynikiem pozytywnym](#wypisanie-użytkowników-którzy-ukończyli-dane-studia-z-wynikiem-pozytywnym)
+    - [Liczba zamówień dla poszczególnych użytkowników](#liczba-zamówień-dla-poszczególnych-użytkowników)
+    - [Użytkownicy zapisani na dany kurs](#użytkownicy-zapisani-na-dany-kurs)
+    - [Użytkownicy zapisani na dane studia](#użytkownicy-zapisani-na-dane-studia)
+    - [Użytkownicy zapisani na dany webinar](#użytkownicy-zapisani-na-dany-webinar)
+  - [Procedury w bazie danych](#procedury-w-bazie-danych)
+    - [Dodawanie nowego zamówienia](#dodawanie-nowego-zamówienia)
+    - [Sprawdzanie listy obecności dla kursu](#sprawdzanie-listy-obecności-dla-kursu)
+    - [Odnajdywanie studentów, którzy nie byli obecni na spotkaniu](#odnajdywanie-studentów-którzy-nie-byli-obecni-na-spotkaniu)
+    - [Sprawdzanie listy obecności dla studiów](#sprawdzanie-listy-obecności-dla-studiów)
+    - [Sprawdzanie łącznej wartości zamówień](#sprawdzanie-łącznej-wartości-zamówień)
+    - [Ustawianie obecności dla studenta](#ustawianie-obecności-dla-studenta)
+    - [Dodanie nowego tematu](#dodanie-nowego-tematu)
+    - [Dodanie nowego użytkownika](#dodanie-nowego-użytkownika)
+    - [Dodanie nowego miasta](#dodanie-nowego-miasta)
+    - [Dodanie nowego pracownika](#dodanie-nowego-pracownika)
+    - [Dodanie nowego typu wydarzenia](#dodanie-nowego-typu-wydarzenia)
+    - [Sprawdzenie czy użytkownik jest zapisany na kurs](#sprawdzenie-czy-użytkownik-jest-zapisany-na-kurs)
+    - [Usuniecie studiów o danym indeksie](#usuniecie-studiów-o-danym-indeksie)
+    - [Usuniecie użytkownika o danym indeksie](#usuniecie-użytkownika-o-danym-indeksie)
+    - [Dodanie webinaru](#dodanie-webinaru)
+  - [Funkcje w bazie danych](#funkcje-w-bazie-danych)
+    - [Obliczanie średniej oceny dla użytkownika](#obliczanie-średniej-oceny-dla-użytkownika)
+    - [Generowanie planu zajęć dla użytkownika](#generowanie-planu-zajęć-dla-użytkownika)
+    - [Czy użytkownik uczestniczył w zajęciach o danym temacie](#czy-użytkownik-uczestniczył-w-zajęciach-o-danym-temacie)
 
 
 ## Role Użytkowników i Funkcje Systemu 
@@ -1320,65 +1362,6 @@ END;
 go
 ```
 
-
-### Dodanie nowego zamówienia
-
-```sql 
-CREATE PROCEDURE add_new_order
-    @user_id INT,
-    @is_paid BIT,
-    @max_paid_date DATETIME,
-    @paid_date DATETIME,
-    @order_details OrderDetailsTableType READONLY
-AS
-BEGIN
-    DECLARE @order_id INT;
-
-    INSERT INTO Orders (user_id, is_paid, max_paid_date, paid_date)
-    VALUES (@user_id, @is_paid, @max_paid_date, @paid_date);
-
-    -- ID dodanego zamówienia
-    SET @order_id = SCOPE_IDENTITY();
-
-    -- Dodanie szczegółów zamówienia do tabeli Order_details
-    INSERT INTO Order_details (order_id, type_id)
-    SELECT @order_id, type_id
-    FROM @order_details;
-
-    -- Dodanie szczegółów zamówienia do odpowiednich tabel
-
-    INSERT INTO Order_webinars (order_detail_id, webinar_id, price)
-    SELECT od.order_detail_id, od.order_detail_id, odt.price
-    FROM Order_details od
-             JOIN @order_details odt ON od.type_id = odt.type_id
-    WHERE od.order_id = @order_id
-      AND od.type_id = 1;
-
-    INSERT INTO Order_course (order_detail_id, course_id, price)
-    SELECT od.order_detail_id, od.order_detail_id, odt.price
-    FROM Order_details od
-             JOIN @order_details odt ON od.type_id = odt.type_id
-    WHERE od.order_id = @order_id
-      AND od.type_id = 2;
-
-    INSERT INTO Order_studies (order_detail_id, studies_id, price)
-    SELECT od.order_detail_id, od.order_detail_id, odt.price
-    FROM Order_details od
-             JOIN @order_details odt ON od.type_id = odt.type_id
-    WHERE od.order_id = @order_id
-      AND od.type_id = 3;
-
-    INSERT INTO Order_module_studies (order_detail_id, module_id, price)
-    SELECT od.order_detail_id, od.order_detail_id, odt.price
-    FROM Order_details od
-             JOIN @order_details odt ON od.type_id = odt.type_id
-    WHERE od.order_id = @order_id
-      AND od.type_id = 4;
-END;
-go
-
-
-```
 
 ### Usuniecie studiów o danym indeksie
 ```sql 

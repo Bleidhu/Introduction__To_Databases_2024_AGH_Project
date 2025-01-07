@@ -191,3 +191,299 @@ BEGIN
 
 END;
 ```
+
+### Dodanie nowego tematu 
+``` sql
+create procedure add_topic(
+    @topic_name nvarchar(30),
+    @topic_description nvarchar(30)
+)
+as
+begin
+    if not exists (
+        select 1
+        from dbo.topics_list
+        where topic_name = @topic_name
+    )
+    begin
+        insert into dbo.topics_list (topic_name, topic_description)
+        values (@topic_name, @topic_description);
+    end
+end;
+```
+
+### Dodanie nowego użytkownika
+
+```sql 
+CREATE PROCEDURE add_user
+    @Email NVARCHAR(50),
+    @FirstName NVARCHAR(30),
+    @LastName NVARCHAR(30),
+    @CityID INT,
+    @CountryID INT,
+    @Phone NVARCHAR(9),
+    @Street NVARCHAR(30),
+    @HouseNumber INT,
+    @BirthDate DATE
+AS
+BEGIN
+        IF DATEDIFF(YEAR, @BirthDate, GETDATE()) >= 100
+        BEGIN
+            THROW 50003, 'User must be less than 100 years old.', 16;
+        END
+
+        IF PATINDEX('%[^0-9]%', @Phone) > 0 OR LEN(@Phone) <> 9
+        BEGIN
+            THROW 50004,'Phone number must be exactly 9 numeric characters.', 16;
+        END
+
+        INSERT INTO Users (
+            email, first_name, last_name, city_id, country_id, phone, street, house_number, birth_date
+        )
+        VALUES (
+            @Email, @FirstName, @LastName, @CityID, @CountryID, @Phone, @Street, @HouseNumber, @BirthDate
+        );
+END;
+
+```
+
+### Dodanie nowego miasta
+
+``` sql
+CREATE PROCEDURE add_city
+    @CityName NVARCHAR(30) 
+AS
+BEGIN
+                            -- obciecie lewych i prawych spacji
+    IF @CityName IS NULL OR LTRIM(RTRIM(@CityName)) = ''
+    BEGIN
+        THROW 50005, 'City name cannot be empty', 16;
+    END
+
+    BEGIN
+        INSERT INTO Cities (city_name)
+        VALUES (@CityName);
+    END
+END;
+GO
+``` 
+
+### Dodanie nowego pracownika
+
+```sql 
+CREATE PROCEDURE add_employee(
+    @FirstName NVARCHAR(30),
+    @LastName NVARCHAR(30),
+    @HireDate DATE,
+    @BirthDate DATE,
+    @Phone NVARCHAR(9),
+    @Email NVARCHAR(50),
+    @RoleID INT,
+    @CityID INT,
+    @CountryID INT
+)
+AS
+BEGIN
+      INSERT INTO Employees (
+         first_name,
+         last_name,
+         hire_date,
+         birth_date,
+         phone,
+         email,
+         role_id,
+         city_id,
+         country_id
+      )
+      VALUES (
+         @FirstName,
+         @LastName,
+         @HireDate,
+         @BirthDate,
+         @Phone,
+         @Email,
+         @RoleID,
+         @CityID,
+         @CountryID
+      );
+   END;
+
+```
+
+### Dodanie nowego typu wydarzenia
+
+```sql 
+CREATE PROCEDURE add_event_type
+    @event_name NVARCHAR(30)
+AS
+BEGIN
+    BEGIN
+        INSERT INTO Event_types (event_name)
+        VALUES (@event_name);
+
+    END
+END;
+```
+
+### Sprawdzenie czy użytkownik jest zapisany na kurs
+
+``` sql
+CREATE PROCEDURE check_course_attendance
+    @user_id INT,
+    @course_id INT,
+    @meeting_id INT
+AS
+BEGIN
+    DECLARE @is_enrolled BIT;
+
+    -- Sprawdzenie, czy użytkownik jest zapisany na kurs
+    SELECT @is_enrolled = CASE WHEN EXISTS (
+        SELECT 1
+        FROM dbo.courses_enrolled_list
+        WHERE user_id = @user_id AND course_id = @course_id
+    ) THEN 1 ELSE 0 END;
+
+    IF @is_enrolled = 1
+        BEGIN
+            insert into Course_meeting_attendance_list (user_id, course_id, meeting_id, was_present)
+            values (@user_id, @course_id, @meeting_id, 1);
+        END
+    ELSE
+        BEGIN
+            PRINT 'Użytkownik nie jest zapisany na kurs!';
+        END
+END;
+go
+```
+
+
+### Dodanie nowego zamówienia
+
+```sql 
+CREATE PROCEDURE add_new_order
+    @user_id INT,
+    @is_paid BIT,
+    @max_paid_date DATETIME,
+    @paid_date DATETIME,
+    @order_details OrderDetailsTableType READONLY
+AS
+BEGIN
+    DECLARE @order_id INT;
+
+    INSERT INTO Orders (user_id, is_paid, max_paid_date, paid_date)
+    VALUES (@user_id, @is_paid, @max_paid_date, @paid_date);
+
+    -- ID dodanego zamówienia
+    SET @order_id = SCOPE_IDENTITY();
+
+    -- Dodanie szczegółów zamówienia do tabeli Order_details
+    INSERT INTO Order_details (order_id, type_id)
+    SELECT @order_id, type_id
+    FROM @order_details;
+
+    -- Dodanie szczegółów zamówienia do odpowiednich tabel
+
+    INSERT INTO Order_webinars (order_detail_id, webinar_id, price)
+    SELECT od.order_detail_id, od.order_detail_id, odt.price
+    FROM Order_details od
+             JOIN @order_details odt ON od.type_id = odt.type_id
+    WHERE od.order_id = @order_id
+      AND od.type_id = 1;
+
+    INSERT INTO Order_course (order_detail_id, course_id, price)
+    SELECT od.order_detail_id, od.order_detail_id, odt.price
+    FROM Order_details od
+             JOIN @order_details odt ON od.type_id = odt.type_id
+    WHERE od.order_id = @order_id
+      AND od.type_id = 2;
+
+    INSERT INTO Order_studies (order_detail_id, studies_id, price)
+    SELECT od.order_detail_id, od.order_detail_id, odt.price
+    FROM Order_details od
+             JOIN @order_details odt ON od.type_id = odt.type_id
+    WHERE od.order_id = @order_id
+      AND od.type_id = 3;
+
+    INSERT INTO Order_module_studies (order_detail_id, module_id, price)
+    SELECT od.order_detail_id, od.order_detail_id, odt.price
+    FROM Order_details od
+             JOIN @order_details odt ON od.type_id = odt.type_id
+    WHERE od.order_id = @order_id
+      AND od.type_id = 4;
+END;
+go
+
+
+```
+
+### Usuniecie studiów o danym indeksie
+```sql 
+CREATE PROCEDURE delete_study
+    @study_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Studies WHERE studies_id = @study_id)
+    BEGIN
+        PRINT 'Nie znaleziono studiow';
+        RETURN;
+    END
+
+    DELETE FROM Studies
+    WHERE studies_id = @study_id;
+
+    PRINT 'Studia usuniete';
+END
+
+```
+
+### Usuniecie użytkownika o danym indeksie
+```sql 
+CREATE PROCEDURE delete_user
+    @user_id INT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    IF NOT EXISTS (SELECT 1 FROM Users WHERE user_id = @user_id)
+    BEGIN
+        PRINT 'Uzytkownik nie znaleziony';
+        RETURN;
+    END
+
+    DELETE FROM Users
+    WHERE user_id = @user_id;
+
+    PRINT 'Uzytkownik usuniety';
+END
+
+``` 
+
+### Dodanie webinaru 
+
+```sql 
+CREATE PROCEDURE add_webinar
+    @name nvarchar(30),
+    @description nvarchar(300),
+    @teacher_id int,
+    @price money,
+    @can_buy_from date,
+    @recording_link nvarchar(30),
+    @start_date date
+AS
+BEGIN
+    
+    IF @price < 0
+    BEGIN
+        THROW 50010, 'Cena musi być dodatnia', 16;
+        RETURN;
+    END
+
+    INSERT INTO Webinars (name, description, teacher_id, price, can_buy_from, recording_link, start_date)
+    VALUES (@name, @description, @teacher_id, @price, @can_buy_from, @recording_link, @start_date);
+
+    PRINT 'Webinar został dodany';
+END;
+
+``` 
