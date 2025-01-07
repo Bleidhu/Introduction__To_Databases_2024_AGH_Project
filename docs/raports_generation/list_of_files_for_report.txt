@@ -1,0 +1,7 @@
+./pbd_13_15_zesp_1_raportx.md
+../database_descriptions/functionalities.md
+../database_descriptions/database_diagram.md
+../database_descriptions/generation_code.md
+../database_logic/views.md
+../database_logic/procedures.md
+../database_logic/functions.md
