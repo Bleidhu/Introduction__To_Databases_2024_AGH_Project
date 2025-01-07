@@ -20,6 +20,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
     STUDY_MODULES_LIMIT = 4
     STUDY_MODULE_MEETINGS_LIMIT = 10
     STUDY_STUDENTS_LIMIT = 10
+    STUDY_INTERSHIPS_LIMIT = 4
 
     STUDIES_START_DATE = datetime.datetime(2022, 10, 10)
     STUDIES_INTERVAL = datetime.timedelta(14)
@@ -33,10 +34,25 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
     study_module_meeting_attendance_list = []
     study_module_meetings_stationary = []
     study_sync_async_meetings = []
+    study_interships = []
     
     last_study_date = STUDIES_START_DATE
     last_meeting_date = STUDIES_START_DATE
     
+    def generate_internships(study_id):
+        nonlocal last_meeting_date
+
+        for i in range(STUDY_INTERSHIPS_LIMIT):
+            meeting_date = fk.date_between_dates(date_start=last_study_date, date_end=last_study_date + random.randint(2, 4)*STUDIES_INTERVAL)
+            while any(meeting.meeting_date == meeting_date for meeting in courses_meetings):
+                meeting_date = fk.date_between_dates(date_start=last_study_date, date_end=last_study_date + random.randint(2, 4)*STUDIES_INTERVAL)
+            last_meeting_date = meeting_date + datetime.timedelta(1)
+            
+
+            
+            tmp_internship = db_model.InternshipMeeting(study_id, len(study_interships), meeting_date.isoformat())
+            study_interships.append(tmp_internship)
+
     def generate_study():
         price = random.randint(50, 400)
         nonlocal last_study_date
@@ -50,14 +66,17 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
                                      start_date.isoformat())
         nonlocal last_meeting_date
         last_meeting_date = start_date
-        last_study_date += random.randint(2, 4)*STUDIES_INTERVAL
+        
         studies.append(tmp_study)
         generate_study_modules(studies[-1].studies_id)
+        
+        generate_internships(studies[-1].studies_id)
+        last_study_date += random.randint(2, 4)*STUDIES_INTERVAL
         
 
     def generate_study_module(study_id):
         module_type = random.randint(0, len(dval.module_types) - 1)
-        tmp_module = db_model.StudyModule(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6], study_id, 0)
+        tmp_module = db_model.StudyModule(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6][0], study_id, 0)
         study_modules.append(tmp_module)
 
         generate_study_module_meetings(study_id, module_type, tmp_module.studies_module_id)
@@ -139,7 +158,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         generate_study()
 
     
-    return studies, study_modules, study_module_meetings, study_module_meetings_stationary, study_sync_async_meetings
+    return studies, study_modules, study_module_meetings, study_interships, study_module_meetings_stationary, study_sync_async_meetings
 
 def main():
     # users = generate_users_table()
@@ -161,8 +180,10 @@ def main():
     webinars = w_gen.webinars_generator(employees)
     courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = c_gen.generate_courses(webinars, employees, translators, translators_languages)
 
-    studies, study_modules, study_module_meetings, study_stationary_meetings, study_sync_async_meetings = generate_studies(webinars, course_module_meetings, employees, translators, translators_languages)
+    studies, study_modules, study_module_meetings, study_internships,  study_stationary_meetings, study_sync_async_meetings = generate_studies(webinars, course_module_meetings, employees, translators, translators_languages)
     
+
+
     for study in studies:
         print(study)
         modules = list(filter(lambda x: (x.studies_id == study.studies_id), study_modules)) 
@@ -171,6 +192,10 @@ def main():
             meetings = list(filter(lambda x: (x.module_id == m.studies_module_id and x.studies_id == study.studies_id ), study_module_meetings)) 
             for m2 in meetings:
                 print("        " + str(m2))
+        internships = list(filter(lambda x: (x.studies_id == study.studies_id), study_internships)) 
+        for i in internships:
+            print(i)
+
     
 
 if __name__ == "__main__":
