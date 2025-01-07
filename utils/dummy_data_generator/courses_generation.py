@@ -87,7 +87,7 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
         students_limit = 10
 
         if(meeting_type == 0):
-            stationary_meeting = db_model.CourseModuleMeetingStationary(len(corse_module_meetings_stationary), course_id, len(course_module_meetings)-1, 0)
+            stationary_meeting = db_model.CourseStationaryMeeting(len(corse_module_meetings_stationary), course_id, len(course_module_meetings)-1, 0)
             corse_module_meetings_stationary.append(stationary_meeting)
         elif(meeting_type==1):
             sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings), course_id, len(course_module_meetings)-1, None, fk.url(), None)

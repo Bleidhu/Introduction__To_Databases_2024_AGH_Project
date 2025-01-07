@@ -260,7 +260,7 @@ class StudyModule:
         self.price_for_module = price_for_module
 
     def __str__(self):
-        return f"{self.module_id}, {self.module_type_id}, {self.module_name}, {self.studies_id}, {self.price_for_module}"
+        return f"{self.studies_module_id}, {self.module_type_id}, {self.module_name}, {self.studies_id}, {self.price_for_module}"
 
 
 class StudyMakeupMeetingAttendanceList:

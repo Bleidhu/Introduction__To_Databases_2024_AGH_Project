@@ -8,12 +8,14 @@ import webinars_generation as w_gen
 import utility_functions as uf
 from typing import List, Tuple
 import course_names as cn
+import courses_generation as c_gen
 fk = Faker()
 
 ## Courses
 # To do - make sure translators are not multiplied (two meetings one date)
 # make better module names
-def generate_studies(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
+# add classroom generation and user  limit generation
+def generate_studies(webinars, courses_meetings, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Study], List[db_model.StudyModule], List[db_model.StudyModuleMeeting]]:
     STUDIES_LIMIT = 4
     STUDY_MODULES_LIMIT = 4
     STUDY_MODULE_MEETINGS_LIMIT = 10
@@ -24,12 +26,12 @@ def generate_studies(webinars, employees, translators: List[db_model.Translator]
 
     CITIES_AMOUNT = len(dval.cities)
     COUNTRIES_AMOUNT = len(dval.countries)
-    LANGUAGES_AMOUNt = len(dval.languages)
+    LANGUAGES_AMOUNT = len(dval.languages)
     studies = []
     study_modules = []
-    studies_module_meetings = []
+    study_module_meetings = []
     study_module_meeting_attendance_list = []
-    studiy_module_meetings_stationary = []
+    study_module_meetings_stationary = []
     study_sync_async_meetings = []
     
     last_study_date = STUDIES_START_DATE
@@ -43,26 +45,26 @@ def generate_studies(webinars, employees, translators: List[db_model.Translator]
                                      cn.course_names[len(studies)][1], 
                                      start_date.isoformat(), 
                                      STUDY_STUDENTS_LIMIT, 
-                                     0, 
+                                     price, 
                                      random.choice(uf.get_employees_hired_after_date(employees, start_date)).employee_id, 
                                      start_date.isoformat())
         nonlocal last_meeting_date
         last_meeting_date = start_date
-        last_course_date += random.randint(2, 4)*STUDIES_INTERVAL
+        last_study_date += random.randint(2, 4)*STUDIES_INTERVAL
         studies.append(tmp_study)
-        generate_study_modules(studies[-1].study_id)
+        generate_study_modules(studies[-1].studies_id)
         
 
     def generate_study_module(study_id):
         module_type = random.randint(0, len(dval.module_types) - 1)
-        tmp_module = db_model.StudyModule(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6], study_id)
+        tmp_module = db_model.StudyModule(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6], study_id, 0)
         study_modules.append(tmp_module)
 
-        generate_course_module_meetings(study_id, module_type, tmp_module.module_id)
+        generate_study_module_meetings(study_id, module_type, tmp_module.studies_module_id)
 
 
     ## fix date to be realistic
-    def generate_course_module_meeting(course_id, module_type, module_id):
+    def generate_study_module_meeting(study_id, module_type, module_id):
         nonlocal last_meeting_date
         meeting_type = module_type
 
@@ -77,35 +79,37 @@ def generate_studies(webinars, employees, translators: List[db_model.Translator]
         if(random.randint(0, 1) == 0):
             language_id = 0
         else:
-            language_id = random.randint(1, LANGUAGES_AMOUNt)
+            language_id = random.randint(1, LANGUAGES_AMOUNT)
         
             translators_of_lang = list(filter(lambda x: x.language_id  == language_id, translators_languages))
             translators_id = translators_of_lang[random.randint(0,len(translators_of_lang) - 1)].translator_id
 
-        lecturer_id = random.choice(uf.get_employees_not_working_on_date(uf.get_employees_hired_after_date(employees, meeting_date), date=meeting_date.isoformat(), webinars_meetings=webinars, course_meetings_table=course_module_meetings)).employee_id
+        lecturer_id = random.choice(uf.get_employees_not_working_on_date(uf.get_employees_hired_after_date(employees, meeting_date), date=meeting_date.isoformat(), webinars_meetings=webinars, course_meetings_table=study_module_meetings)).employee_id
         duration = random.randint(1,4) * 45
         students_limit = 10
 
         if(meeting_type == 0):
-            stationary_meeting = db_model.CourseModuleMeetingStationary(len(corse_module_meetings_stationary), course_id, len(course_module_meetings)-1, 0)
-            corse_module_meetings_stationary.append(stationary_meeting)
+            stationary_meeting = db_model.StudyStationaryMeeting(len(study_module_meetings_stationary), study_id, len(study_module_meetings)-1, 0)
+            study_module_meetings_stationary.append(stationary_meeting)
         elif(meeting_type==1):
-            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings), course_id, len(course_module_meetings)-1, None, fk.url(), None)
-            course_sync_async_meetings.append(sync_meeting)
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings), study_id, len(study_module_meetings)-1, None, fk.url(), None)
+            study_sync_async_meetings.append(sync_meeting)
         else:
-            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings), course_id, len(course_module_meetings)-1, None, None, fk.url())
-            course_sync_async_meetings.append(sync_meeting)
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings), study_id, len(study_module_meetings)-1, None, None, fk.url())
+            study_sync_async_meetings.append(sync_meeting)
 
-        tmp_module_meeting = db_model.CourseModuleMeetings(course_id, 
-                                                           len(course_module_meetings), 
+        tmp_module_meeting = db_model.StudyModuleMeeting(len(study_module_meetings), 
+                                                         study_id,   
                                                            meeting_date, language_id, 
                                                            translators_id, lecturer_id, 
                                                            duration, 
                                                            students_limit, 
                                                            module_id, 
-                                                           meeting_type, 
-                                                           cn.course_names[course_id][2][module_id%6][1][len(course_module_meetings)%10])
-        course_module_meetings.append(tmp_module_meeting)
+                                                           0,
+                                                           cn.course_names[study_id][2][module_id%6][1][len(study_module_meetings)%10],
+                                                           meeting_type
+                                                           )
+        study_module_meetings.append(tmp_module_meeting)
     
     def generate_study_modules(study_id):
         modules_amount = random.randint(1, STUDY_MODULES_LIMIT)
@@ -114,10 +118,10 @@ def generate_studies(webinars, employees, translators: List[db_model.Translator]
             generate_study_module(study_id)
 
 
-    def generate_course_module_meetings(course_id, module_type, module_id):
-        module_meetings_amount = random.randint(1, COURSE_MODULE_MEETINGS_LIMIT)
+    def generate_study_module_meetings(course_id, module_type, module_id):
+        module_meetings_amount = random.randint(1, STUDY_MODULE_MEETINGS_LIMIT)
         for i in range(module_meetings_amount):
-            generate_course_module_meeting(course_id, module_type, module_id)
+            generate_study_module_meeting(course_id, module_type, module_id)
         
     # def generate_course_attendance_list(users):
     #     course : db_model.Course
@@ -131,11 +135,11 @@ def generate_studies(webinars, employees, translators: List[db_model.Translator]
     #         for s in students_participating:
                 
 
-    for i in range(COURSES_LIMIT):
-        generate_course()
+    for i in range(STUDIES_LIMIT):
+        generate_study()
 
     
-    return courses, course_modules, course_module_meetings, corse_module_meetings_stationary, course_sync_async_meetings
+    return studies, study_modules, study_module_meetings, study_module_meetings_stationary, study_sync_async_meetings
 
 def main():
     # users = generate_users_table()
@@ -155,7 +159,18 @@ def main():
 
     employees, translators, translators_languages = emp_gen.generate_employees_table()
     webinars = w_gen.webinars_generator(employees)
-    courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = generate_courses(webinars, employees, translators, translators_languages)
+    courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = c_gen.generate_courses(webinars, employees, translators, translators_languages)
+
+    studies, study_modules, study_module_meetings, study_stationary_meetings, study_sync_async_meetings = generate_studies(webinars, course_module_meetings, employees, translators, translators_languages)
+    
+    for study in studies:
+        print(study)
+        modules = list(filter(lambda x: (x.studies_id == study.studies_id), study_modules)) 
+        for m in modules:
+            print("   " + str(m))
+            meetings = list(filter(lambda x: (x.module_id == m.studies_module_id and x.studies_id == study.studies_id ), study_module_meetings)) 
+            for m2 in meetings:
+                print("        " + str(m2))
     
 
 if __name__ == "__main__":
