@@ -1,5 +1,6 @@
 from db_tables_classes import *
 from typing import List
+import csv
 def get_employees_not_working_on_date(employees: List[Employee],date, course_meetings_table: List[CourseModuleMeetings]=[], 
                                       webinars_meetings: List[Webinar]=[], studies_meetings: List[StudyModuleMeeting]=[]) -> List[Employee]:
 
@@ -29,3 +30,10 @@ def get_employees_hired_after_date(employees: List[Employee], date) -> List[Empl
 # def get_rooms_of_given_size(size, rooms):
 #     rooms = list(filter())
 # def get_rooms_free_date(date, course_meetings_tabble: List[CourseModuleMeetings]=[], studies_meetings: List[StudyModuleMeeting]=[]):
+
+def object_table_table_to_csv(table, filename):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=table[0].__dict__.keys())
+        writer.writeheader()
+        for object in table:
+            writer.writerow(object.__dict__)
