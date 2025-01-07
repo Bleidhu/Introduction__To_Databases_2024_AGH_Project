@@ -13,7 +13,7 @@ fk = Faker()
 ## Courses
 # To do - make sure translators are not multiplied (two meetings one date)
 # make better module names
-def generate_courses(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
+def generate_studies(webinars, employees, translators: List[db_model.Translator], translators_languages: List[db_model.TranslatorsLanguagesUsed]) -> Tuple[List[db_model.Course], List[db_model.CourseModules], List[db_model.CourseModuleMeetings]]:
     STUDIES_LIMIT = 4
     STUDY_MODULES_LIMIT = 4
     STUDY_MODULE_MEETINGS_LIMIT = 10
@@ -32,30 +32,30 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
     studiy_module_meetings_stationary = []
     study_sync_async_meetings = []
     
-    last_course_date = STUDIES_START_DATE
+    last_study_date = STUDIES_START_DATE
     last_meeting_date = STUDIES_START_DATE
     
     def generate_study():
         price = random.randint(50, 400)
-        nonlocal last_course_date
-        start_date = fk.date_between(start_date=last_course_date, end_date=last_course_date + STUDIES_INTERVAL)
-        tmp_course = db_model.Course(len(studies), 
-                                     cn.course_names[len(studies)][0], 
+        nonlocal last_study_date
+        start_date = fk.date_between(start_date=last_study_date, end_date=last_study_date + STUDIES_INTERVAL)
+        tmp_study = db_model.Study(len(studies), cn.course_names[len(studies)][0], 
                                      cn.course_names[len(studies)][1], 
                                      start_date.isoformat(), 
-                                     STUDY_STUDENTS_LIMIT, price,
-                                     course_coordinator_id=random.choice(uf.get_employees_hired_after_date(employees, start_date)).employee_id,
-                                     visible_from=start_date.isoformat())
+                                     STUDY_STUDENTS_LIMIT, 
+                                     0, 
+                                     random.choice(uf.get_employees_hired_after_date(employees, start_date)).employee_id, 
+                                     start_date.isoformat())
         nonlocal last_meeting_date
         last_meeting_date = start_date
         last_course_date += random.randint(2, 4)*STUDIES_INTERVAL
-        studies.append(tmp_course)
-        generate_course_modules(studies[-1].study_id)
+        studies.append(tmp_study)
+        generate_study_modules(studies[-1].study_id)
         
 
     def generate_study_module(study_id):
         module_type = random.randint(0, len(dval.module_types) - 1)
-        tmp_module = db_model.CourseModules(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6], study_id)
+        tmp_module = db_model.StudyModule(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6], study_id)
         study_modules.append(tmp_module)
 
         generate_course_module_meetings(study_id, module_type, tmp_module.module_id)
@@ -107,11 +107,11 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
                                                            cn.course_names[course_id][2][module_id%6][1][len(course_module_meetings)%10])
         course_module_meetings.append(tmp_module_meeting)
     
-    def generate_course_modules(course_id):
-        modules_amount = random.randint(1, COURSE_MODULES_LIMIT)
+    def generate_study_modules(study_id):
+        modules_amount = random.randint(1, STUDY_MODULES_LIMIT)
 
         for i in range(modules_amount):
-            generate_course_module(course_id)
+            generate_study_module(study_id)
 
 
     def generate_course_module_meetings(course_id, module_type, module_id):
@@ -156,16 +156,7 @@ def main():
     employees, translators, translators_languages = emp_gen.generate_employees_table()
     webinars = w_gen.webinars_generator(employees)
     courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = generate_courses(webinars, employees, translators, translators_languages)
-
-    for course in courses:
-        print(course)
-        modules = list(filter(lambda x: (x.course_id == course.course_id), course_modules)) 
-        for m in modules:
-            print("   " + str(m))
-            meetings = list(filter(lambda x: (x.module_id == m.module_id and x.course_id == course.course_id ), course_module_meetings)) 
-            for m2 in meetings:
-                print("        " + str(m2))
-
+    
 
 if __name__ == "__main__":
     main()
