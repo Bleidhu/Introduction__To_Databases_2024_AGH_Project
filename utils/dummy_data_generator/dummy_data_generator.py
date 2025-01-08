@@ -56,8 +56,7 @@ def main():
     # uf.object_table_table_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
     needs_to_be_generated = {'users': False, 
                              'employees': False, 
-                             'translators': False, 
-                             'translators_languages': False}
+                             'webinars': False,}
     users = []
     if(needs_to_be_generated.get('users')):
         users = u_gen.generate_users_table()
@@ -71,12 +70,51 @@ def main():
                 person = db_model.User(int(row['user_id']), row['email'], row['first_name'], row['last_name'],
                                        int(row['city_id']), int(row['country_id']), row['phone'], row['street'], row['house_number'], row['birth_date'])
                 users.append(person)
-    employees, translators, translators_languages = e_gen.generate_employees_table()
-    uf.object_table_table_to_csv(employees, "./dummy_data/employees.csv")
-    uf.object_table_table_to_csv(translators, "./dummy_data/translators.csv")
-    uf.object_table_table_to_csv(translators_languages, "./dummy_data/translators_languages.csv")
-    webinars = w_gen.webinars_generator(employees)
-    uf.object_table_table_to_csv(webinars, "./dummy_data/webinars.csv")
+    employees = []
+    translators = []
+    translators_languages = []
+    if(needs_to_be_generated.get('employees')):
+        employees, translators, translators_languages = e_gen.generate_employees_table()
+        uf.object_table_table_to_csv(employees, "./dummy_data/employees.csv")
+        uf.object_table_table_to_csv(translators, "./dummy_data/translators.csv")
+        uf.object_table_table_to_csv(translators_languages, "./dummy_data/translators_languages.csv")
+    else:
+        with open("./dummy_data/employees.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                person = db_model.Employee(int(row['employee_id']), row['first_name'], row['last_name'], 
+                                           datetime.date.fromisoformat(row['hire_date']), row['birth_date'], row['phone'], row['email'],
+                                       int(row['role_id']), int(row['city_id']), int(row['country_id']))
+                employees.append(person)
+        with open("./dummy_data/translators.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                person = db_model.Translator(int(row['translator_id']), int(row['employee_id']))
+                translators.append(person)
+        with open("./dummy_data/translators_languages.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                person = db_model.TranslatorsLanguagesUsed(int(row['id']),int(row['translator_id']), int(row['language_id']))
+                translators_languages.append(person)
+    webinars = []
+    if(needs_to_be_generated.get('employees')):
+        webinars = w_gen.webinars_generator(employees)
+        uf.object_table_table_to_csv(webinars, "./dummy_data/webinars.csv")
+    else:
+        with open("./dummy_data/webinars.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                webinar = db_model.Webinar(int(row['webinar_id']), row['name'], row['description'], int(row['teacher_id']), 
+                                           int(row['price']), 
+                                           row['can_buy_from'], 
+                                           row['recording_link'],
+                                       row['start_date'])
+                webinars.append(webinar)
+   
     courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = c_gen.generate_courses(webinars, employees, translators, translators_languages)
     uf.object_table_table_to_csv(courses, "./dummy_data/courses.csv")
     uf.object_table_table_to_csv(course_modules, "./dummy_data/course_modules.csv")
