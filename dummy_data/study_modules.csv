@@ -1,0 +1,10 @@
+studies_module_id,module_type_id,module_name,studies_id,price_for_module
+0,3,Understanding Digital Transformation,0,0
+1,1,Technology for Business Innovation,0,0
+2,3,Developing a Digital Strategy,0,0
+3,2,Customer-Centric Digital Transformation,0,0
+4,2,Human Factors in Cybersecurity,1,0
+5,1,Advanced Cybersecurity Practices,1,0
+6,3,Introduction to Cybersecurity,1,0
+7,1,Exploring and Visualizing Data,2,0
+8,0,Cloud Security and Governance,3,0

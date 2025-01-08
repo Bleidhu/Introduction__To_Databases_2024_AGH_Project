@@ -1,0 +1,9 @@
+module_id,module_type_id,module_name,course_id
+0,2,Understanding Digital Transformation,0
+1,0,Building a Cybersecurity Framework,1
+2,1,Statistical Analysis for Business Insights,2
+3,0,Advanced Data Analytics Techniques,2
+4,3,Innovation and Growth Through Cloud Technology,3
+5,0,Managing Cloud Transformations,3
+6,3,Introduction to Cloud Computing,3
+7,2,Building a Cloud Strategy,3
