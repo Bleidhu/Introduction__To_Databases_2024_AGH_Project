@@ -66,16 +66,16 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
         nonlocal last_meeting_date
         meeting_type = module_type
 
-        if(module_type == 3):
+        if(module_type == 4):
             meeting_type = random.randint(1, len(dval.meeting_types))
 
         meeting_date = fk.date_between_dates(date_start=last_meeting_date, date_end=last_meeting_date+datetime.timedelta(1)*random.randint(2,4))
         last_meeting_date = meeting_date + datetime.timedelta(1)
         
-        language_id = 0
+        language_id = 1
         translators_id = None
         if(random.randint(0, 1) == 0):
-            language_id = 0
+            language_id = 1
         else:
             language_id = random.randint(1, LANGUAGES_AMOUNt)
         
@@ -89,17 +89,16 @@ def generate_courses(webinars, employees, translators: List[db_model.Translator]
         students_limit = 10
 
         if(meeting_type == 1):
-            stationary_meeting = db_model.CourseStationaryMeeting(len(corse_module_meetings_stationary)+1, course_id, len(course_module_meetings)-1, 0)
+            stationary_meeting = db_model.CourseStationaryMeeting(len(corse_module_meetings_stationary)+1,course_id, len(course_module_meetings)+1, 0)
             corse_module_meetings_stationary.append(stationary_meeting)
         elif(meeting_type==2):
-            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings)+1, course_id, len(course_module_meetings), None, fk.url(), None)
+            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings)+1, course_id, len(course_module_meetings)+1, None, fk.url(), None)
             course_sync_async_meetings.append(sync_meeting)
         else:
-            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings)+1, course_id, len(course_module_meetings), None, None, fk.url())
+            sync_meeting = db_model.CourseSyncAsyncMeeting(len(course_sync_async_meetings)+1, course_id, len(course_module_meetings)+1, None, None, fk.url())
             course_sync_async_meetings.append(sync_meeting)
-
         tmp_module_meeting = db_model.CourseModuleMeetings(course_id, 
-                                                           len(course_module_meetings), 
+                                                           len(course_module_meetings)+1, 
                                                            meeting_date, language_id, 
                                                            translators_id, lecturer_id, 
                                                            duration, 

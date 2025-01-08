@@ -22,7 +22,7 @@ import studies_generator as s_gen
 import generate_orders as o_gen
 
 import utility_functions as uf
-
+import csv
 
 fk = Faker()
 
@@ -54,8 +54,23 @@ def main():
     # uf.object_table_table_to_csv(dval.languages, "./dummy_data/languages.csv")
     # uf.object_table_table_to_csv(dval.module_types, "./dummy_data/module_types.csv")
     # uf.object_table_table_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
-    users = u_gen.generate_users_table()
-    uf.object_table_table_to_csv(users, "./dummy_data/users.csv")
+    needs_to_be_generated = {'users': False, 
+                             'employees': False, 
+                             'translators': False, 
+                             'translators_languages': False}
+    users = []
+    if(needs_to_be_generated.get('users')):
+        users = u_gen.generate_users_table()
+        uf.object_table_table_to_csv(users, "./dummy_data/users.csv")
+    else:
+        users = []
+        with open("./dummy_data/users.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                person = db_model.User(int(row['user_id']), row['email'], row['first_name'], row['last_name'],
+                                       int(row['city_id']), int(row['country_id']), row['phone'], row['street'], row['house_number'], row['birth_date'])
+                users.append(person)
     employees, translators, translators_languages = e_gen.generate_employees_table()
     uf.object_table_table_to_csv(employees, "./dummy_data/employees.csv")
     uf.object_table_table_to_csv(translators, "./dummy_data/translators.csv")
@@ -76,10 +91,12 @@ def main():
     uf.object_table_table_to_csv(study_stationary_meetings, "./dummy_data/study_stationary_meetings.csv")
     uf.object_table_table_to_csv(study_sync_async_meetings, "./dummy_data/study_sync_async_meetings.csv")
     
-    orders, orders_details, orders_courses, orders_studies =  o_gen.generate_orders(courses, course_module_meetings, users, studies, study_module_meetings, study_internships)
+    orders, orders_details, orders_courses, orders_studies, course_attendace =  o_gen.generate_orders(courses, course_module_meetings, users, studies, study_module_meetings, study_internships)
     uf.object_table_table_to_csv(orders, "./dummy_data/orders.csv")
     uf.object_table_table_to_csv(orders_details, "./dummy_data/orders_details.csv")
     uf.object_table_table_to_csv(orders_courses, "./dummy_data/orders_courses.csv")
     uf.object_table_table_to_csv(orders_studies, "./dummy_data/orders_studies.csv")
+    uf.object_table_table_to_csv(course_attendace, "./dummy_data/course_attendance.csv")
+
 if __name__ == "__main__":
     main()

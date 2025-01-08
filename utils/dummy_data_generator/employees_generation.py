@@ -24,9 +24,9 @@ def generate_employee(id, role):
     return tmp
 
 def generate_employees_table():
-    teachers = [generate_employee(i, 2) for i in range(EMPLOYEES_LIMIT)]
-    translators = [generate_employee(i+len(teachers), 3) for i in range(EMPLOYEES_LIMIT*0,5)]
-    translators_table = [db_model.Translator(i, i+len(teachers)) for i in range(EMPLOYEES_LIMIT*0,5)]
+    teachers = [generate_employee(i+1, 2) for i in range(EMPLOYEES_LIMIT)]
+    translators = [generate_employee(i+len(teachers)+1, 3) for i in range(EMPLOYEES_LIMIT*0,5)]
+    translators_table = [db_model.Translator(i, i+len(teachers)+1) for i in range(EMPLOYEES_LIMIT*0,5)]
     translators_language_used = []
 
     for translator in translators_table:

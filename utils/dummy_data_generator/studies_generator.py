@@ -87,7 +87,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         nonlocal last_meeting_date
         meeting_type = module_type
 
-        if(module_type == 3):
+        if(module_type == 4):
             meeting_type = random.randint(1, len(dval.meeting_types))
 
         meeting_date = fk.date_between_dates(date_start=last_meeting_date, date_end=last_meeting_date+datetime.timedelta(1)*random.randint(2,4))

@@ -1,76 +1,35 @@
 meeting_id,studies_id,meeting_date,language_id,translator_id,lecturer_id,duration,place_limit,module_id,topic_id,meeting_name,meeting_type_id
-1,1,2022-10-19,1,2,7,45,10,1,0,Introduction to Cybersecurity Frameworks,2
-2,1,2022-10-23,2,0,13,135,10,1,0,NIST Cybersecurity Framework Overview,2
-3,1,2022-10-27,2,2,13,135,10,2,0,Securing Wireless Networks,1
-4,1,2022-10-30,0,,4,45,10,2,0,Virtual Private Networks (VPNs),1
-5,1,2022-10-31,2,2,1,180,10,3,0,Data Encryption and Cryptography,4
-6,2,2022-11-09,1,3,2,45,10,4,0,Human Resources Analytics,2
-7,2,2022-11-12,0,,2,90,10,4,0,Operational Efficiency with Analytics,2
-8,2,2022-11-13,0,,4,135,10,4,0,Risk Management and Fraud Detection,3
-9,2,2022-11-14,2,1,6,90,10,4,0,Case Studies of Analytics in Business,3
-10,2,2022-11-17,0,,1,90,10,4,0,Scaling Analytics Across Departments,1
-11,2,2022-11-19,1,1,14,135,10,5,0,Importance of a Data-Driven Mindset,2
-12,2,2022-11-21,2,0,8,90,10,5,0,Training Teams in Data Literacy,1
-13,2,2022-11-23,1,1,13,180,10,5,0,Encouraging Collaboration Around Data,3
-14,2,2022-11-24,0,,2,135,10,5,0,Building a Data Governance Framework,2
-15,2,2022-11-26,0,,2,45,10,5,0,Overcoming Resistance to Data Initiatives,2
-16,2,2022-11-27,1,3,8,135,10,5,0,Ensuring Data Security and Privacy,2
-17,2,2022-11-28,1,2,3,45,10,5,0,Tools for Teamwide Data Access,3
-18,2,2022-12-01,1,4,14,45,10,5,0,Measuring Success in Data Adoption,1
-19,2,2022-12-03,0,,3,180,10,5,0,Case Studies of Data-Driven Companies,1
-20,2,2022-12-06,2,1,1,45,10,6,0,Trends in Data Analytics,4
-21,3,2023-01-11,0,,1,90,10,7,0,Identifying Business Needs for the Cloud,4
-22,3,2023-01-12,2,3,3,135,10,7,0,Assessing Readiness for Cloud Adoption,4
-23,3,2023-01-13,0,,3,180,10,7,0,Setting Goals for Cloud Implementation,4
-24,3,2023-01-16,0,,9,180,10,7,0,Choosing the Right Cloud Model,4
-25,3,2023-01-18,2,1,8,180,10,7,0,Budgeting for Cloud Projects,4
-26,3,2023-01-20,0,,3,135,10,7,0,Risk Management in Cloud Transition,4
-27,3,2023-01-22,0,,14,135,10,7,0,Building a Migration Roadmap,4
-28,3,2023-01-24,1,4,3,90,10,7,0,Evaluating Service-Level Agreements (SLAs),4
-29,3,2023-01-25,2,1,3,135,10,8,0,Building a Resilient Security Framework,1
-30,3,2023-01-29,0,,4,45,10,8,0,Governance for Long-Term Cloud Success,1
-31,3,2023-01-31,2,2,14,180,10,8,0,Importance of Cloud Security,1
-32,3,2023-02-01,0,,13,90,10,8,0,Common Cloud Security Threats,1
-33,3,2023-02-03,0,,14,45,10,8,0,Data Encryption in the Cloud,1
-34,3,2023-02-04,2,1,7,135,10,8,0,Identity and Access Management (IAM),1
-35,3,2023-02-06,1,1,2,135,10,8,0,Ensuring Compliance with Regulations,1
-36,3,2023-02-08,1,2,1,90,10,8,0,Security Best Practices for Cloud Usage,1
-37,3,2023-02-09,0,,6,180,10,9,0,Real-Time Data Processing with the Cloud,4
-38,3,2023-02-11,1,0,11,45,10,9,0,Integrating Cloud Services with Existing Systems,4
-39,3,2023-02-12,2,0,11,45,10,9,0,Improving Collaboration Through Cloud Tools,4
-40,3,2023-02-13,1,1,7,90,10,9,0,Case Studies of Cloud-Powered Operations,4
-41,3,2023-02-15,1,3,0,90,10,9,0,Leveraging the Cloud for Operational Efficiency,4
-42,3,2023-02-16,2,1,13,180,10,9,0,Cloud Automation and Orchestration,4
-43,3,2023-02-19,1,4,1,90,10,9,0,Using Cloud for Application Development,4
-44,3,2023-02-21,0,,1,180,10,9,0,Cost Management in the Cloud,4
-45,3,2023-02-22,2,2,12,45,10,9,0,Performance Optimization Techniques,4
-46,3,2023-02-24,0,,3,135,10,9,0,Implementing Backup and Disaster Recovery,4
-47,3,2023-02-25,0,,2,45,10,10,0,IoT and the Cloud: A Perfect Match,4
-48,3,2023-02-27,2,0,11,135,10,10,0,Exploring Edge Computing,4
-49,3,2023-03-01,2,2,14,45,10,10,0,Competitive Advantage with Cloud Technology,4
-50,3,2023-03-03,2,2,4,135,10,10,0,Future Opportunities in Cloud Innovation,4
-51,3,2023-03-04,0,,0,135,10,10,0,Driving Innovation with Cloud Computing,4
-52,3,2023-03-05,1,4,1,135,10,10,0,Cloud-Based Artificial Intelligence Applications,4
-53,3,2023-03-07,0,,1,135,10,10,0,Enhancing Customer Experience with Cloud Solutions,4
-54,3,2023-03-08,1,4,11,180,10,10,0,Cloud-Enabled Product Development,4
-55,3,2023-03-12,0,,11,45,10,10,0,Scaling Businesses with the Cloud,4
-56,4,2023-02-24,1,0,9,135,10,11,0,Continuous Improvement in Projects,2
-57,4,2023-02-27,0,,8,135,10,11,0,Delivering Projects On-Time and On-Budget,3
-58,4,2023-02-28,0,,3,180,10,11,0,Innovation in Project Delivery,2
-59,4,2023-03-01,0,,4,135,10,12,0,Risk Identification and Mitigation,3
-60,4,2023-03-03,1,3,1,45,10,12,0,Closing Projects Effectively,3
-61,4,2023-03-05,0,,12,45,10,12,0,Introduction to Project Management,2
-62,4,2023-03-06,0,,7,180,10,12,0,Understanding Project Life Cycles,2
-63,4,2023-03-08,2,2,3,180,10,12,0,Defining Roles and Responsibilities,2
-64,4,2023-03-10,1,4,1,90,10,12,0,Key Skills for Project Managers,2
-65,4,2023-03-11,2,0,6,90,10,12,0,Initiating a Project Successfully,1
-66,4,2023-03-14,1,4,0,135,10,13,0,Backlog Prioritization Techniques,2
-67,4,2023-03-16,0,,2,180,10,13,0,Monitoring Progress with Agile Metrics,2
-68,4,2023-03-17,0,,0,90,10,13,0,Conducting Retrospectives,2
-69,4,2023-03-19,1,0,13,45,10,13,0,Adapting Agile for Large Organizations,2
-70,4,2023-03-22,2,1,12,90,10,13,0,Case Studies in Agile Project Success,2
-71,4,2023-03-24,0,,9,90,10,13,0,Introduction to Agile Methodologies,2
-72,4,2023-03-26,0,,8,135,10,14,0,Choosing the Right Tool for Your Team,2
-73,4,2023-03-29,2,1,12,45,10,14,0,Using Gantt Charts for Planning,2
-74,4,2023-04-01,0,,2,45,10,14,0,Leveraging Collaboration Tools,2
-75,4,2023-04-02,0,,4,90,10,14,0,Tracking Progress with Dashboards,2
+1,1,2022-10-24,0,,13,135,10,1,0,Introduction to Cybersecurity Frameworks,1
+2,1,2022-10-27,1,0,12,135,10,1,0,NIST Cybersecurity Framework Overview,1
+3,1,2022-10-30,0,,7,90,10,1,0,ISO 27001 Standards,1
+4,1,2022-11-01,0,,3,135,10,1,0,Establishing Policies and Procedures,1
+5,1,2022-11-05,0,,4,45,10,1,0,Identifying Critical Assets,1
+6,2,2022-12-01,2,0,12,135,10,2,0,Understanding Regression Analysis,1
+7,2,2022-12-04,2,2,7,45,10,2,0,Predictive Analytics Overview,1
+8,2,2022-12-06,0,,7,90,10,2,0,Identifying Outliers and Anomalies,1
+9,2,2022-12-09,1,1,15,180,10,2,0,Statistical Tools for Business Applications,1
+10,2,2022-12-10,2,0,15,180,10,2,0,Interpreting Statistical Results,1
+11,2,2022-12-12,0,,4,90,10,2,0,Introduction to Descriptive Statistics,1
+12,2,2022-12-15,2,0,7,45,10,2,0,"Understanding Mean, Median, and Mode",1
+13,3,2023-01-14,0,,2,135,10,3,0,Using Cloud for Application Development,2
+14,3,2023-01-16,0,,1,180,10,3,0,Cost Management in the Cloud,1
+15,3,2023-01-17,2,1,2,90,10,3,0,Performance Optimization Techniques,1
+16,3,2023-01-20,0,,15,135,10,3,0,Implementing Backup and Disaster Recovery,1
+17,3,2023-01-21,0,,11,180,10,3,0,Real-Time Data Processing with the Cloud,2
+18,3,2023-01-24,0,,7,90,10,3,0,Integrating Cloud Services with Existing Systems,2
+19,4,2023-02-09,0,,3,180,10,4,0,Recognizing and Rewarding Success,3
+20,4,2023-02-13,2,2,7,135,10,4,0,Case Studies of High-Performing Teams,3
+21,4,2023-02-15,2,2,12,135,10,4,0,Dynamics of Effective Teams,3
+22,4,2023-02-16,0,,1,45,10,4,0,Leadership Styles in Project Management,3
+23,4,2023-02-20,0,,3,135,10,4,0,Conflict Resolution in Teams,3
+24,4,2023-02-22,2,2,12,180,10,5,0,Stakeholder Expectations Management,1
+25,4,2023-02-26,0,,11,135,10,5,0,Measuring Project Success,1
+26,4,2023-02-27,2,2,11,90,10,5,0,Continuous Improvement in Projects,2
+27,4,2023-03-02,0,,12,90,10,5,0,Delivering Projects On-Time and On-Budget,1
+28,4,2023-03-05,0,,4,180,10,5,0,Innovation in Project Delivery,2
+29,4,2023-03-07,2,1,10,180,10,5,0,Sustainability and Ethical Practices in Projects,2
+30,4,2023-03-08,0,,1,135,10,5,0,Creating a Culture of Excellence,2
+31,4,2023-03-09,2,1,2,45,10,5,0,Understanding Project Value,1
+32,4,2023-03-10,0,,1,180,10,5,0,Aligning Projects with Business Goals,1
+33,4,2023-03-11,1,0,13,135,10,6,0,Defining Roles and Responsibilities,1
+34,4,2023-03-13,1,0,11,180,10,7,0,Roles in Agile Teams,3
