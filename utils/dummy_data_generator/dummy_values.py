@@ -1,11 +1,12 @@
 countries = {1:"Poland", 2:"USA"}
 cities = {1:"Kraków", 2:"Hanoover"}
-employee_roles = {0:"Dyrektor", 1:"Nauczyciel", 2:"Tłumacz"}
+employee_roles = {1:"Dyrektor", 2:"Nauczyciel", 3:"Tłumacz"}
 languages= {1:"Polski", 2:"Angielski"}
-module_types = {0: "Stationary", 1:"Asynchronous", 2: "Synchronous", 3: "Hybrid"}
-meeting_types = {0: "Stationary", 1:"Asynchronous", 2: "Synchronous"}
+module_types = {1: "Stationary", 2:"Asynchronous", 3: "Synchronous", 4: "Hybrid"}
+meeting_types = {1: "Stationary", 2:"Asynchronous", 3: "Synchronous"}
 
 START_DATE_ALL = "2021-10-10"
+
 
 
 webinar_titles_and_descriptions = [

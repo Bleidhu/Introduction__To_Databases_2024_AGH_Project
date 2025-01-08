@@ -23,7 +23,7 @@ def generate_orders(courses, course_meetings, users, studies, study_meetings, st
     order_course = []
     order_module_studies = []
     order_studies = []
-
+    course_meetings_attendance_list = []
 
     def generate_webinars_orders():
         pass
@@ -60,8 +60,8 @@ def generate_orders(courses, course_meetings, users, studies, study_meetings, st
             course_pay_before_Date = course_start_date + datetime.timedelta(14)
 
             for user_id in enrolled_users:
-                tmp_order = db_model.Order(len(orders), user_id=user_id, is_paid=1, max_paid_date=course_pay_before_Date)
-                tmp_order_detail = db_model.OrderDetail(len(order_details), tmp_order.order_id, 1, courses[i].price)
+                tmp_order = db_model.Order(len(orders)+1, user_id=user_id, is_paid=1, max_paid_date=course_pay_before_Date)
+                tmp_order_detail = db_model.OrderDetail(len(order_details)+1, tmp_order.order_id, 1, courses[i].price)
                 tmp_order_course = db_model.OrderCourse(tmp_order_detail.order_detail_id, i)
 
                 orders.append(tmp_order)
@@ -70,7 +70,13 @@ def generate_orders(courses, course_meetings, users, studies, study_meetings, st
 
 
     def generate_course_meetings_attendance_list_of_enrolled_students():
-        pass
+        for i, enrolled_users in enumerate(course_enrolled):
+            current_course = courses[i]
+
+            m:db_model.CourseModuleMeetings
+            for m in filter(lambda x: x.course_id == current_course.course_id  ,course_meetings):
+                for user in enrolled_users:
+                    course_meetings_attendance_list.append(db_model.CourseMeetingAttendanceList(user, current_course.course_id, m.meeting_id, 1))
 
     def generate_enrolled_lists_for_studies(courses: List[db_model.Course], 
                                             course_meetings: List[db_model.CourseModuleMeetings], 
@@ -121,8 +127,8 @@ def generate_orders(courses, course_meetings, users, studies, study_meetings, st
             study_pay_before_Date = study_start_date + datetime.timedelta(14)
 
             for user_id in enrolled_users:
-                tmp_order = db_model.Order(len(orders), user_id=user_id, is_paid=1, max_paid_date=study_pay_before_Date)
-                tmp_order_detail = db_model.OrderDetail(len(order_details), tmp_order.order_id, 2, studies[i].price)
+                tmp_order = db_model.Order(len(orders)+1, user_id=user_id, is_paid=1, max_paid_date=study_pay_before_Date)
+                tmp_order_detail = db_model.OrderDetail(len(order_details)+1, tmp_order.order_id, 2, studies[i].price)
                 tmp_order_study = db_model.OrderStudy(tmp_order_detail.order_detail_id, i)
 
                 orders.append(tmp_order)
@@ -138,8 +144,8 @@ def generate_orders(courses, course_meetings, users, studies, study_meetings, st
     generate_enrolled_lists_for_studies(courses, course_meetings, users, studies, study_meetings, study_internships)
     generate_orders_from_course_enrolled(course_enrolled, courses)
     generate_orders_from_studies_enrolled(study_enrolled, studies)
-
-    return orders, order_details, order_course, order_studies
+    generate_course_meetings_attendance_list_of_enrolled_students()
+    return orders, order_details, order_course, order_studies, course_meetings_attendance_list
 
 def main():
     users = u_gen.generate_users_table()

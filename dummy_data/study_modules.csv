@@ -1,10 +1,15 @@
 studies_module_id,module_type_id,module_name,studies_id,price_for_module
-0,3,Understanding Digital Transformation,0,0
-1,1,Technology for Business Innovation,0,0
-2,3,Developing a Digital Strategy,0,0
-3,2,Customer-Centric Digital Transformation,0,0
-4,2,Human Factors in Cybersecurity,1,0
-5,1,Advanced Cybersecurity Practices,1,0
-6,3,Introduction to Cybersecurity,1,0
-7,1,Exploring and Visualizing Data,2,0
-8,0,Cloud Security and Governance,3,0
+1,2,Introduction to Cybersecurity,1,0
+2,1,Building a Cybersecurity Framework,1,0
+3,4,Network Security Fundamentals,1,0
+4,3,Advanced Data Analytics Techniques,2,0
+5,3,Business Applications of Data Analytics,2,0
+6,4,Creating a Data-Driven Culture,2,0
+7,4,Introduction to Cloud Computing,3,0
+8,1,Building a Cloud Strategy,3,0
+9,4,Cloud Security and Governance,3,0
+10,4,Optimizing Operations with the Cloud,3,0
+11,3,Managing Teams and Collaboration,4,0
+12,3,Delivering Value in Projects,4,0
+13,2,Fundamentals of Project Management,4,0
+14,2,Agile Project Management,4,0

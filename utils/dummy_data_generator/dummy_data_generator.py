@@ -49,7 +49,11 @@ def main():
     #     print(module)
     # for meeting in c_metings_modules:
     #     print(meeting)
-
+    # uf.object_table_table_to_csv(dval.cities, "./dummy_data/cities.csv")
+    # uf.object_table_table_to_csv(dval.countries, "./dummy_data/countries.csv")
+    # uf.object_table_table_to_csv(dval.languages, "./dummy_data/languages.csv")
+    # uf.object_table_table_to_csv(dval.module_types, "./dummy_data/module_types.csv")
+    # uf.object_table_table_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
     users = u_gen.generate_users_table()
     uf.object_table_table_to_csv(users, "./dummy_data/users.csv")
     employees, translators, translators_languages = e_gen.generate_employees_table()

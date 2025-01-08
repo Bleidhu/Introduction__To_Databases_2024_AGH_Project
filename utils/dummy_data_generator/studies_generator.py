@@ -57,7 +57,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         price = random.randint(50, 400)
         nonlocal last_study_date
         start_date = fk.date_between(start_date=last_study_date, end_date=last_study_date + STUDIES_INTERVAL)
-        tmp_study = db_model.Study(len(studies), cn.course_names[len(studies)][0], 
+        tmp_study = db_model.Study(len(studies)+1, cn.course_names[len(studies)][0], 
                                      cn.course_names[len(studies)][1], 
                                      start_date.isoformat(), 
                                      STUDY_STUDENTS_LIMIT, 
@@ -75,8 +75,8 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         
 
     def generate_study_module(study_id):
-        module_type = random.randint(0, len(dval.module_types) - 1)
-        tmp_module = db_model.StudyModule(len(study_modules), module_type, cn.course_names[study_id][2][len(study_modules)%6][0], study_id, 0)
+        module_type = random.randint(1, len(dval.module_types))
+        tmp_module = db_model.StudyModule(len(study_modules)+1, module_type, cn.course_names[study_id][2][len(study_modules)%6][0], study_id, 0)
         study_modules.append(tmp_module)
 
         generate_study_module_meetings(study_id, module_type, tmp_module.studies_module_id)
@@ -88,7 +88,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         meeting_type = module_type
 
         if(module_type == 3):
-            meeting_type = random.randint(0, len(dval.meeting_types) - 1)
+            meeting_type = random.randint(1, len(dval.meeting_types))
 
         meeting_date = fk.date_between_dates(date_start=last_meeting_date, date_end=last_meeting_date+datetime.timedelta(1)*random.randint(2,4))
         last_meeting_date = meeting_date + datetime.timedelta(1)
@@ -107,17 +107,17 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         duration = random.randint(1,4) * 45
         students_limit = 10
 
-        if(meeting_type == 0):
-            stationary_meeting = db_model.StudyStationaryMeeting(len(study_module_meetings_stationary), study_id, len(study_module_meetings)-1, 0)
+        if(meeting_type == 1):
+            stationary_meeting = db_model.StudyStationaryMeeting(len(study_module_meetings_stationary)+1, study_id, len(study_module_meetings), 0)
             study_module_meetings_stationary.append(stationary_meeting)
-        elif(meeting_type==1):
-            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings), study_id, len(study_module_meetings)-1, None, fk.url(), None)
+        elif(meeting_type==2):
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), None, fk.url(), None)
             study_sync_async_meetings.append(sync_meeting)
         else:
-            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings), study_id, len(study_module_meetings)-1, None, None, fk.url())
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), None, None, fk.url())
             study_sync_async_meetings.append(sync_meeting)
 
-        tmp_module_meeting = db_model.StudyModuleMeeting(len(study_module_meetings), 
+        tmp_module_meeting = db_model.StudyModuleMeeting(len(study_module_meetings)+1, 
                                                          study_id,   
                                                            meeting_date, language_id, 
                                                            translators_id, lecturer_id, 
