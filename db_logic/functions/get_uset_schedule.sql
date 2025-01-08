@@ -1,3 +1,5 @@
+-- dla podanego użytkownika zwraca jego harmonogram zajęć (ze studiów i kursów) w jednej tabeli
+
 CREATE FUNCTION get_user_schedule(@user_id INT)
     RETURNS TABLE
     AS

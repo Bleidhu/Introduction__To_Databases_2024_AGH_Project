@@ -1,3 +1,6 @@
+-- jesli uzytkownik ma jakies odrobione zajecia z tym samym tematem co przesłane to ustaw ze odrobil zajecia
+-- oraz odrobienia oznacz jako "zuzyte"
+
 CREATE PROCEDURE set_attendance_for_student_that_makeup_meeting @studies_id INT,
                                                                 @meeting_id INT,
                                                                 @user_id INT

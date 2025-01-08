@@ -1,4 +1,6 @@
-alter view dbo.number_of_orders_by_user as
+-- liczba zlozonych zamowien przez uzytkownika ?
+
+create view dbo.number_of_orders_by_user as
     with what_user_ordered as (select Orders.user_id,
                                       Order_details.order_detail_id
                                from Orders

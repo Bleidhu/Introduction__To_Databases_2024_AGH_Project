@@ -1,3 +1,5 @@
+-- zwraca sume kosztu danego zamówienia
+
 create procedure get_total_order_cost @order_id int
 as
 begin
