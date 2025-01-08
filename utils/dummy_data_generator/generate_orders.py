@@ -11,6 +11,7 @@ import course_names as cn
 import users_generation as u_gen
 import courses_generation as c_gen
 import studies_generator as s_gen
+import datetime
 fk = Faker()
 course_enrolled = []
 orders = []
@@ -48,8 +49,21 @@ def generate_enrolled_lists_for_courses(courses: List[db_model.Course],
         for i in range(course.students_limit): 
             course_enrolled[c_name].append(users_by_collisions[i][1])
 
-def generate_orders_from_course_enrolled(course_enrolled):
-    pass
+def generate_orders_from_course_enrolled(course_enrolled, courses: List[db_model.Course]):
+    for i, enrolled_users in enumerate(course_enrolled):
+        current_course = courses[i]
+        course_start_date = datetime.datetime.fromisoformat(current_course.start_date)
+        course_pay_before_Date = course_start_date + datetime.timedelta(14)
+
+        for user_id in enrolled_users:
+            tmp_order = db_model.Order(len(orders), user_id=user_id, is_paid=1, max_paid_date=course_pay_before_Date, paid_date=fk.date_between_dates(course_start_date, course_pay_before_Date))
+            tmp_order_detail = db_model.OrderDetail(len(order_details), tmp_order.order_id, 1)
+            tmp_order_webinar = db_model.OrderCourse(tmp_order_detail.order_detail_id, i, courses[i].price)
+
+            orders.append(tmp_order)
+            order_details.append(tmp_order_detail)
+            order_webinars.append(tmp_order_webinar)
+
 
 def generate_course_meetings_attendance_list_of_enrolled_students():
     pass
@@ -95,6 +109,13 @@ def main():
     generate_enrolled_lists_for_courses(courses, course_module_meetings, users)
 
     print(course_enrolled)
+
+    generate_orders_from_course_enrolled(course_enrolled, courses)
+    for o in orders:
+        print(o)
+        detail = list(filter(lambda x: x.order_id == o.order_id, order_details))
+        for d in detail:
+            print("    " + str(d))
 
     
 

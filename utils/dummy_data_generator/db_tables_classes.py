@@ -232,7 +232,7 @@ class Order:
         self.paid_date = paid_date
 
     def __str__(self):
-        return f"{self.order_id}, {self.user_id}, {self.is_paid}, {self.max_paid_date}"
+        return f"{self.order_id}, {self.user_id}, {self.is_paid}, {self.max_paid_date}, {self.paid_date}"
 
 
 class Study:
