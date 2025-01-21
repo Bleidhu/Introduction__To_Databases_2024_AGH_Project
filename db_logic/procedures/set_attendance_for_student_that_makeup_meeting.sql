@@ -30,10 +30,13 @@ BEGIN
             where meeting_id = @meeting_id
               and studies_id = @studies_id
               and user_id = @user_id;
+            return 0;
         end
     else
         begin
-            raiserror ('Student did not make up the meeting', 16, 1);
+--             jednak zwracanie succes/failure bo wykorzystujemy w check_user_attendance
+            return 1;
+--             raiserror ('Student did not make up the meeting', 16, 1);
 
         end
 
