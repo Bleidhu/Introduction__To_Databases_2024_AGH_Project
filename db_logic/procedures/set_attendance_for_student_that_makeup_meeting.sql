@@ -9,19 +9,33 @@ BEGIN
     declare @makeup_meeting_id INT;
     declare @topic_id INT;
 
-    select @topic_id = topic_id from Studies_module_meetings where meeting_id = @meeting_id and studies_id = @studies_id;
+    select @topic_id = topic_id
+    from Studies_module_meetings
+    where meeting_id = @meeting_id
+      and studies_id = @studies_id;
 
-    select top 1 @makeup_meeting_id = makeup_list_id from Studies_makeup_meeting_attendance_list smmal
-                                                              join Studies_module_meetings smm on smmal.meeting_id = smm.meeting_id and smmal.studies_id = smm.studies_id
-    where topic_id = @topic_id and user_id = @user_id and smmal.used = 0;
+    select top 1 @makeup_meeting_id = makeup_list_id
+    from Studies_makeup_meeting_attendance_list smmal
+             join Studies_module_meetings smm on smmal.meeting_id = smm.meeting_id and smmal.studies_id = smm.studies_id
+    where topic_id = @topic_id
+      and user_id = @user_id
+      and smmal.used = 0;
 
     if @makeup_meeting_id is not null
         begin
             update Studies_makeup_meeting_attendance_list set used = 1 where makeup_list_id = @makeup_meeting_id;
-            update Studies_meeting_attendance_list set did_makeup = 1 where meeting_id = @meeting_id and studies_id = @studies_id and user_id = @user_id;
+
+            update Studies_meeting_attendance_list
+            set did_makeup = 1
+            where meeting_id = @meeting_id
+              and studies_id = @studies_id
+              and user_id = @user_id;
         end
+    else
+        begin
+            raiserror ('Student did not make up the meeting', 16, 1);
 
-
+        end
 
 
 END;

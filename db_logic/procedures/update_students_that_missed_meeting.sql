@@ -1,6 +1,6 @@
 -- dla wszystkich użytkowników, którzy nie maja zaznaczonej obencości na zajęciach ustaw, że byli na nich nieobecni
 
-CREATE PROCEDURE check_for_students_that_missed_meeting @studies_id INT,
+CREATE PROCEDURE update_students_that_missed_meeting @studies_id INT,
                                                         @meeting_id INT
 AS
 BEGIN
