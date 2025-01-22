@@ -141,8 +141,7 @@ System zarządzający kursami i szkoleniami obsługuje różnorodne formy kszta�
  
 # Diagram bazy danych
 
-![diagram](./docs/images/diagram.png)
-
+![diagram.png](../images/diagram.png)
 [diagram w wersji svg](https://bleidhu.github.io/Introduction__To_Databases_2024_AGH_Project/images/diagram.svg)
 
 # Kod do generowania bazy danych:
@@ -873,34 +872,6 @@ CREATE TABLE topics_list
 ```
 ## Widoki w bazie danych
 
-### Wypisanie użytkowników, którzy ukończyli dane studia z wynikiem pozytywnym
-```sql
-create view dbo.check_if_user_passed as
-    select user_id, cast(1 as bit) as pass
-    from Users u
-    where not exists(select 1
-                     from Intership_meeting_attendance_list ia
-                     where u.user_id = ia.user_id
-                       and was_present = 0)
-      and ((select SUM(IIF(was_present = 1, 1, 0)) from Studies_meeting_attendance_list sa)
-        / (select count(was_present) from Studies_meeting_attendance_list sa)) >= 0.8
-      and (select grade from Exams e where e.user_id = u.user_id) >= 3.0
-    union
-    select user_id, cast(0 as bit) as pass
-    from Users u
-    where user_id not in (select user_id
-                          from Users u
-                          where not exists(select 1
-                                           from Intership_meeting_attendance_list ia
-                                           where u.user_id = ia.user_id
-                                             and was_present = 0)
-                            and ((select SUM(IIF(was_present = 1, 1, 0)) from Studies_meeting_attendance_list sa)
-                              / (select count(was_present) from Studies_meeting_attendance_list sa)) >= 0.8
-                            and (select grade from Exams e where e.user_id = u.user_id) >= 3.0)
-go
-
-
-```
 
 
 ### Liczba zamówień dla poszczególnych użytkowników
@@ -1005,11 +976,149 @@ go
 
 ## Procedury w bazie danych
 
+### Dodanie produktu do istniejącego zamówienia
+```sql
+-- dodanie produktu do ISTNIEJACEGO zamówienia
+create procedure add_product_to_order @order_id int, @product_id int, @product_type_id int
+as
+begin
+    declare @is_order_exists bit;
+    declare @is_product_exists bit;
+    declare @product_type varchar(50);
+    declare @product_price decimal(10, 2);
+    declare @order_detail_id int;
 
-### Sprawdzanie listy obecności dla kursu
+    -- Sprawdzenie, czy zamówienie istnieje
+    select @is_order_exists = case
+                                  when exists (select 1
+                                               from dbo.orders
+                                               where order_id = @order_id) then 1
+                                  else 0 end;
+
+--     sprawdzenie typu produktu
+    select @product_type = event_name from Event_types where type_id = @product_type_id;
+    if @product_type is null
+        begin
+            RAISERROR ('Nieprawidłowy typ produktu.', 16, 1);
+            return;
+        end
+
+--     jeśli zamówienie istnieje i typ produktu jest ok
+    if @is_order_exists = 1
+        begin
+            -- Sprawdzenie, czy produkt istnieje
+            select @is_product_exists = case
+                                            when @product_type = 'Webinar' then
+                                                IIF(exists (select 1
+                                                            from dbo.webinars
+                                                            where webinar_id = @product_id), 1, 0)
+                                            when @product_type = 'Course' then
+                                                IIF(exists (select 1
+                                                            from dbo.courses
+                                                            where course_id = @product_id), 1, 0)
+                                            when @product_type = 'Studies' then
+                                                IIF(exists (select 1
+                                                            from dbo.studies
+                                                            where studies_id = @product_id), 1, 0)
+                                            when @product_type = 'Study_Module' then
+                                                IIF(exists (select 1
+                                                            from dbo.Studies_Module
+                                                            where studies_module_id = @product_id), 1, 0)
+                                            else 0
+                end
+        end
+    else
+        begin
+            RAISERROR ('Zamówienie o podanym ID nie istnieje.', 16, 1);
+            return 0;
+        end
+
+--  jeśli produkt istnieje
+    if @is_product_exists = 1
+        begin
+            --             pobranie ceny produktu
+            select @product_price = case
+                                        when @product_type = 'Webinar' then
+                                                (select price from webinars where webinar_id = @product_id)
+                                        when @product_type = 'Course' then
+                                                (select price from courses where course_id = @product_id)
+                                        when @product_type = 'Studies' then
+                                                (select price from studies where studies_id = @product_id)
+                                        when @product_type = 'Study_Module' then
+                                            (select price_for_module
+                                             from Studies_Module
+                                             where studies_module_id = @product_id)
+                                        else 0
+                end
+
+--            dodanie produktu do order_details
+            insert into Order_details (order_id, type_id, price)
+            values (@order_id, @product_type_id, @product_price);
+            select @order_detail_id = SCOPE_IDENTITY();
+
+--           dodanie zakupu do odpowiedniej tabeli
+            if @product_type = 'Webinar'
+                begin
+                    --                     id z order_details i id webinaru
+                    insert into Order_webinars (order_detail_id, webinar_id)
+                    values ((select order_detail_id
+                             from Order_details
+                             where order_id = @order_id
+                               and type_id = @product_type_id), @product_id);
+                end
+
+--            jesli to kurs i dodatkowo czy są wolne miejsca
+            if @product_type = 'Course'
+                begin
+                    if dbo.check_course_places_left(@product_id) > 0
+                        begin
+                            insert into Order_course (order_detail_id, course_id)
+                            values (@order_detail_id, @product_id);
+                        end
+                    else
+                        begin
+                            RAISERROR ('Brak miejsc na kurs.', 16, 1);
+                            return;
+                        end
+                end
+
+
+            if @product_type = 'Studies'
+                begin
+                    if dbo.check_studies_places_left(@product_id) > 0
+                        begin
+                            insert into Order_studies (order_detail_id, studies_id)
+                            values (@order_detail_id, @product_id);
+                        end
+                    else
+                        begin
+                            RAISERROR ('Brak miejsc na studia.', 16, 1);
+                            return;
+                        end
+                end
+
+
+--             dla modułów bez limitu miejsc
+            if @product_type = 'Study_Module'
+                begin
+                    insert into Order_module_studies (order_detail_id, module_id)
+                    values (@order_detail_id, @product_id);
+                end
+        end
+    else
+        begin
+            RAISERROR ('Produkt o podanym ID nie istnieje.', 16, 1);
+            return;
+        end
+    select * from Order_details where order_id = @order_id;
+end
+```
+
+
+### Sprawdzanie listy obecności dla kursu (sprawdzanie przez prowadzącego)
 
 ```sql
-CREATE PROCEDURE check_course_attendance @user_id INT,
+CREATE PROCEDURE update_course_attendance @user_id INT,
                                          @course_id INT,
                                          @meeting_id INT
 AS
@@ -1034,10 +1143,10 @@ BEGIN
 END;
 ```
 
-### Odnajdywanie studentów, którzy nie byli obecni na spotkaniu
+### Dla wszystkich użytkowników, którzy nie maja zaznaczonej obencości na zajęciach ustaw, że byli na nich nieobecni
 
 ```sql
-CREATE PROCEDURE check_for_students_that_missed_meeting @studies_id INT,
+CREATE PROCEDURE update_students_that_missed_meeting @studies_id INT,
                                                         @meeting_id INT
 AS
 BEGIN
@@ -1103,6 +1212,9 @@ end
 
 ### Ustawianie obecności dla studenta
 ```sql
+-- jesli uzytkownik ma jakies odrobione zajecia z tym samym tematem co przesłane to ustaw ze odrobil zajecia
+-- oraz odrobienia oznacz jako "zuzyte"
+
 CREATE PROCEDURE set_attendance_for_student_that_makeup_meeting @studies_id INT,
                                                                 @meeting_id INT,
                                                                 @user_id INT
@@ -1111,19 +1223,36 @@ BEGIN
     declare @makeup_meeting_id INT;
     declare @topic_id INT;
 
-    select @topic_id = topic_id from Studies_module_meetings where meeting_id = @meeting_id and studies_id = @studies_id;
+    select @topic_id = topic_id
+    from Studies_module_meetings
+    where meeting_id = @meeting_id
+      and studies_id = @studies_id;
 
-    select top 1 @makeup_meeting_id = makeup_list_id from Studies_makeup_meeting_attendance_list smmal
-                                                              join Studies_module_meetings smm on smmal.meeting_id = smm.meeting_id and smmal.studies_id = smm.studies_id
-    where topic_id = @topic_id and user_id = @user_id and smmal.used = 0;
+    select top 1 @makeup_meeting_id = makeup_list_id
+    from Studies_makeup_meeting_attendance_list smmal
+             join Studies_module_meetings smm on smmal.meeting_id = smm.meeting_id and smmal.studies_id = smm.studies_id
+    where topic_id = @topic_id
+      and user_id = @user_id
+      and smmal.used = 0;
 
     if @makeup_meeting_id is not null
         begin
             update Studies_makeup_meeting_attendance_list set used = 1 where makeup_list_id = @makeup_meeting_id;
-            update Studies_meeting_attendance_list set did_makeup = 1 where meeting_id = @meeting_id and studies_id = @studies_id and user_id = @user_id;
+
+            update Studies_meeting_attendance_list
+            set did_makeup = 1
+            where meeting_id = @meeting_id
+              and studies_id = @studies_id
+              and user_id = @user_id;
+            return 0;
         end
+    else
+        begin
+--             jednak zwracanie succes/failure bo wykorzystujemy w check_user_attendance
+            return 1;
+--             raiserror ('Student did not make up the meeting', 16, 1);
 
-
+        end
 
 
 END;
@@ -1365,7 +1494,97 @@ BEGIN
 END;
 
 ``` 
+
+### sprawdz % frekwencji danego studenta na zajeciach (wersja procedura, funckja - nizej)
+```sql
+
+create procedure get_user_attendance_procedure  @studies_id int, @user_id int, @result float output
+as
+begin
+    declare @meeting_id int;
+    declare @was_present bit;
+    declare @did_makeup bit;
+    declare @total_meetings int = 0;
+    declare @present_meetings int = 0;
+
+    declare @status int;
+
+    declare attendance_cursor cursor for
+        select meeting_id, was_present, did_makeup
+        from Studies_meeting_attendance_list
+        where studies_id = @studies_id
+          and user_id = @user_id;
+
+--     dla kazdego rekordu w attendance_list sprawdz czy student byl obecny, jesli nie to sprawdz czy odrobil zajecia
+    open attendance_cursor;
+    fetch next from attendance_cursor into @meeting_id, @was_present, @did_makeup;
+    while @@fetch_status = 0
+        begin
+            if @was_present = 1
+                set @present_meetings = @present_meetings + 1;
+            else
+                if @did_makeup = 1
+                    set @present_meetings = @present_meetings + 1;
+                else
+                    begin
+                        --   jesli student nie byl obecny i nie odrobil zajec to sprawdz czy ma odrobione zajecia
+                        exec @status = set_attendance_for_student_that_makeup_meeting
+                                    @studies_id,
+                                    @meeting_id,
+                                       @user_id;
+                        if @status = 0
+                            begin
+                                set @present_meetings = @present_meetings + 1;
+                            end
+
+                    end
+            set @total_meetings = @total_meetings + 1;
+            fetch next from attendance_cursor into @meeting_id, @was_present, @did_makeup;
+        end
+    close attendance_cursor;
+    deallocate attendance_cursor;
+
+    if @total_meetings = 0
+        set @result = 0;
+    else
+        set @result = @present_meetings / @total_meetings;
+end
+```
+
 ## Funkcje w bazie danych
+
+### Sprawdz frekwencje studenta na studiach
+```sql
+CREATE FUNCTION get_user_attendance_percentage
+(
+    @studies_id INT,
+    @user_id INT
+)
+    RETURNS FLOAT
+AS
+BEGIN
+    DECLARE @total_meetings INT;
+    DECLARE @present_meetings INT;
+
+    SELECT @total_meetings = COUNT(*)
+    FROM Studies_module_meetings
+    WHERE studies_id = @studies_id;
+
+    SELECT @present_meetings = COUNT(*)
+    FROM Studies_meeting_attendance_list
+    WHERE studies_id = @studies_id
+      AND user_id = @user_id
+      AND (was_present = 1 OR did_makeup = 1);
+
+    -- Jeśli brak spotkań, zwróć 0 (unikamy dzielenia przez 0)
+    IF @total_meetings = 0
+        RETURN 0;
+
+    -- Zwróć procent obecności
+    RETURN CAST(@present_meetings AS FLOAT) / CAST(@total_meetings AS FLOAT) * 100;
+END;
+
+```
 
 ### Obliczanie średniej oceny dla użytkownika
 ```sql
@@ -1446,3 +1665,109 @@ go
 
 ```
 
+### Sprawdzenie pozostałych miejsc na kursie 
+```sql
+create function check_course_places_left(@course_id int)
+    returns int as
+begin
+    declare @limit int;
+    declare @result int;
+select @limit = students_limit from Courses where course_id = @course_id;
+select @result = @limit - (select count(*) from courses_enrolled_list where course_id = @course_id);
+return @result;
+end
+```
+
+### Sprawdzenie pozostałych miejsc na studiach
+```sql
+create function check_studies_places_left(@studies_id int)
+    returns int as
+begin
+    declare @limit int;
+    declare @result int;
+select @limit = students_limit from Studies where studies_id = @studies_id;
+select @result = @limit - (select count(*) from studies_enrolled_list sel where studies_id = @studies_id);
+return @result;
+end
+```
+
+## Trigery
+
+### Po dodaniu produktu do zamówienia, zaaktualizuj maksymalna date zapłaty, na 3 dni przed startem
+```sql
+create trigger update_order_pay_date
+    on Order_details
+    after insert
+    as
+begin
+    declare @order_id int;
+    declare @product_type_id int;
+    declare @product_type varchar(50);
+    declare @product_id int;
+    declare @order_detail_id int;
+    declare @start_date date;
+
+    select @order_id = order_id, @product_type_id = type_id, @order_detail_id = order_detail_id
+    from inserted;
+
+    select @product_type = case
+                               when @product_type_id = 1 then 'Webinar'
+                               when @product_type_id = 2 then 'Course'
+                               when @product_type_id = 3 then 'Studies'
+                               when @product_type_id = 4 then 'Study_Module'
+                               else 'Unknown'
+                           end;
+
+    if @product_type = 'Course'
+        begin
+            select @product_id = course_id
+            from Order_course
+            where order_detail_id = @order_detail_id;
+
+            select @start_date = start_date
+            from Courses
+            where course_id = @product_id;
+        end
+    else if @product_type = 'Studies'
+        begin
+            select @product_id = studies_id
+            from Order_studies
+            where order_detail_id = @order_detail_id;
+
+            select @start_date = start_date
+            from Studies
+            where studies_id = @product_id;
+        end
+    else if @product_type = 'Webinar'
+        begin
+            select @product_id = webinar_id
+            from Order_webinars
+            where order_detail_id = @order_detail_id;
+
+            select @start_date = start_date
+            from Webinars
+            where webinar_id = @product_id;
+        end
+    else if @product_type = 'Study_Module'
+        begin
+            select @product_id = module_id
+            from Order_module_studies
+            where order_detail_id = @order_detail_id;
+
+
+            select @start_date = min(meeting_date) from Studies_module_meetings
+            where module_id = @product_id
+            end
+    else
+        begin
+            RAISERROR ('Nieznany typ produktu.', 16, 1);
+            return;
+        end
+
+
+    update Orders
+    set max_paid_date = dateadd(day, -3, @start_date)
+    where order_id = @order_id
+      and max_paid_date < dateadd(day, -3, @start_date) ;
+end
+```
