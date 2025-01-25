@@ -11,6 +11,7 @@ begin
     declare @order_detail_id int;
 
     begin TRY
+        set transaction isolation level serializable;
         begin transaction;
         -- Sprawdzenie, czy zamówienie istnieje
         select @is_order_exists = case

@@ -5,16 +5,12 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-    DECLARE @old_limit INT;
     DECLARE @current_enrolled_students INT;
 
     SELECT @current_enrolled_students = COUNT(*)
     FROM Order_studies
     WHERE studies_id = @studies_id;
 
-    SELECT @old_limit = place_limit
-    FROM Studies_module_meetings
-    WHERE studies_id = @studies_id;
 
     IF @new_limit < @current_enrolled_students
     BEGIN
