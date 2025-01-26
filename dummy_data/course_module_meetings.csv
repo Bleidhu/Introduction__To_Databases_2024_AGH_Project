@@ -1,44 +1,26 @@
 course_id,meeting_id,meeting_date,language_id,translator_id,lecturer_id,duration,place_limit,module_id,meeting_type_id,meeting_name
-1,1,2022-10-18,1,,11,00:00:00,10,1,2,Introduction to Cybersecurity Frameworks
-1,2,2022-10-20,2,2,12,00:00:00,10,1,2,NIST Cybersecurity Framework Overview
-1,3,2022-10-24,1,,14,00:00:00,10,1,2,ISO 27001 Standards
-2,4,2022-11-24,1,,14,00:00:00,10,2,1,Correlation vs. Causation
-2,5,2022-11-28,2,0,2,00:00:00,10,2,3,Hypothesis Testing Basics
-2,6,2022-11-29,1,,12,00:00:00,10,2,1,Understanding Regression Analysis
-2,7,2022-11-30,1,,13,00:00:00,10,2,1,Predictive Analytics Overview
-2,8,2022-12-02,1,,4,00:00:00,10,2,3,Identifying Outliers and Anomalies
-2,9,2022-12-06,1,,13,00:00:00,10,2,2,Statistical Tools for Business Applications
-2,10,2022-12-08,1,,7,00:00:00,10,2,2,Interpreting Statistical Results
-2,11,2022-12-11,1,,15,00:00:00,10,2,1,Introduction to Descriptive Statistics
-3,12,2022-12-31,1,,11,00:00:00,10,3,3,Cloud Automation and Orchestration
-3,13,2023-01-01,1,1,7,00:00:00,10,3,1,Using Cloud for Application Development
-3,14,2023-01-02,1,,1,00:00:00,10,3,1,Cost Management in the Cloud
-3,15,2023-01-03,1,,2,00:00:00,10,3,3,Performance Optimization Techniques
-3,16,2023-01-04,2,0,14,00:00:00,10,3,2,Implementing Backup and Disaster Recovery
-3,17,2023-01-08,1,4,2,00:00:00,10,4,1,IoT and the Cloud: A Perfect Match
-3,18,2023-01-09,2,0,2,00:00:00,10,4,2,Exploring Edge Computing
-3,19,2023-01-10,1,,2,00:00:00,10,4,2,Competitive Advantage with Cloud Technology
-3,20,2023-01-13,2,2,3,00:00:00,10,4,1,Future Opportunities in Cloud Innovation
-3,21,2023-01-16,2,1,1,00:00:00,10,5,2,Change Management in Cloud Adoption
-3,22,2023-01-17,1,,13,00:00:00,10,5,1,Training Teams for Cloud Proficiency
-3,23,2023-01-18,1,,3,00:00:00,10,5,2,Collaboration Between IT and Business Units
-4,24,2023-02-04,1,,13,00:00:00,10,6,1,Key Skills for Project Managers
-4,25,2023-02-05,1,,2,00:00:00,10,6,1,Initiating a Project Successfully
-4,26,2023-02-06,1,2,4,00:00:00,10,6,1,"Understanding Scope, Time, and Cost"
-4,27,2023-02-07,2,0,7,00:00:00,10,6,1,Communication in Project Teams
-4,28,2023-02-11,1,,11,00:00:00,10,6,1,Stakeholder Identification and Engagement
-4,29,2023-02-12,2,0,15,00:00:00,10,7,1,Adapting Agile for Large Organizations
-4,30,2023-02-14,1,,15,00:00:00,10,7,1,Case Studies in Agile Project Success
-4,31,2023-02-16,1,,11,00:00:00,10,7,1,Introduction to Agile Methodologies
-4,32,2023-02-18,1,,1,00:00:00,10,8,3,Choosing the Right Tool for Your Team
-4,33,2023-02-21,1,,7,00:00:00,10,8,3,Using Gantt Charts for Planning
-4,34,2023-02-24,1,3,1,00:00:00,10,8,3,Leveraging Collaboration Tools
-4,35,2023-02-25,1,2,13,00:00:00,10,8,3,Tracking Progress with Dashboards
-4,36,2023-02-27,1,,13,00:00:00,10,9,1,Monitoring Risks Throughout the Project
-4,37,2023-03-03,1,,15,00:00:00,10,9,1,Tools for Risk Assessment
-4,38,2023-03-04,1,,4,00:00:00,10,9,1,Managing Crisis Situations
-4,39,2023-03-05,2,2,15,00:00:00,10,9,1,Lessons Learned from Real-Life Failures
-4,40,2023-03-06,1,,1,00:00:00,10,9,1,Building Resilience in Projects
-4,41,2023-03-07,2,1,11,00:00:00,10,9,1,Understanding Risk in Projects
-4,42,2023-03-08,2,1,13,00:00:00,10,9,1,Identifying Common Project Risks
-4,43,2023-03-11,1,,3,00:00:00,10,9,1,Building a Risk Management Plan
+1,1,2022-10-18,1,4,4,00:00:00,10,1,2,Introduction to Cybersecurity Frameworks
+1,2,2022-10-19,2,4,6,00:00:00,10,1,2,NIST Cybersecurity Framework Overview
+1,3,2022-10-22,1,,5,00:00:00,10,1,2,ISO 27001 Standards
+1,4,2022-10-24,1,0,13,00:00:00,10,1,2,Establishing Policies and Procedures
+1,5,2022-10-27,1,2,13,00:00:00,10,1,2,Identifying Critical Assets
+1,6,2022-10-29,1,,9,00:00:00,10,1,2,Setting Access Controls
+2,7,2022-12-05,1,,9,00:00:00,10,2,3,Predictive Analytics Overview
+2,8,2022-12-07,2,1,11,00:00:00,10,2,3,Identifying Outliers and Anomalies
+2,9,2022-12-10,1,1,15,00:00:00,10,2,3,Statistical Tools for Business Applications
+2,10,2022-12-11,1,,13,00:00:00,10,2,3,Interpreting Statistical Results
+2,11,2022-12-15,1,,14,00:00:00,10,2,3,Introduction to Descriptive Statistics
+2,12,2022-12-19,1,,4,00:00:00,10,2,3,"Understanding Mean, Median, and Mode"
+2,13,2022-12-20,1,,6,00:00:00,10,2,3,Basics of Variability and Standard Deviation
+2,14,2022-12-22,1,,1,00:00:00,10,3,3,Forecasting with Time Series Analysis
+2,15,2022-12-24,2,2,15,00:00:00,10,3,3,Sentiment Analysis for Customer Feedback
+2,16,2022-12-26,1,,4,00:00:00,10,3,3,Text Analytics for Unstructured Data
+2,17,2022-12-28,1,,15,00:00:00,10,3,3,Deep Learning Basics for Business Use
+2,18,2022-12-31,1,2,14,00:00:00,10,3,3,Real-Time Analytics Applications
+3,19,2023-01-14,1,,15,00:00:00,10,4,3,Competitive Advantage with Cloud Technology
+3,20,2023-01-15,1,3,4,00:00:00,10,4,3,Future Opportunities in Cloud Innovation
+3,21,2023-01-18,1,,15,00:00:00,10,4,3,Driving Innovation with Cloud Computing
+3,22,2023-01-20,1,,11,00:00:00,10,4,3,Cloud-Based Artificial Intelligence Applications
+3,23,2023-01-24,1,,15,00:00:00,10,4,3,Enhancing Customer Experience with Cloud Solutions
+4,24,2023-02-05,2,4,14,00:00:00,10,5,1,Stakeholder Expectations Management
+4,25,2023-02-07,1,,9,00:00:00,10,5,1,Measuring Project Success

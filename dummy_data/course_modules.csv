@@ -1,10 +1,6 @@
 module_id,module_type_id,module_name,course_id
 1,2,Introduction to Cybersecurity,1
-2,4,Exploring and Visualizing Data,2
-3,4,Cloud Security and Governance,3
-4,4,Optimizing Operations with the Cloud,3
-5,4,Innovation and Growth Through Cloud Technology,3
-6,1,Delivering Value in Projects,4
-7,1,Fundamentals of Project Management,4
-8,3,Agile Project Management,4
-9,1,Tools and Technologies for Modern Project Management,4
+2,3,Exploring and Visualizing Data,2
+3,3,Statistical Analysis for Business Insights,2
+4,3,Optimizing Operations with the Cloud,3
+5,1,Managing Teams and Collaboration,4

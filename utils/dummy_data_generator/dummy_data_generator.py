@@ -56,7 +56,10 @@ def main():
     # uf.object_table_table_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
     needs_to_be_generated = {'users': False, 
                              'employees': False, 
-                             'webinars': False,}
+                             'webinars': False,
+                             'courses': False,
+                             'studies': True,
+                             'orders': False}
     users = []
     if(needs_to_be_generated.get('users')):
         users = u_gen.generate_users_table()
@@ -114,20 +117,104 @@ def main():
                                            row['recording_link'],
                                        row['start_date'])
                 webinars.append(webinar)
+    courses = []
+    course_modules = []
+    course_module_meetings = []
+    stationary_meetings = []
+    sync_async_meetings = []
+    if(needs_to_be_generated.get('courses')):
+        courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = c_gen.generate_courses(webinars, employees, translators, translators_languages)
+        uf.object_table_table_to_csv(courses, "./dummy_data/courses.csv")
+        uf.object_table_table_to_csv(course_modules, "./dummy_data/course_modules.csv")
+        uf.object_table_table_to_csv(course_module_meetings, "./dummy_data/course_module_meetings.csv")
+        uf.object_table_table_to_csv(stationary_meetings, "./dummy_data/stationary_meetings.csv")
+        uf.object_table_table_to_csv(sync_async_meetings, "./dummy_data/sync_async_meetings.csv")
+    else:
+        with open("./dummy_data/courses.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                course = db_model.Course(int(row['course_id']), row['course_name'], row['course_description'], 
+                                        datetime.date.fromisoformat(row['start_date']), int(row['students_limit']), int(row['price']), int(row['course_coordinator_id']),
+                                    datetime.date.fromisoformat(row['visible_from']))
+                courses.append(course)
+        with open("./dummy_data/course_modules.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                module = db_model.CourseModules(int(row['module_id']), int(row['module_type_id']), row['module_name'], int(row['course_id']))
+                course_modules.append(module)
+        with open("./dummy_data/course_module_meetings.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                meeting = db_model.CourseModuleMeetings(int(row['course_id']), int(row['meeting_id']), row['meeting_date'], int(row['language_id']), int(row['translator_id']) if row['translator_id'] != '' else None, int(row['lecturer_id']), int(row['duration']), int(row['place_limit']), int(row['module_id']), int(row['meeting_type_id']), row['meeting_name'] )
+                course_module_meetings.append(meeting)
+        with open("./dummy_data/stationary_meetings.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                meeting = db_model.CourseStationaryMeeting(int(row['id']), int(row['course_id']), int(row['meeting_id']), int(row['classrom']) )
+                stationary_meetings.append(meeting)
+        with open("./dummy_data/sync_async_meetings.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                meeting = db_model.CourseSyncAsyncMeeting(int(row['id']), int(row['course_id']), int(row['meeting_id']), row['acces_to'], row['video_link'], row['stream_link'])
+                sync_async_meetings.append(meeting)
    
-    courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = c_gen.generate_courses(webinars, employees, translators, translators_languages)
-    uf.object_table_table_to_csv(courses, "./dummy_data/courses.csv")
-    uf.object_table_table_to_csv(course_modules, "./dummy_data/course_modules.csv")
-    uf.object_table_table_to_csv(course_module_meetings, "./dummy_data/course_module_meetings.csv")
-    uf.object_table_table_to_csv(stationary_meetings, "./dummy_data/stationary_meetings.csv")
-    uf.object_table_table_to_csv(sync_async_meetings, "./dummy_data/sync_async_meetings.csv")
-    studies, study_modules, study_module_meetings, study_internships,  study_stationary_meetings, study_sync_async_meetings = s_gen.generate_studies(webinars, course_module_meetings, employees, translators, translators_languages)
-    uf.object_table_table_to_csv(studies, "./dummy_data/studies.csv")
-    uf.object_table_table_to_csv(study_modules, "./dummy_data/study_modules.csv")
-    uf.object_table_table_to_csv(study_module_meetings, "./dummy_data/study_module_meetings.csv")
-    uf.object_table_table_to_csv(study_internships, "./dummy_data/study_internships.csv")
-    uf.object_table_table_to_csv(study_stationary_meetings, "./dummy_data/study_stationary_meetings.csv")
-    uf.object_table_table_to_csv(study_sync_async_meetings, "./dummy_data/study_sync_async_meetings.csv")
+    studies = []
+    study_modules = []
+    study_module_meetings = []
+    study_internships = []
+    study_stationary_meetings = []
+    study_sync_async_meetings = []
+    if(needs_to_be_generated.get('courses')):
+            studies, study_modules, study_module_meetings, study_internships,  study_stationary_meetings, study_sync_async_meetings = s_gen.generate_studies(webinars, course_module_meetings, employees, translators, translators_languages)
+            uf.object_table_table_to_csv(studies, "./dummy_data/studies.csv")
+            uf.object_table_table_to_csv(study_modules, "./dummy_data/study_modules.csv")
+            uf.object_table_table_to_csv(study_module_meetings, "./dummy_data/study_module_meetings.csv")
+            uf.object_table_table_to_csv(study_internships, "./dummy_data/study_internships.csv")
+            uf.object_table_table_to_csv(study_stationary_meetings, "./dummy_data/study_stationary_meetings.csv")
+            uf.object_table_table_to_csv(study_sync_async_meetings, "./dummy_data/study_sync_async_meetings.csv")
+    else:
+        with open("./dummy_data/studies.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                study = db_model.Study(int(row['study_id']), row['studies_name'], row['studies_descritpion'], datetime.date.fromisoformat(row['start_date']), int(row['students_limit']), int(row['price']), int(row['studies_coordinator_id']), datetime.date.fromisoformat(row['visible_from']))
+                studies.append(study)
+        with open("./dummy_data/stude_modules.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                module = db_model.StudyModule(int(row['studies_module_id']), int(row['module_type_id']), row['module_name'], int(row['studies_id']), int(row['price_for_module']))
+                study_modules.append(module)
+        with open("./dummy_data/study_module_meetings.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                meeting = db_model.StudyModuleMeeting(int(row['meeting_id']), int(row['studies_id']), row['meeting_date'], int(row['language_id']), int(row['translator_id']), int(row['lecturer_id']), int(row['duration']), int(row['place_limit']), int(row['module_id']), int(row['topic_id']), row['meeting_name'], int(row['meeting_type_id']))
+                study_module_meetings.append(meeting)
+        with open("./dummy_data/study_stationary_meetings.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                meeting = db_model.CourseStationaryMeeting(int(row['id']), int(row['studies_id']), int(row['meeting_id']), int(row['classrom']) )
+                study_stationary_meetings.append(meeting)
+        with open("./dummy_data/study_sync_async_meetings.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                meeting = db_model.StudySyncAsyncMeeting(int(row['id']), int(row['studies_id']), int(row['meeting_id']), datetime.date.fromisoformat(row['acces_to']), row['video_link'], row['stream_link'])
+                study_sync_async_meetings.append(meeting)
+        with open("./dummy_data/study_internships.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                internship = db_model.InternshipMeeting(int(row['studies_id']), int(row['inter_meeting_id']), datetime.date.fromisoformat(row['meeting_date']))
+                study_internships.append(internship)
+
     
     orders, orders_details, orders_courses, orders_studies, course_attendace =  o_gen.generate_orders(courses, course_module_meetings, users, studies, study_module_meetings, study_internships)
     uf.object_table_table_to_csv(orders, "./dummy_data/orders.csv")

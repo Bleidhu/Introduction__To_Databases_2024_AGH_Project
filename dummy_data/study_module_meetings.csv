@@ -1,20 +1,50 @@
 meeting_id,studies_id,meeting_date,language_id,translator_id,lecturer_id,duration,place_limit,module_id,topic_id,meeting_name,meeting_type_id
-1,1,2022-10-12,0,,12,135,10,1,0,Introduction to Cybersecurity Frameworks,2
-2,1,2022-10-14,2,1,3,45,10,2,0,Firewalls and Their Importance,1
-3,1,2022-10-17,0,,14,45,10,2,0,Securing Wireless Networks,1
-4,1,2022-10-19,2,0,13,90,10,2,0,Virtual Private Networks (VPNs),1
-5,1,2022-10-22,0,,7,135,10,2,0,Intrusion Detection Systems (IDS),1
-6,2,2022-12-07,0,,3,90,10,3,0,Text Analytics for Unstructured Data,1
-7,2,2022-12-08,1,4,13,90,10,3,0,Deep Learning Basics for Business Use,3
-8,2,2022-12-10,0,,2,90,10,3,0,Real-Time Analytics Applications,3
-9,2,2022-12-12,0,,14,180,10,3,0,Understanding Model Accuracy and Bias,1
-10,2,2022-12-13,1,0,12,135,10,3,0,Challenges in Implementing Advanced Analytics,2
-11,2,2022-12-16,1,2,12,45,10,4,0,Marketing Analytics for Campaign Optimization,1
-12,2,2022-12-19,0,,14,45,10,4,0,Sales Forecasting with Data,1
-13,2,2022-12-21,2,0,3,135,10,4,0,Customer Retention Analysis,1
-14,2,2022-12-23,2,2,13,135,10,4,0,Supply Chain Optimization through Data,1
-15,2,2022-12-26,0,,13,180,10,4,0,Financial Analytics for Budgeting,1
-16,2,2022-12-28,1,0,15,135,10,4,0,Human Resources Analytics,1
-17,3,2023-01-15,0,,1,135,10,5,0,Cloud Analytics for Decision Making,1
-18,4,2023-02-16,1,1,14,90,10,6,0,Stakeholder Identification and Engagement,3
-19,4,2023-02-17,0,,11,90,10,6,0,Risk Identification and Mitigation,1
+1,1,2022-10-17,1,1,15,180,10,1,0,Introduction to Cybersecurity Frameworks,1
+2,1,2022-10-18,0,,6,180,10,1,0,NIST Cybersecurity Framework Overview,1
+3,1,2022-10-20,0,,10,45,10,1,0,ISO 27001 Standards,1
+4,1,2022-10-24,0,,4,135,10,1,0,Establishing Policies and Procedures,1
+5,1,2022-10-27,0,,11,45,10,1,0,Identifying Critical Assets,1
+6,1,2022-10-31,0,,9,180,10,1,0,Setting Access Controls,1
+7,1,2022-11-03,0,,1,135,10,1,0,Incident Response Planning,1
+8,1,2022-11-05,0,,11,90,10,2,0,Network Encryption Basics,2
+9,2,2022-12-15,2,4,14,90,10,3,0,Understanding Model Accuracy and Bias,2
+10,2,2022-12-18,2,4,14,45,10,3,0,Challenges in Implementing Advanced Analytics,2
+11,2,2022-12-20,0,,7,45,10,3,0,Introduction to Machine Learning for Analytics,2
+12,2,2022-12-21,1,3,15,135,10,3,0,Supervised vs. Unsupervised Learning,2
+13,2,2022-12-24,0,,1,90,10,3,0,Clustering Techniques for Market Segmentation,2
+14,2,2022-12-27,2,2,11,180,10,3,0,Forecasting with Time Series Analysis,2
+15,3,2023-01-19,0,,11,135,10,4,0,Scaling Businesses with the Cloud,1
+16,3,2023-01-20,0,,10,180,10,4,0,Creating New Revenue Streams with Cloud Services,1
+17,3,2023-01-21,2,4,6,45,10,4,0,IoT and the Cloud: A Perfect Match,1
+18,3,2023-01-24,1,2,9,180,10,4,0,Exploring Edge Computing,1
+19,3,2023-01-25,1,0,15,135,10,5,0,Scaling Operations Post-Migration,2
+20,3,2023-01-27,0,,11,90,10,5,0,Sustaining Success in a Cloud-Driven World,2
+21,3,2023-01-28,1,4,4,180,10,5,0,Change Management in Cloud Adoption,2
+22,3,2023-01-30,0,,10,180,10,6,0,Evolution of Cloud Technology,3
+23,3,2023-02-02,1,2,1,45,10,6,0,"Types of Cloud Computing (IaaS, PaaS, SaaS)",3
+24,3,2023-02-04,1,0,14,135,10,6,0,Benefits of Cloud for Businesses,3
+25,3,2023-02-05,1,3,9,180,10,6,0,Challenges and Risks of Cloud Adoption,3
+26,3,2023-02-06,1,2,5,45,10,6,0,"Public, Private, and Hybrid Clouds",3
+27,3,2023-02-09,0,,6,180,10,6,0,Cloud Service Providers Overview,3
+28,3,2023-02-12,0,,13,90,10,6,0,Key Concepts: Virtualization and Containers,3
+29,4,2023-02-20,1,1,10,135,10,7,0,Adapting Agile for Large Organizations,2
+30,4,2023-02-21,0,,1,135,10,7,0,Case Studies in Agile Project Success,2
+31,4,2023-02-23,1,0,10,45,10,7,0,Introduction to Agile Methodologies,2
+32,4,2023-02-27,2,1,4,180,10,7,0,Understanding Scrum Framework,2
+33,4,2023-03-02,1,3,5,135,10,7,0,Kanban for Visualizing Workflows,2
+34,4,2023-03-05,2,1,5,180,10,7,0,Roles in Agile Teams,2
+35,4,2023-03-06,0,,6,90,10,7,0,Sprint Planning and Execution,2
+36,4,2023-03-07,1,1,4,90,10,7,0,Backlog Prioritization Techniques,2
+37,4,2023-03-10,1,4,7,135,10,7,0,Monitoring Progress with Agile Metrics,2
+38,4,2023-03-12,0,,4,135,10,7,0,Conducting Retrospectives,2
+39,4,2023-03-14,2,4,9,45,10,8,0,Mobile Project Management Solutions,2
+40,4,2023-03-18,0,,13,90,10,8,0,Future Trends in Project Management Tools,3
+41,4,2023-03-21,2,1,4,45,10,9,0,Understanding Risk in Projects,3
+42,4,2023-03-23,0,,4,45,10,9,0,Identifying Common Project Risks,3
+43,4,2023-03-25,0,,14,45,10,9,0,Building a Risk Management Plan,3
+44,4,2023-03-26,1,0,4,90,10,9,0,Quantifying Risks with Impact Analysis,3
+45,4,2023-03-28,0,,15,180,10,9,0,Proactive Risk Mitigation Strategies,3
+46,4,2023-03-29,0,,14,135,10,9,0,Monitoring Risks Throughout the Project,3
+47,4,2023-04-02,0,,13,90,10,9,0,Tools for Risk Assessment,3
+48,4,2023-04-05,1,2,13,135,10,9,0,Managing Crisis Situations,3
+49,4,2023-04-06,2,1,5,135,10,9,0,Lessons Learned from Real-Life Failures,3
