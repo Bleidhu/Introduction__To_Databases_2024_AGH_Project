@@ -1,3 +1,4 @@
+-- Sprawdza średnią ocenę w egzaminie dla danego przedmiotu, I guess
 create function get_average_grade_in_exam(@studies_id int)
     returns float
 as
@@ -7,5 +8,3 @@ begin
     return @average;
 end
 go
-
-select * from get_average_grade_in_exam(1)
