@@ -59,7 +59,7 @@ def main():
                              'employees': False, 
                              'webinars': False,
                              'courses': False,
-                             'studies': True,
+                             'studies': False,
                              'orders': True}
     if(needs_to_be_generated.get('defaults')):
         uf.dict_to_csv(dval.cities, "./dummy_data/cities.csv")
@@ -131,7 +131,7 @@ def main():
     course_module_meetings = []
     stationary_meetings = []
     sync_async_meetings = []
-    if(needs_to_be_generated.get('studies')):
+    if(needs_to_be_generated.get('courses')):
         courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = c_gen.generate_courses(webinars, employees, translators, translators_languages)
         uf.object_table_table_to_csv(courses, "./dummy_data/courses.csv")
         uf.object_table_table_to_csv(course_modules, "./dummy_data/course_modules.csv")
@@ -157,19 +157,19 @@ def main():
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
-                meeting = db_model.CourseModuleMeetings(int(row['course_id']), int(row['meeting_id']), row['meeting_date'], int(row['language_id']), int(row['translator_id']) if row['translator_id'] != '' else None, int(row['lecturer_id']), int(row['duration']), int(row['place_limit']), int(row['module_id']), int(row['meeting_type_id']), row['meeting_name'] )
+                meeting = db_model.CourseModuleMeetings(int(row['course_id']), int(row['meeting_id']), row['meeting_date'], int(row['language_id']), int(row['translator_id']) if row['translator_id'] != '' else None, int(row['lecturer_id']), datetime.time.fromisoformat(row['duration']), int(row['place_limit']), int(row['module_id']), int(row['meeting_type_id']), row['meeting_name'] )
                 course_module_meetings.append(meeting)
         with open("./dummy_data/stationary_meetings.csv", mode='r') as file:
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
-                meeting = db_model.CourseStationaryMeeting(int(row['id']), int(row['course_id']), int(row['meeting_id']), int(row['classrom']) )
+                meeting = db_model.CourseStationaryMeeting(int(row['id']), int(row['course_id']), int(row['meeting_id']), int(row['classroom']) )
                 stationary_meetings.append(meeting)
         with open("./dummy_data/sync_async_meetings.csv", mode='r') as file:
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
-                meeting = db_model.CourseSyncAsyncMeeting(int(row['id']), int(row['course_id']), int(row['meeting_id']), row['acces_to'], row['video_link'], row['stream_link'])
+                meeting = db_model.CourseSyncAsyncMeeting(int(row['id']), int(row['course_id']), int(row['meeting_id']), row['access_to'], row['video_link'], row['stream_link'])
                 sync_async_meetings.append(meeting)
    
     studies = []
@@ -191,9 +191,9 @@ def main():
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
-                study = db_model.Study(int(row['study_id']), row['studies_name'], row['studies_descritpion'], datetime.date.fromisoformat(row['start_date']), int(row['students_limit']), int(row['price']), int(row['studies_coordinator_id']), datetime.date.fromisoformat(row['visible_from']))
+                study = db_model.Study(int(row['studies_id']), row['studies_name'], row['studies_description'], datetime.date.fromisoformat(row['start_date']), int(row['students_limit']), int(row['price']), int(row['studies_coordinator_id']), datetime.date.fromisoformat(row['visible_from']))
                 studies.append(study)
-        with open("./dummy_data/stude_modules.csv", mode='r') as file:
+        with open("./dummy_data/study_modules.csv", mode='r') as file:
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
@@ -203,19 +203,19 @@ def main():
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
-                meeting = db_model.StudyModuleMeeting(int(row['meeting_id']), int(row['studies_id']), row['meeting_date'], int(row['language_id']), int(row['translator_id']), int(row['lecturer_id']), int(row['duration']), int(row['place_limit']), int(row['module_id']), int(row['topic_id']), row['meeting_name'], int(row['meeting_type_id']))
+                meeting = db_model.StudyModuleMeeting(int(row['meeting_id']), int(row['studies_id']), row['meeting_date'], int(row['language_id']), int(row['translator_id']) if row['translator_id'] != '' else None, int(row['lecturer_id']), (row['duration']), int(row['place_limit']), int(row['module_id']), int(row['topic_id']), row['meeting_name'], int(row['meeting_type_id']))
                 study_module_meetings.append(meeting)
         with open("./dummy_data/study_stationary_meetings.csv", mode='r') as file:
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
-                meeting = db_model.CourseStationaryMeeting(int(row['id']), int(row['studies_id']), int(row['meeting_id']), int(row['classrom']) )
+                meeting = db_model.CourseStationaryMeeting(int(row['id']), int(row['studies_id']), int(row['meeting_id']), int(row['classroom']) )
                 study_stationary_meetings.append(meeting)
         with open("./dummy_data/study_sync_async_meetings.csv", mode='r') as file:
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
             for row in reader:
                 # Create an object from the row data
-                meeting = db_model.StudySyncAsyncMeeting(int(row['id']), int(row['studies_id']), int(row['meeting_id']), datetime.date.fromisoformat(row['acces_to']), row['video_link'], row['stream_link'])
+                meeting = db_model.StudySyncAsyncMeeting(int(row['id']), int(row['studies_id']), int(row['meeting_id']), datetime.date.fromisoformat(row['access_to']), row['video_link'], row['stream_link'])
                 study_sync_async_meetings.append(meeting)
         with open("./dummy_data/study_internships.csv", mode='r') as file:
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
@@ -233,13 +233,21 @@ def main():
     course_attendace = []
     study_attendance = []
     internship_attendance = []
+    egzams_grades = []
+    order_webinars = []
+    order_module_studies = []
     if(needs_to_be_generated.get('orders')):
-            orders, orders_details, orders_courses, orders_studies, course_attendace =  o_gen.generate_orders(courses, course_module_meetings, users, studies, study_module_meetings, study_internships)
+            orders, orders_details, orders_courses, orders_studies, course_attendace, study_attendance, internship_attendance, egzams_grades, order_webinars, order_module_studies =  o_gen.generate_orders(courses, course_module_meetings, users, studies, study_module_meetings, study_internships, webinars)
             uf.object_table_table_to_csv(orders, "./dummy_data/orders.csv")
             uf.object_table_table_to_csv(orders_details, "./dummy_data/orders_details.csv")
             uf.object_table_table_to_csv(orders_courses, "./dummy_data/orders_courses.csv")
             uf.object_table_table_to_csv(orders_studies, "./dummy_data/orders_studies.csv")
             uf.object_table_table_to_csv(course_attendace, "./dummy_data/course_attendance.csv")
+            uf.object_table_table_to_csv(study_attendance, "./dummy_data/study_attendance.csv")
+            uf.object_table_table_to_csv(internship_attendance, "./dummy_data/internship_attendance.csv")
+            uf.object_table_table_to_csv(egzams_grades, "./dummy_data/egzams.csv")
+            uf.object_table_table_to_csv(order_webinars, "./dummy_data/orders_webinars.csv")
+            uf.object_table_table_to_csv(order_module_studies, "./dummy_data/order_module_studies.csv")
     else:
         with open("./dummy_data/orders.csv", mode='r') as file:
             reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries

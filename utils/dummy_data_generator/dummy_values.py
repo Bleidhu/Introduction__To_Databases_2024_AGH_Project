@@ -26,6 +26,7 @@ topics = {
     # 19: "Cryptocurrency and Digital Assets",
     # 20: "Robotics and Automation"
 }
+event_tyes = {1: "Webinar", 2: "Course", 3: "Study", 4: "Study Module"}
 START_DATE_ALL = "2021-10-10"
 
 
