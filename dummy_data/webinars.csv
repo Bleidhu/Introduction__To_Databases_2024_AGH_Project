@@ -1,11 +1,11 @@
 webinar_id,name,description,teacher_id,price,can_buy_from,recording_link,start_date
-0,Mastering Agile Project Management,Learn the principles of Agile to enhance team productivity and project delivery.,11,389,2021-11-14,http://www.holt.com/,2021-11-14
-1,AI in Business: Transforming the Future,Explore how artificial intelligence is reshaping industries and driving innovation.,15,404,2022-01-19,http://simon.info/,2022-01-19
-2,Cybersecurity Essentials for Modern Enterprises,Understand key strategies to protect your business from cyber threats.,11,336,2022-02-10,https://www.howard-meyer.com/,2022-02-10
-3,Cloud Computing: Benefits and Best Practices,Dive into cloud technology and learn how to optimize its use for your business.,9,371,2022-03-02,http://jones-kelley.com/,2022-03-02
-4,The Power of Data Analytics,Unlock the potential of data to drive informed decision-making.,1,50,2022-06-01,https://austin.com/,2022-06-01
-5,Blockchain for Business Leaders,Discover practical applications of blockchain technology in various industries.,9,20,2022-07-30,https://rogers.com/,2022-07-30
-6,Digital Marketing Strategies for 2024,Stay ahead with cutting-edge marketing techniques and tools.,15,436,2022-10-27,https://www.whitaker.com/,2022-10-27
-7,Scaling Startups: Challenges and Solutions,Gain insights into scaling your business effectively.,7,143,2022-11-03,http://www.chavez-rollins.com/,2022-11-03
-8,Remote Work: Tools and Tactics for Success,Learn how to manage and thrive in a remote work environment.,9,280,2023-01-28,https://www.richards-shaffer.info/,2023-01-28
-9,Effective Leadership in the Tech Industry,Develop leadership skills tailored for the fast-paced tech sector.,4,368,2023-02-12,http://bell-hinton.com/,2023-02-12
+0,Mastering Agile Project Management,Learn the principles of Agile to enhance team productivity and project delivery.,5,450,2021-12-15,http://villanueva.com/,2021-12-15
+1,AI in Business: Transforming the Future,Explore how artificial intelligence is reshaping industries and driving innovation.,10,176,2022-01-13,https://kemp.com/,2022-01-13
+2,Cybersecurity Essentials for Modern Enterprises,Understand key strategies to protect your business from cyber threats.,8,98,2022-01-30,https://fowler.com/,2022-01-30
+3,Cloud Computing: Benefits and Best Practices,Dive into cloud technology and learn how to optimize its use for your business.,14,403,2022-02-18,https://www.wilson-henderson.com/,2022-02-18
+4,The Power of Data Analytics,Unlock the potential of data to drive informed decision-making.,5,64,2022-05-19,http://www.hartman.com/,2022-05-19
+5,Blockchain for Business Leaders,Discover practical applications of blockchain technology in various industries.,10,439,2022-08-03,https://www.lewis-martin.com/,2022-08-03
+6,Digital Marketing Strategies for 2024,Stay ahead with cutting-edge marketing techniques and tools.,14,463,2022-08-14,https://www.kelley.com/,2022-08-14
+7,Scaling Startups: Challenges and Solutions,Gain insights into scaling your business effectively.,4,414,2022-09-12,http://www.stevens.org/,2022-09-12
+8,Remote Work: Tools and Tactics for Success,Learn how to manage and thrive in a remote work environment.,8,195,2022-10-11,http://smith.com/,2022-10-11
+9,Effective Leadership in the Tech Industry,Develop leadership skills tailored for the fast-paced tech sector.,8,383,2022-10-17,https://www.walters-wilson.info/,2022-10-17

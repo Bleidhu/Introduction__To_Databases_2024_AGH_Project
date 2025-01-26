@@ -19,7 +19,7 @@ def generate_role_id():
     return 0
 
 def generate_employee(id, role):
-    tmp = db_model.Employee(id,  fk.first_name(), fk.last_name(), fk.date_this_decade() ,fk.date_of_birth(minimum_age=18, maximum_age=60) ,random.randint(100000000, 999999999), fk.email(), role ,random.randint(1, CITIES_AMOUNT+1), random.randint(1, COUNTRIES_AMOUNT+1))
+    tmp = db_model.Employee(id,  fk.first_name(), fk.last_name(), fk.date_this_decade() ,fk.date_of_birth(minimum_age=18, maximum_age=60) ,random.randint(100000000, 999999999), fk.email(), role ,random.randint(1, CITIES_AMOUNT), random.randint(1, COUNTRIES_AMOUNT))
 
     return tmp
 
@@ -35,16 +35,16 @@ def generate_employees_table():
         languages = []
 
         for i in range(lang_count):
-            tmp_lang_id = random.randint(1,LANGUAGES_AMOUNt+1)
+            tmp_lang_id = random.randint(1,LANGUAGES_AMOUNt)
             while tmp_lang_id in languages:
-                tmp_lang_id = random.randint(1,LANGUAGES_AMOUNt+1)
+                tmp_lang_id = random.randint(1,LANGUAGES_AMOUNt)
             languages.append(tmp_lang_id)
         
         for lang in languages:
             tmp_translator_lang = db_model.TranslatorsLanguagesUsed(len(translators_language_used), translator.translator_id,  lang)
             translators_language_used.append(tmp_translator_lang)
 
-    ceo = generate_employee(len(teachers) + len(translators), 1)
+    ceo = generate_employee(len(teachers) + len(translators)+1, 1)
     all_employees = teachers + translators
     all_employees.append(ceo)
     return all_employees, translators_table, translators_language_used

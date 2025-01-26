@@ -37,3 +37,9 @@ def object_table_table_to_csv(table, filename):
         writer.writeheader()
         for object in table:
             writer.writerow(object.__dict__)
+def dict_to_csv(obj, filename):
+    with open(filename, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=["id", "value"])
+        writer.writeheader()
+        for key, value in obj.items():
+            writer.writerow({"id": key, "value": value})

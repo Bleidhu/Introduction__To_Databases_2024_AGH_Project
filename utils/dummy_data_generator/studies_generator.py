@@ -105,16 +105,17 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
 
         lecturer_id = random.choice(uf.get_employees_not_working_on_date(uf.get_employees_hired_after_date(employees, meeting_date), date=meeting_date.isoformat(), webinars_meetings=webinars, course_meetings_table=study_module_meetings)).employee_id
         duration = random.randint(1,4) * 45
+        duration = datetime.timedelta(minutes=duration)
         students_limit = 10
 
         if(meeting_type == 1):
             stationary_meeting = db_model.StudyStationaryMeeting(len(study_module_meetings_stationary)+1, study_id, len(study_module_meetings), 0)
             study_module_meetings_stationary.append(stationary_meeting)
         elif(meeting_type==2):
-            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), None, fk.url(), None)
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), meeting_date+datetime.timedelta(14), fk.url(), None)
             study_sync_async_meetings.append(sync_meeting)
         else:
-            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), None, None, fk.url())
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), meeting_date+datetime.timedelta(14), fk.url(), fk.url())
             study_sync_async_meetings.append(sync_meeting)
 
         tmp_module_meeting = db_model.StudyModuleMeeting(len(study_module_meetings)+1, 
@@ -124,7 +125,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
                                                            duration, 
                                                            students_limit, 
                                                            module_id, 
-                                                           0,
+                                                           1,
                                                            cn.course_names[study_id][2][module_id%6][1][len(study_module_meetings)%10],
                                                            meeting_type
                                                            )

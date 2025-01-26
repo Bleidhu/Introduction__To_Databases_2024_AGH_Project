@@ -1,7 +1,7 @@
-countries = {1:"Poland", 2:"USA"}
-cities = {1:"Kraków", 2:"Hanoover"}
+countries = {1:"Poland", 2:"USA", 3:"Germany", 4:"France", 5:"Spain", 6:"Italy", 7:"UK", 8:"Canada", 9:"Australia", 10:"Japan"}
+cities = {1:"Kraków", 2:"Hanoover", 3:"Paris", 4:"Madrid", 5:"Rome", 6:"London", 7:"Toronto", 8:"Sydney", 9:"Tokyo"}
 employee_roles = {1:"Dyrektor", 2:"Nauczyciel", 3:"Tłumacz"}
-languages= {1:"Polski", 2:"Angielski"}
+languages= {1:"Polski", 2:"Angielski", 3: "Niemiecki"}
 module_types = {1: "Stationary", 2:"Asynchronous", 3: "Synchronous", 4: "Hybrid"}
 meeting_types = {1: "Stationary", 2:"Asynchronous", 3: "Synchronous"}
 

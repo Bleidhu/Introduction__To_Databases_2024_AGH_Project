@@ -1,5 +1,5 @@
 studies_id,studies_name,studies_description,start_date,students_limit,price,studies_coordinator_id,visible_from
-1,Digital Transformation in Business,Learn how to leverage digital technologies to drive innovation and optimize business processes.,2022-10-17,10,330,14,2022-10-17
-2,Cybersecurity Essentials for Business,Understand the core principles of cybersecurity and how to protect your business from digital threats.,2022-12-15,10,255,11,2022-12-15
-3,Data Analytics for Decision Making,Learn how to harness the power of data to make informed business decisions and drive growth.,2023-01-19,10,154,14,2023-01-19
-4,Cloud Computing for Business Innovation,"Explore how cloud computing can transform business operations, enhance scalability, and drive innovation.",2023-02-19,10,139,6,2023-02-19
+1,Digital Transformation in Business,Learn how to leverage digital technologies to drive innovation and optimize business processes.,2022-10-11,10,66,4,2022-10-11
+2,Cybersecurity Essentials for Business,Understand the core principles of cybersecurity and how to protect your business from digital threats.,2022-11-24,10,208,8,2022-11-24
+3,Data Analytics for Decision Making,Learn how to harness the power of data to make informed business decisions and drive growth.,2023-01-08,10,245,4,2023-01-08
+4,Cloud Computing for Business Innovation,"Explore how cloud computing can transform business operations, enhance scalability, and drive innovation.",2023-03-03,10,144,4,2023-03-03

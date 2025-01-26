@@ -54,12 +54,20 @@ def main():
     # uf.object_table_table_to_csv(dval.languages, "./dummy_data/languages.csv")
     # uf.object_table_table_to_csv(dval.module_types, "./dummy_data/module_types.csv")
     # uf.object_table_table_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
-    needs_to_be_generated = {'users': False, 
+    needs_to_be_generated = {'defaults': False,
+                            'users': False, 
                              'employees': False, 
                              'webinars': False,
                              'courses': False,
                              'studies': True,
-                             'orders': False}
+                             'orders': True}
+    if(needs_to_be_generated.get('defaults')):
+        uf.dict_to_csv(dval.cities, "./dummy_data/cities.csv")
+        uf.dict_to_csv(dval.countries, "./dummy_data/countries.csv")
+        uf.dict_to_csv(dval.languages, "./dummy_data/languages.csv")
+        uf.dict_to_csv(dval.module_types, "./dummy_data/module_types.csv")
+        uf.dict_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
+        uf.dict_to_csv(dval.employee_roles, "./dummy_data/roles.csv")
     users = []
     if(needs_to_be_generated.get('users')):
         users = u_gen.generate_users_table()
@@ -169,7 +177,7 @@ def main():
     study_internships = []
     study_stationary_meetings = []
     study_sync_async_meetings = []
-    if(needs_to_be_generated.get('courses')):
+    if(needs_to_be_generated.get('studies')):
             studies, study_modules, study_module_meetings, study_internships,  study_stationary_meetings, study_sync_async_meetings = s_gen.generate_studies(webinars, course_module_meetings, employees, translators, translators_languages)
             uf.object_table_table_to_csv(studies, "./dummy_data/studies.csv")
             uf.object_table_table_to_csv(study_modules, "./dummy_data/study_modules.csv")
