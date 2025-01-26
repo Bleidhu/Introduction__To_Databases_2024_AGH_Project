@@ -21,6 +21,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
     STUDY_MODULE_MEETINGS_LIMIT = 10
     STUDY_STUDENTS_LIMIT = 10
     STUDY_INTERSHIPS_LIMIT = 4
+    TOPICS_AMOUNT = len(dval.topics)
 
     STUDIES_START_DATE = datetime.datetime(2022, 10, 10)
     STUDIES_INTERVAL = datetime.timedelta(14)
@@ -35,6 +36,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
     study_module_meetings_stationary = []
     study_sync_async_meetings = []
     study_interships = []
+    exams = []
     
     last_study_date = STUDIES_START_DATE
     last_meeting_date = STUDIES_START_DATE
@@ -72,6 +74,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         
         generate_internships(studies[-1].studies_id)
         last_study_date += random.randint(2, 4)*STUDIES_INTERVAL
+
         
 
     def generate_study_module(study_id):
@@ -109,13 +112,13 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
         students_limit = 10
 
         if(meeting_type == 1):
-            stationary_meeting = db_model.StudyStationaryMeeting(len(study_module_meetings_stationary)+1, study_id, len(study_module_meetings), 0)
+            stationary_meeting = db_model.StudyStationaryMeeting(len(study_module_meetings_stationary)+1, study_id, len(study_module_meetings)+1, 0)
             study_module_meetings_stationary.append(stationary_meeting)
         elif(meeting_type==2):
-            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), meeting_date+datetime.timedelta(14), fk.url(), None)
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings)+1, meeting_date+datetime.timedelta(14), fk.url(), None)
             study_sync_async_meetings.append(sync_meeting)
         else:
-            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings), meeting_date+datetime.timedelta(14), fk.url(), fk.url())
+            sync_meeting = db_model.StudySyncAsyncMeeting(len(study_sync_async_meetings)+1, study_id, len(study_module_meetings)+1, meeting_date+datetime.timedelta(14), fk.url(), fk.url())
             study_sync_async_meetings.append(sync_meeting)
 
         tmp_module_meeting = db_model.StudyModuleMeeting(len(study_module_meetings)+1, 
@@ -125,7 +128,7 @@ def generate_studies(webinars, courses_meetings, employees, translators: List[db
                                                            duration, 
                                                            students_limit, 
                                                            module_id, 
-                                                           1,
+                                                           random.randint(1, TOPICS_AMOUNT),
                                                            cn.course_names[study_id][2][module_id%6][1][len(study_module_meetings)%10],
                                                            meeting_type
                                                            )

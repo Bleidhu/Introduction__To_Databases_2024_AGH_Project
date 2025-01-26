@@ -1,53 +1,52 @@
 meeting_id,studies_id,meeting_date,language_id,translator_id,lecturer_id,duration,place_limit,module_id,topic_id,meeting_name,meeting_type_id
-1,1,2022-10-13,2,0,8,0:45:00,10,1,1,Introduction to Cybersecurity Frameworks,3
-2,1,2022-10-15,0,,8,1:30:00,10,1,1,NIST Cybersecurity Framework Overview,3
-3,1,2022-10-18,3,2,14,3:00:00,10,1,1,ISO 27001 Standards,3
-4,1,2022-10-20,0,,10,1:30:00,10,1,1,Establishing Policies and Procedures,3
-5,1,2022-10-21,3,3,15,0:45:00,10,1,1,Identifying Critical Assets,3
-6,1,2022-10-22,2,3,8,3:00:00,10,1,1,Setting Access Controls,3
-7,1,2022-10-25,0,,5,2:15:00,10,1,1,Incident Response Planning,3
-8,1,2022-10-27,0,,5,0:45:00,10,1,1,Role of Governance in Cybersecurity,3
-9,2,2022-11-24,3,0,10,1:30:00,10,2,1,Statistical Tools for Business Applications,1
-10,2,2022-11-25,3,0,10,1:30:00,10,2,1,Interpreting Statistical Results,1
-11,2,2022-11-26,0,,8,3:00:00,10,2,1,Introduction to Descriptive Statistics,1
-12,2,2022-11-28,0,,11,0:45:00,10,2,1,"Understanding Mean, Median, and Mode",1
-13,2,2022-11-30,0,,14,1:30:00,10,2,1,Basics of Variability and Standard Deviation,1
-14,2,2022-12-02,3,1,10,1:30:00,10,2,1,Correlation vs. Causation,1
-15,2,2022-12-05,0,,14,3:00:00,10,2,1,Hypothesis Testing Basics,1
-16,2,2022-12-08,0,,8,3:00:00,10,2,1,Understanding Regression Analysis,1
-17,2,2022-12-10,1,1,8,1:30:00,10,3,1,Deep Learning Basics for Business Use,1
-18,2,2022-12-12,1,1,15,3:00:00,10,3,1,Real-Time Analytics Applications,1
-19,3,2023-01-08,2,1,8,2:15:00,10,4,1,Competitive Advantage with Cloud Technology,3
-20,3,2023-01-11,1,0,15,0:45:00,10,4,1,Future Opportunities in Cloud Innovation,3
-21,3,2023-01-12,0,,4,0:45:00,10,4,1,Driving Innovation with Cloud Computing,3
-22,3,2023-01-13,0,,11,2:15:00,10,4,1,Cloud-Based Artificial Intelligence Applications,3
-23,3,2023-01-14,0,,4,0:45:00,10,4,1,Enhancing Customer Experience with Cloud Solutions,3
-24,3,2023-01-18,2,4,5,3:00:00,10,4,1,Cloud-Enabled Product Development,3
-25,3,2023-01-19,0,,8,2:15:00,10,4,1,Scaling Businesses with the Cloud,3
-26,3,2023-01-21,0,,10,1:30:00,10,4,1,Creating New Revenue Streams with Cloud Services,3
-27,3,2023-01-24,0,,5,0:45:00,10,5,1,Cloud Analytics for Decision Making,2
-28,3,2023-01-27,1,3,5,1:30:00,10,5,1,Building a Cloud-First Culture,2
-29,3,2023-01-28,2,3,5,1:30:00,10,5,1,Scaling Operations Post-Migration,2
-30,3,2023-01-30,0,,5,3:00:00,10,6,1,Future Trends in Cloud Computing,3
-31,3,2023-01-31,2,0,8,1:30:00,10,6,1,What is Cloud Computing?,3
-32,3,2023-02-03,1,1,10,1:30:00,10,6,1,Evolution of Cloud Technology,3
-33,3,2023-02-04,3,0,8,0:45:00,10,6,1,"Types of Cloud Computing (IaaS, PaaS, SaaS)",3
-34,4,2023-03-04,1,3,11,3:00:00,10,7,1,Roles in Agile Teams,3
-35,4,2023-03-05,0,,5,2:15:00,10,7,1,Sprint Planning and Execution,3
-36,4,2023-03-06,3,4,11,1:30:00,10,7,1,Backlog Prioritization Techniques,3
-37,4,2023-03-07,1,1,10,2:15:00,10,7,1,Monitoring Progress with Agile Metrics,3
-38,4,2023-03-08,0,,10,2:15:00,10,7,1,Conducting Retrospectives,3
-39,4,2023-03-10,2,3,14,0:45:00,10,7,1,Adapting Agile for Large Organizations,3
-40,4,2023-03-11,0,,11,1:30:00,10,7,1,Case Studies in Agile Project Success,3
-41,4,2023-03-14,2,4,15,3:00:00,10,7,1,Introduction to Agile Methodologies,3
-42,4,2023-03-15,2,2,10,1:30:00,10,7,1,Understanding Scrum Framework,3
-43,4,2023-03-18,0,,15,2:15:00,10,7,1,Kanban for Visualizing Workflows,3
-44,4,2023-03-20,0,,10,0:45:00,10,8,1,Leveraging Collaboration Tools,2
-45,4,2023-03-23,0,,10,0:45:00,10,9,1,Proactive Risk Mitigation Strategies,1
-46,4,2023-03-25,0,,10,2:15:00,10,9,1,Monitoring Risks Throughout the Project,1
-47,4,2023-03-27,0,,14,3:00:00,10,9,1,Tools for Risk Assessment,1
-48,4,2023-03-30,0,,4,1:30:00,10,9,1,Managing Crisis Situations,1
-49,4,2023-03-31,1,1,5,1:30:00,10,9,1,Lessons Learned from Real-Life Failures,1
-50,4,2023-04-01,0,,15,0:45:00,10,9,1,Building Resilience in Projects,1
-51,4,2023-04-04,3,3,15,1:30:00,10,9,1,Understanding Risk in Projects,1
-52,4,2023-04-06,0,,15,2:15:00,10,9,1,Identifying Common Project Risks,1
+1,1,2022-10-20,0,,10,2:15:00,10,1,1,Introduction to Cybersecurity Frameworks,1
+2,1,2022-10-21,1,0,10,1:30:00,10,1,3,NIST Cybersecurity Framework Overview,1
+3,1,2022-10-24,0,,10,3:00:00,10,1,3,ISO 27001 Standards,1
+4,1,2022-10-25,3,0,8,3:00:00,10,1,7,Establishing Policies and Procedures,1
+5,1,2022-10-26,3,4,5,3:00:00,10,1,7,Identifying Critical Assets,1
+6,1,2022-10-28,3,1,10,1:30:00,10,1,6,Setting Access Controls,1
+7,1,2022-10-29,3,0,10,2:15:00,10,1,5,Incident Response Planning,1
+8,2,2022-11-16,2,4,14,0:45:00,10,2,6,Identifying Outliers and Anomalies,1
+9,2,2022-11-18,3,2,10,2:15:00,10,2,6,Statistical Tools for Business Applications,2
+10,2,2022-11-19,1,1,8,1:30:00,10,2,5,Interpreting Statistical Results,3
+11,2,2022-11-20,0,,4,1:30:00,10,2,5,Introduction to Descriptive Statistics,3
+12,2,2022-11-23,0,,14,0:45:00,10,2,1,"Understanding Mean, Median, and Mode",3
+13,2,2022-11-25,0,,15,0:45:00,10,3,3,Clustering Techniques for Market Segmentation,3
+14,2,2022-11-29,2,2,4,3:00:00,10,3,4,Forecasting with Time Series Analysis,1
+15,2,2022-12-01,0,,15,3:00:00,10,3,8,Sentiment Analysis for Customer Feedback,1
+16,2,2022-12-04,0,,8,1:30:00,10,3,1,Text Analytics for Unstructured Data,2
+17,2,2022-12-06,3,1,11,1:30:00,10,3,4,Deep Learning Basics for Business Use,3
+18,2,2022-12-08,0,,8,1:30:00,10,3,6,Real-Time Analytics Applications,3
+19,2,2022-12-11,3,2,15,2:15:00,10,3,1,Understanding Model Accuracy and Bias,3
+20,2,2022-12-15,0,,14,2:15:00,10,3,4,Challenges in Implementing Advanced Analytics,2
+21,2,2022-12-16,3,4,11,0:45:00,10,3,4,Introduction to Machine Learning for Analytics,2
+22,3,2022-12-28,3,2,4,1:30:00,10,4,3,Cloud-Based Artificial Intelligence Applications,2
+23,3,2022-12-30,0,,5,2:15:00,10,4,5,Enhancing Customer Experience with Cloud Solutions,2
+24,3,2023-01-02,0,,15,0:45:00,10,4,10,Cloud-Enabled Product Development,2
+25,3,2023-01-04,1,0,5,1:30:00,10,4,5,Scaling Businesses with the Cloud,2
+26,3,2023-01-08,3,1,5,3:00:00,10,4,8,Creating New Revenue Streams with Cloud Services,2
+27,3,2023-01-09,1,1,4,2:15:00,10,4,9,IoT and the Cloud: A Perfect Match,2
+28,3,2023-01-10,1,1,14,3:00:00,10,4,3,Exploring Edge Computing,2
+29,3,2023-01-12,1,0,4,3:00:00,10,5,8,Scaling Operations Post-Migration,2
+30,3,2023-01-16,3,1,4,2:15:00,10,5,1,Sustaining Success in a Cloud-Driven World,2
+31,3,2023-01-18,2,4,10,1:30:00,10,5,6,Change Management in Cloud Adoption,2
+32,3,2023-01-21,0,,8,1:30:00,10,5,9,Training Teams for Cloud Proficiency,2
+33,3,2023-01-23,0,,14,2:15:00,10,5,3,Collaboration Between IT and Business Units,2
+34,3,2023-01-27,1,1,4,1:30:00,10,5,9,Overcoming Challenges in Cloud Migration,2
+35,3,2023-01-29,3,0,5,1:30:00,10,5,9,Ensuring Continuous Improvement in the Cloud,2
+36,3,2023-01-31,0,,14,3:00:00,10,5,2,Vendor Management and Negotiation,2
+37,3,2023-02-02,2,3,10,3:00:00,10,5,6,Cloud Analytics for Decision Making,2
+38,3,2023-02-03,1,0,4,3:00:00,10,5,4,Building a Cloud-First Culture,2
+39,4,2023-01-20,3,0,11,2:15:00,10,6,2,Risk Identification and Mitigation,3
+40,4,2023-01-22,0,,15,0:45:00,10,6,1,Closing Projects Effectively,3
+41,4,2023-01-24,2,4,11,0:45:00,10,6,7,Introduction to Project Management,3
+42,4,2023-01-25,3,1,5,1:30:00,10,6,7,Understanding Project Life Cycles,3
+43,4,2023-01-26,1,1,14,0:45:00,10,6,4,Defining Roles and Responsibilities,3
+44,4,2023-01-29,0,,11,3:00:00,10,7,9,Roles in Agile Teams,2
+45,4,2023-02-02,0,,15,2:15:00,10,7,1,Sprint Planning and Execution,2
+46,4,2023-02-03,1,0,8,2:15:00,10,7,7,Backlog Prioritization Techniques,2
+47,4,2023-02-04,0,,4,3:00:00,10,7,4,Monitoring Progress with Agile Metrics,2
+48,4,2023-02-06,1,0,4,0:45:00,10,8,3,Integration of Tools Across Platforms,1
+49,4,2023-02-08,0,,4,0:45:00,10,8,10,Mobile Project Management Solutions,1
+50,4,2023-02-10,0,,15,3:00:00,10,8,4,Future Trends in Project Management Tools,1
+51,4,2023-02-12,1,3,5,2:15:00,10,8,7,Overview of Project Management Tools,1

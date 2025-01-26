@@ -4,7 +4,28 @@ employee_roles = {1:"Dyrektor", 2:"Nauczyciel", 3:"Tłumacz"}
 languages= {1:"Polski", 2:"Angielski", 3: "Niemiecki"}
 module_types = {1: "Stationary", 2:"Asynchronous", 3: "Synchronous", 4: "Hybrid"}
 meeting_types = {1: "Stationary", 2:"Asynchronous", 3: "Synchronous"}
-
+topics = {
+    1: "Artificial Intelligence",
+    2: "Machine Learning",
+    3: "Blockchain Technology",
+    4: "Cybersecurity",
+    5: "Quantum Computing",
+    6: "Cloud Computing",
+    7: "Internet of Things (IoT)",
+    8: "Augmented Reality (AR)",
+    9: "Virtual Reality (VR)",
+    10: "Big Data Analytics",
+    # 11: "5G Technology",
+    # 12: "Web Development",
+    # 13: "Mobile App Development",
+    # 14: "DevOps Practices",
+    # 15: "Software Testing and Automation",
+    # 16: "Natural Language Processing (NLP)",
+    # 17: "Computer Vision",
+    # 18: "Edge Computing",
+    # 19: "Cryptocurrency and Digital Assets",
+    # 20: "Robotics and Automation"
+}
 START_DATE_ALL = "2021-10-10"
 
 

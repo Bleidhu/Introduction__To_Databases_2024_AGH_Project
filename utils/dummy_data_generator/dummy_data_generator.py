@@ -54,7 +54,7 @@ def main():
     # uf.object_table_table_to_csv(dval.languages, "./dummy_data/languages.csv")
     # uf.object_table_table_to_csv(dval.module_types, "./dummy_data/module_types.csv")
     # uf.object_table_table_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
-    needs_to_be_generated = {'defaults': False,
+    needs_to_be_generated = {'defaults': True,
                             'users': False, 
                              'employees': False, 
                              'webinars': False,
@@ -68,6 +68,7 @@ def main():
         uf.dict_to_csv(dval.module_types, "./dummy_data/module_types.csv")
         uf.dict_to_csv(dval.meeting_types, "./dummy_data/meeting_types.csv")
         uf.dict_to_csv(dval.employee_roles, "./dummy_data/roles.csv")
+        uf.dict_to_csv(dval.topics, "./dummy_data/topics.csv")
     users = []
     if(needs_to_be_generated.get('users')):
         users = u_gen.generate_users_table()
