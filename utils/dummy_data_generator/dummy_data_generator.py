@@ -122,7 +122,7 @@ def main():
     course_module_meetings = []
     stationary_meetings = []
     sync_async_meetings = []
-    if(needs_to_be_generated.get('courses')):
+    if(needs_to_be_generated.get('studies')):
         courses, course_modules, course_module_meetings, stationary_meetings, sync_async_meetings = c_gen.generate_courses(webinars, employees, translators, translators_languages)
         uf.object_table_table_to_csv(courses, "./dummy_data/courses.csv")
         uf.object_table_table_to_csv(course_modules, "./dummy_data/course_modules.csv")
@@ -216,12 +216,46 @@ def main():
                 study_internships.append(internship)
 
     
-    orders, orders_details, orders_courses, orders_studies, course_attendace =  o_gen.generate_orders(courses, course_module_meetings, users, studies, study_module_meetings, study_internships)
-    uf.object_table_table_to_csv(orders, "./dummy_data/orders.csv")
-    uf.object_table_table_to_csv(orders_details, "./dummy_data/orders_details.csv")
-    uf.object_table_table_to_csv(orders_courses, "./dummy_data/orders_courses.csv")
-    uf.object_table_table_to_csv(orders_studies, "./dummy_data/orders_studies.csv")
-    uf.object_table_table_to_csv(course_attendace, "./dummy_data/course_attendance.csv")
-
+    
+    orders = []
+    orders_details = []
+    orders_courses = []
+    orders_studies = []
+    course_attendace = []
+    study_attendance = []
+    internship_attendance = []
+    if(needs_to_be_generated.get('orders')):
+            orders, orders_details, orders_courses, orders_studies, course_attendace =  o_gen.generate_orders(courses, course_module_meetings, users, studies, study_module_meetings, study_internships)
+            uf.object_table_table_to_csv(orders, "./dummy_data/orders.csv")
+            uf.object_table_table_to_csv(orders_details, "./dummy_data/orders_details.csv")
+            uf.object_table_table_to_csv(orders_courses, "./dummy_data/orders_courses.csv")
+            uf.object_table_table_to_csv(orders_studies, "./dummy_data/orders_studies.csv")
+            uf.object_table_table_to_csv(course_attendace, "./dummy_data/course_attendance.csv")
+    else:
+        with open("./dummy_data/orders.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                order = db_model.Order(int(row['order_id']), int(row['user_id']), bool(row['is_paid']), datetime.date.fromisoformat(row['max_paid_date']))
+                orders.append(order)
+        with open("./dummy_data/orders_details.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                detail = db_model.OrderDetail(int(row['order_detail_id']), int(row['order_id']), int(row['type_id']), int(row['price']))
+                orders_details.append(detail)
+        with open("./dummy_data/orders_courses.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                order = db_model.OrderCourse(int(row['order_detail_id']), int(row['course_id']))
+                orders_courses.append(order)
+        with open("./dummy_data/orders_studies.csv", mode='r') as file:
+            reader = csv.DictReader(file)  # Use DictReader to read rows as dictionaries
+            for row in reader:
+                # Create an object from the row data
+                order = db_model.OrderStudy(int(row['order_detail_id']), int(row['studies_id']))
+                orders_studies.append(order)
+        
 if __name__ == "__main__":
     main()
