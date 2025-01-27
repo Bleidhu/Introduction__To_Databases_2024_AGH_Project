@@ -1,6 +1,6 @@
 -- jeśli użytkownik jest zapisany na podane studia ustaw ze byl obecny
 
-CREATE PROCEDURE check_course_attendance @user_id INT,
+CREATE PROCEDURE update_course_attendance @user_id INT,
                                          @course_id INT,
                                          @meeting_id INT
 AS

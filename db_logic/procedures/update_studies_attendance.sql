@@ -1,6 +1,6 @@
 -- sprawdzanie obecnosci
 
-CREATE PROCEDURE check_studies_attendance @user_id INT,
+CREATE PROCEDURE update_studies_attendance @user_id INT,
                                           @studies_id INT,
                                           @meeting_id INT
 AS
