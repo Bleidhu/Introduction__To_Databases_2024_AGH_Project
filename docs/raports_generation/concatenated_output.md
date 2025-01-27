@@ -1,12 +1,13 @@
-# Raport 5
+# Raport Końcowy
 Zespół 1  
 
 Skład zespołu :  
 Paweł Czajczyk  
 Julia Demitraszek  
-Szymon Rybski  # Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
+Szymon Rybski  
 
-- [Raport 5](#raport-5)
+- [Raport Końcowy](#raport-końcowy)
+- [Opis funkcji systemu dla firmy oferującej kursy i szkolenia](#opis-funkcji-systemu-dla-firmy-oferującej-kursy-i-szkolenia)
   - [Role Użytkowników i Funkcje Systemu](#role-użytkowników-i-funkcje-systemu)
     - [1. Role Użytkowników](#1-role-użytkowników)
       - [Administrator](#administrator)
@@ -23,14 +24,14 @@ Szymon Rybski  # Opis funkcji systemu dla firmy oferującej kursy i szkolenia
 - [Diagram bazy danych](#diagram-bazy-danych)
 - [Kod do generowania bazy danych:](#kod-do-generowania-bazy-danych)
   - [Widoki w bazie danych](#widoki-w-bazie-danych)
-    - [Wypisanie użytkowników, którzy ukończyli dane studia z wynikiem pozytywnym](#wypisanie-użytkowników-którzy-ukończyli-dane-studia-z-wynikiem-pozytywnym)
     - [Liczba zamówień dla poszczególnych użytkowników](#liczba-zamówień-dla-poszczególnych-użytkowników)
     - [Użytkownicy zapisani na dany kurs](#użytkownicy-zapisani-na-dany-kurs)
     - [Użytkownicy zapisani na dane studia](#użytkownicy-zapisani-na-dane-studia)
     - [Użytkownicy zapisani na dany webinar](#użytkownicy-zapisani-na-dany-webinar)
   - [Procedury w bazie danych](#procedury-w-bazie-danych)
-    - [Sprawdzanie listy obecności dla kursu](#sprawdzanie-listy-obecności-dla-kursu)
-    - [Odnajdywanie studentów, którzy nie byli obecni na spotkaniu](#odnajdywanie-studentów-którzy-nie-byli-obecni-na-spotkaniu)
+    - [Dodanie produktu do istniejącego zamówienia (z transakcja w przypadku niepowodzenia)](#dodanie-produktu-do-istniejącego-zamówienia-z-transakcja-w-przypadku-niepowodzenia)
+    - [Sprawdzanie listy obecności dla kursu (sprawdzanie przez prowadzącego)](#sprawdzanie-listy-obecności-dla-kursu-sprawdzanie-przez-prowadzącego)
+    - [Dla wszystkich użytkowników, którzy nie maja zaznaczonej obencości na zajęciach ustaw, że byli na nich nieobecni](#dla-wszystkich-użytkowników-którzy-nie-maja-zaznaczonej-obencości-na-zajęciach-ustaw-że-byli-na-nich-nieobecni)
     - [Sprawdzanie listy obecności dla studiów](#sprawdzanie-listy-obecności-dla-studiów)
     - [Sprawdzanie łącznej wartości zamówień](#sprawdzanie-łącznej-wartości-zamówień)
     - [Ustawianie obecności dla studenta](#ustawianie-obecności-dla-studenta)
@@ -39,15 +40,22 @@ Szymon Rybski  # Opis funkcji systemu dla firmy oferującej kursy i szkolenia
     - [Dodanie nowego miasta](#dodanie-nowego-miasta)
     - [Dodanie nowego pracownika](#dodanie-nowego-pracownika)
     - [Dodanie nowego typu wydarzenia](#dodanie-nowego-typu-wydarzenia)
-    - [Sprawdzenie czy użytkownik jest zapisany na kurs](#sprawdzenie-czy-użytkownik-jest-zapisany-na-kurs)
-    - [Usuniecie studiów o danym indeksie](#usuniecie-studiów-o-danym-indeksie)
-    - [Usuniecie użytkownika o danym indeksie](#usuniecie-użytkownika-o-danym-indeksie)
+    - [Sprawdzenie czy użytkownik jest zapisany na kurs przez prowadzacego](#sprawdzenie-czy-użytkownik-jest-zapisany-na-kurs-przez-prowadzacego)
     - [Dodanie webinaru](#dodanie-webinaru)
+    - [sprawdz % frekwencji danego studenta na zajeciach (wersja procedura, funckja - nizej)](#sprawdz--frekwencji-danego-studenta-na-zajeciach-wersja-procedura-funckja---nizej)
   - [Funkcje w bazie danych](#funkcje-w-bazie-danych)
+    - [Sprawdz frekwencje studenta na studiach](#sprawdz-frekwencje-studenta-na-studiach)
     - [Obliczanie średniej oceny dla użytkownika](#obliczanie-średniej-oceny-dla-użytkownika)
+    - [Sprawdzenie czy użytkownik zdał studia](#sprawdzenie-czy-użytkownik-zdał-studia)
     - [Generowanie planu zajęć dla użytkownika](#generowanie-planu-zajęć-dla-użytkownika)
     - [Czy użytkownik uczestniczył w zajęciach o danym temacie](#czy-użytkownik-uczestniczył-w-zajęciach-o-danym-temacie)
+    - [Sprawdzenie pozostałych miejsc na kursie](#sprawdzenie-pozostałych-miejsc-na-kursie)
+    - [Sprawdzenie pozostałych miejsc na studiach](#sprawdzenie-pozostałych-miejsc-na-studiach)
+  - [Trigery](#trigery)
+    - [Po dodaniu produktu do zamówienia, zaaktualizuj maksymalna date zapłaty, na 3 dni przed startem](#po-dodaniu-produktu-do-zamówienia-zaaktualizuj-maksymalna-date-zapłaty-na-3-dni-przed-startem)
 
+
+# Opis funkcji systemu dla firmy oferującej kursy i szkolenia 
 
 ## Role Użytkowników i Funkcje Systemu 
 
