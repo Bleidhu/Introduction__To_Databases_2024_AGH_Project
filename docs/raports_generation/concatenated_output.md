@@ -145,16 +145,12 @@ System zarządzający kursami i szkoleniami obsługuje różnorodne formy kszta�
 [diagram w wersji svg](https://bleidhu.github.io/Introduction__To_Databases_2024_AGH_Project/images/diagram.svg)
 
 # Kod do generowania bazy danych:
+```sql
 
-```SQL
--- Created by Vertabelo (http://vertabelo.com)
--- Last modification date: 2024-12-17 22:38:54.732
-
--- tables
 -- Table: Cities
 CREATE TABLE Cities
 (
-    city_id   int          NOT NULL,
+    city_id   int          NOT NULL IDENTITY (1, 1),
     city_name nvarchar(30) NOT NULL,
     CONSTRAINT Cities_pk PRIMARY KEY (city_id)
 );
@@ -162,7 +158,7 @@ CREATE TABLE Cities
 -- Table: Countries
 CREATE TABLE Countries
 (
-    country_id   int          NOT NULL,
+    country_id   int          NOT NULL IDENTITY (1, 1),
     country_name nvarchar(30) NOT NULL,
     CONSTRAINT Countries_pk PRIMARY KEY (country_id)
 );
@@ -189,24 +185,6 @@ ALTER TABLE Course_meeting_attendance_list
         FOREIGN KEY (user_id)
             REFERENCES Users (user_id);
 
-
--- Table: Course_module_meeting_stationary
-CREATE TABLE Course_module_meeting_stationary
-(
-    id         int          NOT NULL,
-    course_id  int          NOT NULL,
-    meeting_id int          NOT NULL,
-    classroom  nvarchar(10) NOT NULL,
-    CONSTRAINT Course_module_meeting_stationary_pk PRIMARY KEY (id)
-);
-
--- Reference: Course_module_meetings_Course_module_meeting_stationary (table: Course_module_meeting_stationary)
-ALTER TABLE Course_module_meeting_stationary
-    ADD CONSTRAINT Course_module_meetings_Course_module_meeting_stationary
-        FOREIGN KEY (meeting_id, course_id)
-            REFERENCES Course_module_meetings (meeting_id, course_id);
-
-
 -- Table: Course_module_meetings
 CREATE TABLE Course_module_meetings
 (
@@ -224,13 +202,6 @@ CREATE TABLE Course_module_meetings
     CONSTRAINT place_limit CHECK (place_limit >= 0),
     CONSTRAINT Course_module_meetings_pk PRIMARY KEY (meeting_id, course_id)
 );
-
--- Reference: Course_module_Course_module_meetings (table: Course_module_meetings)
-ALTER TABLE Course_module_meetings
-    ADD CONSTRAINT Course_module_Course_module_meetings
-        FOREIGN KEY (module_id)
-            REFERENCES module_type (module_type_id);
-
 -- Reference: Course_module_meetings_Course_modules (table: Course_module_meetings)
 ALTER TABLE Course_module_meetings
     ADD CONSTRAINT Course_module_meetings_Course_modules
@@ -261,14 +232,13 @@ ALTER TABLE Course_module_meetings
         FOREIGN KEY (meeting_type_id)
             REFERENCES meeting_type (meeting_type_id);
 
-
 -- Table: Course_modules
 CREATE TABLE Course_modules
 (
-    course_module_id int      NOT NULL,
-    module_type_id   int      NOT NULL,
-    module_name      nvarchar NOT NULL,
-    course_id        int      NOT NULL,
+    course_module_id int          NOT NULL IDENTITY (1, 1),
+    module_type_id   int          NOT NULL,
+    module_name      nvarchar(30) NOT NULL,
+    course_id        int          NOT NULL,
     CONSTRAINT course_module_id PRIMARY KEY (course_module_id)
 );
 
@@ -284,30 +254,44 @@ ALTER TABLE Course_modules
         FOREIGN KEY (course_id)
             REFERENCES Courses (course_id);
 
+-- Table: Course_stationary_meeting
+CREATE TABLE Course_stationary_meeting
+(
+    id         int          NOT NULL IDENTITY (1, 1),
+    course_id  int          NOT NULL,
+    meeting_id int          NOT NULL,
+    classroom  nvarchar(10) NOT NULL,
+    CONSTRAINT Course_stationary_meeting_pk PRIMARY KEY (id)
+);
+-- Reference: Course_module_meetings_Course_module_meeting_stationary (table: Course_stationary_meeting)
+ALTER TABLE Course_stationary_meeting
+    ADD CONSTRAINT Course_module_meetings_Course_module_meeting_stationary
+        FOREIGN KEY (meeting_id, course_id)
+            REFERENCES Course_module_meetings (meeting_id, course_id);
+
 
 -- Table: Course_sync_async_meeting
 CREATE TABLE Course_sync_async_meeting
 (
-    id          int          NOT NULL,
+    id          int          NOT NULL IDENTITY (1, 1),
     course_id   int          NOT NULL,
     meeting_id  int          NOT NULL,
-    accessTo    datetime     NOT NULL,
+    access_to   datetime     NOT NULL,
     video_link  nvarchar(30) NOT NULL,
     stream_link nvarchar(30) NULL,
     CONSTRAINT Course_sync_async_meeting_pk PRIMARY KEY (id)
 );
-
-
 -- Reference: Course_video_access_Course_module_meetings (table: Course_sync_async_meeting)
 ALTER TABLE Course_sync_async_meeting
     ADD CONSTRAINT Course_video_access_Course_module_meetings
         FOREIGN KEY (meeting_id, course_id)
             REFERENCES Course_module_meetings (meeting_id, course_id);
 
+
 -- Table: Courses
 CREATE TABLE Courses
 (
-    course_id             int           NOT NULL,
+    course_id             int           NOT NULL IDENTITY (1, 1),
     course_name           nvarchar(30)  NOT NULL,
     course_description    nvarchar(300) NOT NULL,
     start_date            date          NOT NULL,
@@ -318,6 +302,7 @@ CREATE TABLE Courses
     CONSTRAINT courses_price_check CHECK (price >= 0),
     CONSTRAINT Courses_pk PRIMARY KEY (course_id)
 );
+
 -- Reference: Courses_Employees (table: Courses)
 ALTER TABLE Courses
     ADD CONSTRAINT Courses_Employees
@@ -328,16 +313,15 @@ ALTER TABLE Courses
 -- Table: Employee_Roles
 CREATE TABLE Employee_Roles
 (
-    role_id     int NOT NULL,
-    employee_id int NOT NULL,
-    role_name   int NOT NULL,
+    role_id   int          NOT NULL IDENTITY (1, 1),
+    role_name nvarchar(30) NOT NULL,
     CONSTRAINT Employee_Roles_pk PRIMARY KEY (role_id)
 );
 
 -- Table: Employees
 CREATE TABLE Employees
 (
-    employee_id int          NOT NULL,
+    employee_id int          NOT NULL IDENTITY (1, 1),
     first_name  nvarchar(30) NOT NULL,
     last_name   nvarchar(30) NOT NULL,
     hire_date   date         NOT NULL,
@@ -350,7 +334,6 @@ CREATE TABLE Employees
     CONSTRAINT employee_birth_date_check CHECK (year(getdate()) - year(birth_date) < 100),
     CONSTRAINT Employees_pk PRIMARY KEY (employee_id)
 );
-
 
 -- Reference: Employees_Cities (table: Employees)
 ALTER TABLE Employees
@@ -374,7 +357,7 @@ ALTER TABLE Employees
 -- Table: Event_types
 CREATE TABLE Event_types
 (
-    type_id    int          NOT NULL,
+    type_id    int          NOT NULL IDENTITY (1, 1),
     event_name nvarchar(30) NOT NULL,
     CONSTRAINT Event_types_pk PRIMARY KEY (type_id)
 );
@@ -388,7 +371,6 @@ CREATE TABLE Exams
     CONSTRAINT grade_check CHECK (grade in (2.0, 3.0, 3.5, 4.0, 4.5, 5.0)),
     CONSTRAINT Exams_pk PRIMARY KEY (studies_id, user_id)
 );
-
 
 -- Reference: Exams_Studies (table: Exams)
 ALTER TABLE Exams
@@ -407,16 +389,17 @@ ALTER TABLE Exams
 CREATE TABLE Intership_meeting_attendance_list
 (
     inter_meeting_id int NOT NULL,
+    studies_id       int NOT NULL,
     user_id          int NOT NULL,
     was_present      bit NOT NULL,
-    CONSTRAINT Intership_meeting_attendance_list_pk PRIMARY KEY (inter_meeting_id, user_id)
+    CONSTRAINT Intership_meeting_attendance_list_pk PRIMARY KEY (inter_meeting_id, user_id, studies_id)
 );
 
 -- Reference: Intership_meeting_attendance_list_Intership_meetings (table: Intership_meeting_attendance_list)
 ALTER TABLE Intership_meeting_attendance_list
     ADD CONSTRAINT Intership_meeting_attendance_list_Intership_meetings
-        FOREIGN KEY (inter_meeting_id)
-            REFERENCES Intership_meetings (inter_meeting_id);
+        FOREIGN KEY (inter_meeting_id, studies_id)
+            REFERENCES Intership_meetings (inter_meeting_id, studies_id);
 
 -- Reference: Intership_meeting_attendance_list_Users (table: Intership_meeting_attendance_list)
 ALTER TABLE Intership_meeting_attendance_list
@@ -424,16 +407,15 @@ ALTER TABLE Intership_meeting_attendance_list
         FOREIGN KEY (user_id)
             REFERENCES Users (user_id);
 
+
 -- Table: Intership_meetings
 CREATE TABLE Intership_meetings
 (
-    inter_meeting_id int      NOT NULL,
     studies_id       int      NOT NULL,
-    intership_id     int      NOT NULL,
+    inter_meeting_id int      NOT NULL IDENTITY (1, 1),
     meetind_date     datetime NOT NULL,
-    CONSTRAINT Intership_meetings_pk PRIMARY KEY (inter_meeting_id)
+    CONSTRAINT Intership_meetings_pk PRIMARY KEY (inter_meeting_id, studies_id)
 );
-
 
 -- Reference: Intership_meetings_Studies (table: Intership_meetings)
 ALTER TABLE Intership_meetings
@@ -441,11 +423,10 @@ ALTER TABLE Intership_meetings
         FOREIGN KEY (studies_id)
             REFERENCES Studies (studies_id);
 
-
 -- Table: Languages
 CREATE TABLE Languages
 (
-    language_id   int          NOT NULL,
+    language_id   int          NOT NULL IDENTITY (1, 1),
     language_name nvarchar(30) NOT NULL,
     CONSTRAINT Languages_pk PRIMARY KEY (language_id)
 );
@@ -457,7 +438,6 @@ CREATE TABLE Order_course
     course_id       int NOT NULL,
     CONSTRAINT Order_course_pk PRIMARY KEY (order_detail_id)
 );
-
 
 -- Reference: Order_course_Courses (table: Order_course)
 ALTER TABLE Order_course
@@ -475,13 +455,13 @@ ALTER TABLE Order_course
 -- Table: Order_details
 CREATE TABLE Order_details
 (
-    order_detail_id int NOT NULL,
-    order_id        int NOT NULL,
-    type_id         int NOT NULL,
+    order_detail_id int   NOT NULL IDENTITY (1, 1),
+    order_id        int   NOT NULL,
+    type_id         int   NOT NULL,
+    price           money NOT NULL,
+    CONSTRAINT order_details_price_check CHECK (price >= 0),
     CONSTRAINT Order_details_pk PRIMARY KEY (order_detail_id)
 );
-
-
 -- Reference: Order_details_Event_types (table: Order_details)
 ALTER TABLE Order_details
     ADD CONSTRAINT Order_details_Event_types
@@ -502,7 +482,6 @@ CREATE TABLE Order_module_studies
     module_id       int NOT NULL,
     CONSTRAINT Order_module_studies_pk PRIMARY KEY (order_detail_id)
 );
-
 
 -- Reference: Order_meeting_studies_Order_details (table: Order_module_studies)
 ALTER TABLE Order_module_studies
@@ -555,25 +534,23 @@ ALTER TABLE Order_webinars
 ALTER TABLE Order_webinars
     ADD CONSTRAINT Order_webinars_Webinar_info
         FOREIGN KEY (webinar_id)
-            REFERENCES Webinar_info (webinar_id);
+            REFERENCES Webinars (webinar_id);
 
 
 -- Table: Orders
 CREATE TABLE Orders
 (
-    order_id      int      NOT NULL,
+    order_id      int      NOT NULL IDENTITY (1, 1),
     user_id       int      NOT NULL,
     is_paid       bit      NOT NULL,
-    price         money    NOT NULL,
     max_paid_date datetime NOT NULL,
-    CONSTRAINT orders_price_check CHECK (price >= 0),
     CONSTRAINT Orders_pk PRIMARY KEY (order_id)
 );
 
 -- Table: Studies
 CREATE TABLE Studies
 (
-    studies_id             int           NOT NULL,
+    studies_id             int           NOT NULL IDENTITY (1, 1),
     studies_name           nvarchar(30)  NOT NULL,
     studies_description    nvarchar(300) NOT NULL,
     start_date             date          NOT NULL,
@@ -595,12 +572,12 @@ ALTER TABLE Studies
 -- Table: Studies_Module
 CREATE TABLE Studies_Module
 (
-    studies_module_id        int          NOT NULL,
-    module_type_id           int          NOT NULL,
-    module_name              nvarchar(30) NOT NULL,
-    studies_id               int          NOT NULL,
-    price_for_free_listeners money        NOT NULL,
-    CONSTRAINT price_check CHECK (price_for_free_listeners >= 0),
+    studies_module_id int          NOT NULL IDENTITY (1, 1),
+    module_type_id    int          NOT NULL,
+    module_name       nvarchar(30) NOT NULL,
+    studies_id        int          NOT NULL,
+    price_for_module  money        NOT NULL,
+    CONSTRAINT price_check CHECK (price_for_module >= 0),
     CONSTRAINT studies_module_id PRIMARY KEY (studies_module_id)
 );
 
@@ -620,11 +597,11 @@ ALTER TABLE Studies_Module
 -- Table: Studies_makeup_meeting_attendance_list
 CREATE TABLE Studies_makeup_meeting_attendance_list
 (
-    makeup_list_id int NOT NULL,
+    makeup_list_id int NOT NULL IDENTITY (1, 1),
     user_id        int NOT NULL,
     studies_id     int NOT NULL,
     meeting_id     int NOT NULL,
-    topic_id       int NOT NULL,
+    used           bit NOT NULL DEFAULT 0,
     CONSTRAINT Studies_makeup_meeting_attendance_list_pk PRIMARY KEY (makeup_list_id)
 );
 
@@ -640,6 +617,7 @@ ALTER TABLE Studies_makeup_meeting_attendance_list
         FOREIGN KEY (user_id)
             REFERENCES Users (user_id);
 
+
 -- Table: Studies_meeting_attendance_list
 CREATE TABLE Studies_meeting_attendance_list
 (
@@ -647,11 +625,9 @@ CREATE TABLE Studies_meeting_attendance_list
     studies_id  int NOT NULL,
     meeting_id  int NOT NULL,
     was_present bit NOT NULL,
-    topic_id    int NOT NULL,
+    did_makeup  bit NOT NULL DEFAULT 0,
     CONSTRAINT Studies_meeting_attendance_list_pk PRIMARY KEY (user_id, studies_id, meeting_id)
 );
-
-
 -- Reference: Studies_meeting_attendance_list_Studies_module_meetings (table: Studies_meeting_attendance_list)
 ALTER TABLE Studies_meeting_attendance_list
     ADD CONSTRAINT Studies_meeting_attendance_list_Studies_module_meetings
@@ -665,31 +641,14 @@ ALTER TABLE Studies_meeting_attendance_list
             REFERENCES Users (user_id);
 
 
--- Table: Studies_module_meeting_stationary
-CREATE TABLE Studies_module_meeting_stationary
-(
-    id         int         NOT NULL,
-    studies_id int         NOT NULL,
-    meeting_id int         NOT NULL,
-    classroom  nvarchar(6) NOT NULL,
-    CONSTRAINT Studies_module_meeting_stationary_pk PRIMARY KEY (id)
-);
-
-
--- Reference: Studies_module_meeting_stationary_Studies_module_meetings (table: Studies_module_meeting_stationary)
-ALTER TABLE Studies_module_meeting_stationary
-    ADD CONSTRAINT Studies_module_meeting_stationary_Studies_module_meetings
-        FOREIGN KEY (meeting_id, studies_id)
-            REFERENCES Studies_module_meetings (meeting_id, studies_id);
-
 -- Table: Studies_module_meetings
 CREATE TABLE Studies_module_meetings
 (
     meeting_id      int          NOT NULL,
     studies_id      int          NOT NULL,
     meeting_date    datetime     NOT NULL,
-    language_id     nvarchar(30) NOT NULL,
-    translator_id   int          NOT NULL,
+    language_id     int          NOT NULL,
+    translator_id   int          NULL,
     lecturer_id     int          NOT NULL,
     duration        time         NOT NULL,
     place_limit     int          NOT NULL,
@@ -699,7 +658,6 @@ CREATE TABLE Studies_module_meetings
     meeting_type_id int          NOT NULL,
     CONSTRAINT Studies_module_meetings_pk PRIMARY KEY (meeting_id, studies_id)
 );
-
 
 -- Reference: Studies_module_meetings_Employees (table: Studies_module_meetings)
 ALTER TABLE Studies_module_meetings
@@ -725,45 +683,53 @@ ALTER TABLE Studies_module_meetings
         FOREIGN KEY (meeting_type_id)
             REFERENCES meeting_type (meeting_type_id);
 
--- Reference: module_type_Studies_module_meetings (table: Studies_module_meetings)
-ALTER TABLE Studies_module_meetings
-    ADD CONSTRAINT module_type_Studies_module_meetings
-        FOREIGN KEY (module_id)
-            REFERENCES module_type (module_type_id);
-
 -- Reference: topics_list_Studies_module_meetings (table: Studies_module_meetings)
 ALTER TABLE Studies_module_meetings
     ADD CONSTRAINT topics_list_Studies_module_meetings
         FOREIGN KEY (topic_id)
             REFERENCES topics_list (topic_id);
 
+-- Table: Studies_stationary_meeting
+CREATE TABLE Studies_stationary_meeting
+(
+    id         int         NOT NULL IDENTITY (1, 1),
+    studies_id int         NOT NULL,
+    meeting_id int         NOT NULL,
+    classroom  nvarchar(6) NOT NULL,
+    CONSTRAINT Studies_stationary_meeting_pk PRIMARY KEY (id)
+);
+-- Reference: Studies_module_meeting_stationary_Studies_module_meetings (table: Studies_stationary_meeting)
+ALTER TABLE Studies_stationary_meeting
+    ADD CONSTRAINT Studies_module_meeting_stationary_Studies_module_meetings
+        FOREIGN KEY (meeting_id, studies_id)
+            REFERENCES Studies_module_meetings (meeting_id, studies_id);
+
 
 -- Table: Studies_sync_async_meeting
 CREATE TABLE Studies_sync_async_meeting
 (
-    id          int          NOT NULL,
+    id          int          NOT NULL IDENTITY (1, 1),
     studies_id  int          NOT NULL,
     meeting_id  int          NOT NULL,
-    accessTo    datetime     NOT NULL,
+    access_to   datetime     NOT NULL,
     video_link  nvarchar(30) NOT NULL,
-    stream_link nvarchar(30) NOT NULL,
+    stream_link nvarchar(30) NULL,
     CONSTRAINT Studies_sync_async_meeting_pk PRIMARY KEY (id)
 );
-
 -- Reference: Studies_sync_async_meeting_Studies_module_meetings (table: Studies_sync_async_meeting)
 ALTER TABLE Studies_sync_async_meeting
     ADD CONSTRAINT Studies_sync_async_meeting_Studies_module_meetings
         FOREIGN KEY (meeting_id, studies_id)
             REFERENCES Studies_module_meetings (meeting_id, studies_id);
 
+
 -- Table: Translators
 CREATE TABLE Translators
 (
-    translator_id int NOT NULL,
+    translator_id int NOT NULL IDENTITY (1, 1),
     employee_id   int NOT NULL,
     CONSTRAINT Translators_pk PRIMARY KEY (translator_id)
 );
-
 
 -- Reference: Translators_Employees (table: Translators)
 ALTER TABLE Translators
@@ -771,10 +737,11 @@ ALTER TABLE Translators
         FOREIGN KEY (employee_id)
             REFERENCES Employees (employee_id);
 
+
 -- Table: Translators_languages_used
 CREATE TABLE Translators_languages_used
 (
-    id            int NOT NULL,
+    id            int NOT NULL IDENTITY (1, 1),
     translator_id int NOT NULL,
     language_id   int NOT NULL,
     CONSTRAINT Translators_languages_used_pk PRIMARY KEY (id)
@@ -792,10 +759,11 @@ ALTER TABLE Translators_languages_used
         FOREIGN KEY (translator_id)
             REFERENCES Translators (translator_id);
 
+
 -- Table: Users
 CREATE TABLE Users
 (
-    user_id      int          NOT NULL,
+    user_id      int          NOT NULL IDENTITY (1, 1),
     email        nvarchar(50) NOT NULL,
     first_name   nvarchar(30) NOT NULL,
     last_name    nvarchar(30) NOT NULL,
@@ -808,6 +776,7 @@ CREATE TABLE Users
     CONSTRAINT users_birth_date_check CHECK (datediff(year, birth_date, getdate()) < 100),
     CONSTRAINT Users_pk PRIMARY KEY (user_id)
 );
+-- Reference: Cities_Users (table: Users)
 ALTER TABLE Users
     ADD CONSTRAINT Cities_Users
         FOREIGN KEY (city_id)
@@ -819,62 +788,65 @@ ALTER TABLE Users
         FOREIGN KEY (country_id)
             REFERENCES Countries (country_id);
 
-
--- Table: Webinar_info
-CREATE TABLE Webinar_info
+-- Table: Webinars
+CREATE TABLE Webinars
 (
-    webinar_id     int          NOT NULL,
-    teacher_id     int          NOT NULL,
-    price          money        NOT NULL,
-    can_buy_from   date         NOT NULL,
-    recording_link nvarchar(30) NOT NULL,
-    start_date     date         NOT NULL,
+    webinar_id     int           NOT NULL IDENTITY (1, 1),
+    name           nvarchar(30)  NOT NULL,
+    description    nvarchar(300) NOT NULL,
+    teacher_id     int           NOT NULL,
+    price          money         NOT NULL,
+    can_buy_from   date          NOT NULL,
+    recording_link nvarchar(30)  NOT NULL,
+    start_date     date          NOT NULL,
     CONSTRAINT webinar_price_check CHECK (price >= 0),
-    CONSTRAINT Webinar_info_pk PRIMARY KEY (webinar_id)
+    CONSTRAINT Webinars_pk PRIMARY KEY (webinar_id)
 );
 
--- Reference: Webinar_info_Employees (table: Webinar_info)
-ALTER TABLE Webinar_info
+-- Reference: Webinar_info_Employees (table: Webinars)
+ALTER TABLE Webinars
     ADD CONSTRAINT Webinar_info_Employees
         FOREIGN KEY (teacher_id)
             REFERENCES Employees (employee_id);
 
+
 -- Table: meeting_type
 CREATE TABLE meeting_type
 (
-    meeting_type_id int          NOT NULL,
-    meeting_type    nvarchar(30) NOT NULL,
+    meeting_type_id int          NOT NULL IDENTITY (1, 1),
+    meeting_name    nvarchar(30) NOT NULL,
     CONSTRAINT meeting_type_pk PRIMARY KEY (meeting_type_id)
 );
 
 -- Table: module_type
 CREATE TABLE module_type
 (
-    module_type_id int          NOT NULL,
+    module_type_id int          NOT NULL IDENTITY (1, 1),
     module_name    nvarchar(30) NOT NULL,
-    module_type    nvarchar(30) NOT NULL,
     CONSTRAINT module_type_pk PRIMARY KEY (module_type_id)
 );
 
 -- Table: topics_list
 CREATE TABLE topics_list
 (
-    topic_id          int          NOT NULL,
-    topic_name        nvarchar(30) NOT NULL,
-    topic_description nvarchar(30) NOT NULL,
+    topic_id          int           NOT NULL IDENTITY (1, 1),
+    topic_name        nvarchar(30)  NOT NULL,
+    topic_description nvarchar(300) NOT NULL,
     CONSTRAINT topics_list_pk PRIMARY KEY (topic_id)
 );
+
 
 -- End of file.
 
 
-
 ```
+
 ## Widoki w bazie danych
 
 
 
 ### Liczba zamówień dla poszczególnych użytkowników
+``
 ```sql 
 create view dbo.number_of_orders_by_user as
     with what_user_ordered as (select Orders.user_id,
@@ -931,6 +903,8 @@ create view dbo.number_of_orders_by_user as
     group by t.user_id
 go
 ```
+~Julia Demitraszek
+
 
 ### Użytkownicy zapisani na dany kurs
 
@@ -943,8 +917,8 @@ create view dbo.courses_enrolled_list as
     where o.is_paid = 1
        or (getdate() < max_paid_date)
 go
-
 ```
+~Szymon Rybski
 
 ### Użytkownicy zapisani na dane studia
 
@@ -958,6 +932,7 @@ create view dbo.studies_enrolled_list as
        or (getdate() < max_paid_date)
 go
 ```
+~Szymon Rybski
 
 ### Użytkownicy zapisani na dany webinar
 
@@ -970,16 +945,17 @@ create view dbo.webinar_enrolled_list as
     where o.is_paid = 1
        or (getdate() < max_paid_date)
 go
-
 ```
-
+~Szymon Rybski
 
 ## Procedury w bazie danych
 
-### Dodanie produktu do istniejącego zamówienia
+### Dodanie produktu do istniejącego zamówienia (z transakcja w przypadku niepowodzenia)
 ```sql
 -- dodanie produktu do ISTNIEJACEGO zamówienia
-create procedure add_product_to_order @order_id int, @product_id int, @product_type_id int
+create procedure add_product_to_order @order_id int,
+                                      @product_id int,
+                                      @product_type_id int
 as
 begin
     declare @is_order_exists bit;
@@ -988,132 +964,133 @@ begin
     declare @product_price decimal(10, 2);
     declare @order_detail_id int;
 
-    -- Sprawdzenie, czy zamówienie istnieje
-    select @is_order_exists = case
-                                  when exists (select 1
-                                               from dbo.orders
-                                               where order_id = @order_id) then 1
-                                  else 0 end;
+    begin TRY
+        set transaction isolation level serializable;
+        begin transaction;
+        -- Sprawdzenie, czy zamówienie istnieje
+        select @is_order_exists = case
+                                      when exists (select 1
+                                                   from dbo.orders
+                                                   where order_id = @order_id) then 1
+                                      else 0 end;
+
+        if @is_order_exists = 0
+            begin
+                throw 50001, 'Zamówienie o podanym ID nie istnieje.', 1;
+            end
 
 --     sprawdzenie typu produktu
-    select @product_type = event_name from Event_types where type_id = @product_type_id;
-    if @product_type is null
-        begin
-            RAISERROR ('Nieprawidłowy typ produktu.', 16, 1);
-            return;
-        end
+        select @product_type = event_name
+        from Event_types
+        where type_id = @product_type_id;
 
---     jeśli zamówienie istnieje i typ produktu jest ok
-    if @is_order_exists = 1
-        begin
-            -- Sprawdzenie, czy produkt istnieje
-            select @is_product_exists = case
-                                            when @product_type = 'Webinar' then
-                                                IIF(exists (select 1
-                                                            from dbo.webinars
-                                                            where webinar_id = @product_id), 1, 0)
-                                            when @product_type = 'Course' then
-                                                IIF(exists (select 1
-                                                            from dbo.courses
-                                                            where course_id = @product_id), 1, 0)
-                                            when @product_type = 'Studies' then
-                                                IIF(exists (select 1
-                                                            from dbo.studies
-                                                            where studies_id = @product_id), 1, 0)
-                                            when @product_type = 'Study_Module' then
-                                                IIF(exists (select 1
-                                                            from dbo.Studies_Module
-                                                            where studies_module_id = @product_id), 1, 0)
-                                            else 0
-                end
-        end
-    else
-        begin
-            RAISERROR ('Zamówienie o podanym ID nie istnieje.', 16, 1);
-            return 0;
-        end
+        if @product_type is null
+            begin
+                throw 50002, 'Nieprawidłowy typ produktu.', 1;
+            end
 
---  jeśli produkt istnieje
-    if @is_product_exists = 1
-        begin
-            --             pobranie ceny produktu
-            select @product_price = case
+        -- Sprawdzenie, czy produkt istnieje
+        select @is_product_exists = case
                                         when @product_type = 'Webinar' then
-                                                (select price from webinars where webinar_id = @product_id)
+                                            IIF(exists (select 1
+                                                        from dbo.webinars
+                                                        where webinar_id = @product_id), 1, 0)
                                         when @product_type = 'Course' then
-                                                (select price from courses where course_id = @product_id)
+                                            IIF(exists (select 1
+                                                        from dbo.courses
+                                                        where course_id = @product_id), 1, 0)
                                         when @product_type = 'Studies' then
-                                                (select price from studies where studies_id = @product_id)
+                                            IIF(exists (select 1
+                                                        from dbo.studies
+                                                        where studies_id = @product_id), 1, 0)
                                         when @product_type = 'Study_Module' then
-                                            (select price_for_module
-                                             from Studies_Module
-                                             where studies_module_id = @product_id)
+                                            IIF(exists (select 1
+                                                        from dbo.Studies_Module
+                                                        where studies_module_id = @product_id), 1, 0)
                                         else 0
-                end
+            end
+
+
+        --  jeśli produkt nie istnieje
+        if @is_product_exists = 0
+            begin
+                throw 50003, 'Produkt o podanym ID nie istnieje.', 1;
+            end
+
+        --     pobranie ceny produktu
+        select @product_price = case
+                                    when @product_type = 'Webinar' then
+                                            (select price from webinars where webinar_id = @product_id)
+                                    when @product_type = 'Course' then
+                                            (select price from courses where course_id = @product_id)
+                                    when @product_type = 'Studies' then
+                                            (select price from studies where studies_id = @product_id)
+                                    when @product_type = 'Study_Module' then
+                                        (select price_for_module
+                                         from Studies_Module
+                                         where studies_module_id = @product_id)
+                                    else 0
+            end
 
 --            dodanie produktu do order_details
-            insert into Order_details (order_id, type_id, price)
-            values (@order_id, @product_type_id, @product_price);
-            select @order_detail_id = SCOPE_IDENTITY();
+        insert into Order_details (order_id, type_id, price)
+        values (@order_id, @product_type_id, @product_price);
+        select @order_detail_id = SCOPE_IDENTITY();
 
 --           dodanie zakupu do odpowiedniej tabeli
-            if @product_type = 'Webinar'
-                begin
-                    --                     id z order_details i id webinaru
-                    insert into Order_webinars (order_detail_id, webinar_id)
-                    values ((select order_detail_id
-                             from Order_details
-                             where order_id = @order_id
-                               and type_id = @product_type_id), @product_id);
-                end
+        if @product_type = 'Webinar'
+            begin
+                --                     id z order_details i id webinaru
+                insert into Order_webinars (order_detail_id, webinar_id)
+                values (@order_detail_id, @product_id);
+            end
 
 --            jesli to kurs i dodatkowo czy są wolne miejsca
-            if @product_type = 'Course'
-                begin
-                    if dbo.check_course_places_left(@product_id) > 0
-                        begin
-                            insert into Order_course (order_detail_id, course_id)
-                            values (@order_detail_id, @product_id);
-                        end
-                    else
-                        begin
-                            RAISERROR ('Brak miejsc na kurs.', 16, 1);
-                            return;
-                        end
-                end
+        else if @product_type = 'Course'
+            begin
+                if dbo.check_course_places_left(@product_id) > 0
+                    begin
+                        insert into Order_course (order_detail_id, course_id)
+                        values (@order_detail_id, @product_id);
+                    end
+                else
+                    begin
+                        throw 50004, 'Brak miejsc na kurs.', 1;
+                    end
+            end
 
-
-            if @product_type = 'Studies'
-                begin
-                    if dbo.check_studies_places_left(@product_id) > 0
-                        begin
-                            insert into Order_studies (order_detail_id, studies_id)
-                            values (@order_detail_id, @product_id);
-                        end
-                    else
-                        begin
-                            RAISERROR ('Brak miejsc na studia.', 16, 1);
-                            return;
-                        end
-                end
+        else if @product_type = 'Studies'
+            begin
+                if dbo.check_studies_places_left(@product_id) > 0
+                    begin
+                        insert into Order_studies (order_detail_id, studies_id)
+                        values (@order_detail_id, @product_id);
+                    end
+                else
+                    begin
+                        throw 50005, 'Brak miejsc na studia.', 1;
+                    end
+            end
 
 
 --             dla modułów bez limitu miejsc
-            if @product_type = 'Study_Module'
-                begin
-                    insert into Order_module_studies (order_detail_id, module_id)
-                    values (@order_detail_id, @product_id);
-                end
-        end
-    else
-        begin
-            RAISERROR ('Produkt o podanym ID nie istnieje.', 16, 1);
-            return;
-        end
-    select * from Order_details where order_id = @order_id;
+        else if @product_type = 'Study_Module'
+            begin
+                insert into Order_module_studies (order_detail_id, module_id)
+                values (@order_detail_id, @product_id);
+            end
+        commit transaction;
+
+        SELECT * FROM Order_details WHERE order_id = @order_id;
+    end TRY
+    begin CATCH
+        if @@TRANCOUNT > 0
+            rollback transaction;
+        throw;
+    end CATCH
 end
 ```
-
+~Paweł Czajczyk
 
 ### Sprawdzanie listy obecności dla kursu (sprawdzanie przez prowadzącego)
 
@@ -1142,12 +1119,13 @@ BEGIN
 
 END;
 ```
+~Szymon Rybski
 
 ### Dla wszystkich użytkowników, którzy nie maja zaznaczonej obencości na zajęciach ustaw, że byli na nich nieobecni
 
 ```sql
 CREATE PROCEDURE update_students_that_missed_meeting @studies_id INT,
-                                                        @meeting_id INT
+                                                     @meeting_id INT
 AS
 BEGIN
     set nocount on;
@@ -1165,6 +1143,7 @@ BEGIN
 
 END;
 ```
+~Paweł Czajczyk
 
 ### Sprawdzanie listy obecności dla studiów
 
@@ -1197,6 +1176,7 @@ BEGIN
 
 END;
 ```
+~Szymon Rybski
 
 ### Sprawdzanie łącznej wartości zamówień
 
@@ -1209,6 +1189,7 @@ begin
     return @total_cost
 end
 ```
+~Julia Demitraszek
 
 ### Ustawianie obecności dla studenta
 ```sql
@@ -1257,9 +1238,10 @@ BEGIN
 
 END;
 ```
+~Paweł Czajczyk
 
 ### Dodanie nowego tematu 
-``` sql
+```sql
 create procedure add_topic(
     @topic_name nvarchar(30),
     @topic_description nvarchar(30)
@@ -1277,6 +1259,7 @@ begin
     end
 end;
 ```
+~Szymon Rybski
 
 ### Dodanie nowego użytkownika
 
@@ -1310,12 +1293,11 @@ BEGIN
             @Email, @FirstName, @LastName, @CityID, @CountryID, @Phone, @Street, @HouseNumber, @BirthDate
         );
 END;
-
 ```
+~Julia Demitraszek
 
 ### Dodanie nowego miasta
-
-``` sql
+```sql
 CREATE PROCEDURE add_city
     @CityName NVARCHAR(30) 
 AS
@@ -1333,6 +1315,7 @@ BEGIN
 END;
 GO
 ``` 
+~Julia Demitraszek
 
 ### Dodanie nowego pracownika
 
@@ -1373,8 +1356,8 @@ BEGIN
          @CountryID
       );
    END;
-
 ```
+~Julia Demitraszek
 
 ### Dodanie nowego typu wydarzenia
 
@@ -1390,10 +1373,11 @@ BEGIN
     END
 END;
 ```
+~Szymon Rybski
 
-### Sprawdzenie czy użytkownik jest zapisany na kurs
+### Sprawdzenie czy użytkownik jest zapisany na kurs przez prowadzacego
 
-``` sql
+```sql
 CREATE PROCEDURE check_course_attendance
     @user_id INT,
     @course_id INT,
@@ -1421,51 +1405,8 @@ BEGIN
 END;
 go
 ```
+~Julia Demitraszek
 
-
-### Usuniecie studiów o danym indeksie
-```sql 
-CREATE PROCEDURE delete_study
-    @study_id INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    IF NOT EXISTS (SELECT 1 FROM Studies WHERE studies_id = @study_id)
-    BEGIN
-        PRINT 'Nie znaleziono studiow';
-        RETURN;
-    END
-
-    DELETE FROM Studies
-    WHERE studies_id = @study_id;
-
-    PRINT 'Studia usuniete';
-END
-
-```
-
-### Usuniecie użytkownika o danym indeksie
-```sql 
-CREATE PROCEDURE delete_user
-    @user_id INT
-AS
-BEGIN
-    SET NOCOUNT ON;
-
-    IF NOT EXISTS (SELECT 1 FROM Users WHERE user_id = @user_id)
-    BEGIN
-        PRINT 'Uzytkownik nie znaleziony';
-        RETURN;
-    END
-
-    DELETE FROM Users
-    WHERE user_id = @user_id;
-
-    PRINT 'Uzytkownik usuniety';
-END
-
-``` 
 
 ### Dodanie webinaru 
 
@@ -1492,8 +1433,8 @@ BEGIN
 
     PRINT 'Webinar został dodany';
 END;
-
 ``` 
+~Szymon Rybski
 
 ### sprawdz % frekwencji danego studenta na zajeciach (wersja procedura, funckja - nizej)
 ```sql
@@ -1550,6 +1491,7 @@ begin
         set @result = @present_meetings / @total_meetings;
 end
 ```
+~Paweł Czajczyk
 
 ## Funkcje w bazie danych
 
@@ -1583,8 +1525,8 @@ BEGIN
     -- Zwróć procent obecności
     RETURN CAST(@present_meetings AS FLOAT) / CAST(@total_meetings AS FLOAT) * 100;
 END;
-
 ```
+~Paweł Czajczyk
 
 ### Obliczanie średniej oceny dla użytkownika
 ```sql
@@ -1597,6 +1539,59 @@ select @average = avg(grade) from Exams where user_id = @user_id;
 return @average;
 end;
 ```
+~Julia Demitraszek
+
+### Sprawdzenie czy użytkownik zdał studia
+```sql
+-- sprawdza czy student ma zaliczone wszystkie przedmioty z danego semestru,
+-- frekwencje na poziomie 80% oraz 100% na praktykach
+create function check_if_user_pass_studies(@studies_id int, @user_id int)
+    returns bit as
+begin
+    declare @total_attendance float;
+    declare @intership_absence int;
+    declare @exam_grade float;
+    declare @enrolled bit;
+
+--  jesli nie jest zapisany na dany przedmiot to nie zalicza
+    select @enrolled = count(*) from studies_enrolled_list
+    where studies_id = @studies_id
+      and user_id = @user_id;
+
+    if @enrolled = 0
+        return 0;
+
+--  jesli nie ma 80% frekwencji to nie zalicza
+    select @total_attendance = dbo.get_user_attendance_percentage(@studies_id, @user_id);
+
+    if @total_attendance < 80
+        return 0;
+
+--  jesli ma nieobecnosci na praktykach to nie zalicza
+    select @intership_absence = count(*) from Intership_meeting_attendance_list
+    where studies_id = @studies_id
+      and user_id = @user_id
+      and was_present = 0;
+
+    if @intership_absence > 0
+        return 0;
+
+--  jesli ma niezaliczony egzamin to nie zalicza
+    select @exam_grade = grade from Exams
+    where studies_id = @studies_id
+      and user_id = @user_id;
+
+    if  @exam_grade is null or @exam_grade < 3
+        return 0;
+
+
+
+--  w przeciwnym wypadku zalicza
+    return 1;
+
+end
+```
+~Paweł Czajczyk
 
 ### Generowanie planu zajęć dla użytkownika
 ```sql
@@ -1633,6 +1628,7 @@ CREATE FUNCTION get_user_schedule(@user_id INT)
 
         );
 ```
+~Julia Demitraszek
 
 ### Czy użytkownik uczestniczył w zajęciach o danym temacie
 
@@ -1661,9 +1657,8 @@ begin
     return @result
 end
 go
-
-
 ```
+~Szymon Rybski
 
 ### Sprawdzenie pozostałych miejsc na kursie 
 ```sql
@@ -1677,6 +1672,7 @@ select @result = @limit - (select count(*) from courses_enrolled_list where cour
 return @result;
 end
 ```
+~Paweł Czajczyk
 
 ### Sprawdzenie pozostałych miejsc na studiach
 ```sql
@@ -1690,6 +1686,7 @@ select @result = @limit - (select count(*) from studies_enrolled_list sel where 
 return @result;
 end
 ```
+~Paweł Czajczyk
 
 ## Trigery
 
@@ -1707,67 +1704,79 @@ begin
     declare @order_detail_id int;
     declare @start_date date;
 
-    select @order_id = order_id, @product_type_id = type_id, @order_detail_id = order_detail_id
-    from inserted;
+    declare inserted_cursor cursor for
+        select order_id, type_id, order_detail_id
+        from inserted;
 
-    select @product_type = case
-                               when @product_type_id = 1 then 'Webinar'
-                               when @product_type_id = 2 then 'Course'
-                               when @product_type_id = 3 then 'Studies'
-                               when @product_type_id = 4 then 'Study_Module'
-                               else 'Unknown'
-                           end;
+    open inserted_cursor;
+    fetch next from inserted_cursor into @order_id, @product_type_id, @order_detail_id;
 
-    if @product_type = 'Course'
+    while @@FETCH_STATUS = 0
         begin
-            select @product_id = course_id
-            from Order_course
-            where order_detail_id = @order_detail_id;
+            select @product_type = case
+                                       when @product_type_id = 1 then 'Webinar'
+                                       when @product_type_id = 2 then 'Course'
+                                       when @product_type_id = 3 then 'Studies'
+                                       when @product_type_id = 4 then 'Study_Module'
+                                       else 'Unknown'
+                end;
 
-            select @start_date = start_date
-            from Courses
-            where course_id = @product_id;
+            if @product_type = 'Course'
+                begin
+                    select @product_id = course_id
+                    from Order_course
+                    where order_detail_id = @order_detail_id;
+
+                    select @start_date = start_date
+                    from Courses
+                    where course_id = @product_id;
+                end
+            else if @product_type = 'Studies'
+                begin
+                    select @product_id = studies_id
+                    from Order_studies
+                    where order_detail_id = @order_detail_id;
+
+                    select @start_date = start_date
+                    from Studies
+                    where studies_id = @product_id;
+                end
+            else if @product_type = 'Webinar'
+                begin
+                    select @product_id = webinar_id
+                    from Order_webinars
+                    where order_detail_id = @order_detail_id;
+
+                    select @start_date = start_date
+                    from Webinars
+                    where webinar_id = @product_id;
+                end
+            else if @product_type = 'Study_Module'
+                begin
+                    select @product_id = module_id
+                    from Order_module_studies
+                    where order_detail_id = @order_detail_id;
+
+                    select @start_date = min(meeting_date)
+                    from Studies_module_meetings
+                    where module_id = @product_id;
+                end
+            else
+                begin
+                    fetch next from inserted_cursor into @order_id, @product_type_id, @order_detail_id;
+                    continue;
+                end
+
+            update Orders
+            set max_paid_date = dateadd(day, -3, @start_date)
+            where order_id = @order_id
+              and max_paid_date < dateadd(day, -3, @start_date);
+
+            fetch next from inserted_cursor into @order_id, @product_type_id, @order_detail_id;
         end
-    else if @product_type = 'Studies'
-        begin
-            select @product_id = studies_id
-            from Order_studies
-            where order_detail_id = @order_detail_id;
 
-            select @start_date = start_date
-            from Studies
-            where studies_id = @product_id;
-        end
-    else if @product_type = 'Webinar'
-        begin
-            select @product_id = webinar_id
-            from Order_webinars
-            where order_detail_id = @order_detail_id;
-
-            select @start_date = start_date
-            from Webinars
-            where webinar_id = @product_id;
-        end
-    else if @product_type = 'Study_Module'
-        begin
-            select @product_id = module_id
-            from Order_module_studies
-            where order_detail_id = @order_detail_id;
-
-
-            select @start_date = min(meeting_date) from Studies_module_meetings
-            where module_id = @product_id
-            end
-    else
-        begin
-            RAISERROR ('Nieznany typ produktu.', 16, 1);
-            return;
-        end
-
-
-    update Orders
-    set max_paid_date = dateadd(day, -3, @start_date)
-    where order_id = @order_id
-      and max_paid_date < dateadd(day, -3, @start_date) ;
+    close inserted_cursor;
+    deallocate inserted_cursor;
 end
 ```
+~Paweł Czajczyk
