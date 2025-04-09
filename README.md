@@ -7,7 +7,7 @@ Authors:
 - Szymon Rybski
 
 ## Project specification
-Full project specification is provided [here]()
+Full project specification is provided [here](https://github.com/Bleidhu/Introduction__To_Databases_2024_AGH_Project/blob/main/BD_2023_projekt.pdf)
 ## Technical details
 ### DB engine 
 As required by the project rules MS SQL was used.
