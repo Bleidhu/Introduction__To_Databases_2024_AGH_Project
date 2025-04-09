@@ -6,10 +6,11 @@ Authors:
 - Paweł Czajczyk
 - Szymon Rybski
 
+## Project specification
+Full project specification is provided [here]()
 ## Technical details
 ### DB engine 
 As required by the project rules MS SQL was used.
-
 ### Tools used:  
 - Database diagrams: [Vertabello](https://vertabelo.com/)
 - MD notes: [Markdown Editor](https://hackmd.io/)
