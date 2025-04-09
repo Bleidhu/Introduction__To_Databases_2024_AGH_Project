@@ -7,6 +7,9 @@ Authors:
 - Szymon Rybski
 
 ## Technical details
+### DB engine 
+As required by the project rules MS SQL was used.
+
 ### Tools used:  
 - Database diagrams: [Vertabello](https://vertabelo.com/)
 - MD notes: [Markdown Editor](https://hackmd.io/)
@@ -14,12 +17,7 @@ Authors:
 - Files in the repo can be directly edited throught this link: [Edit In Browser](https://vscode.dev/github/Bleidhu/Introduction__To_Databases_2024_AGH_Project/tree/main?vscode-lang=pl-pl)
 - For drawing not related to the database [Excalidraw](https://excalidraw.com/) can be used
 
-### Used Databases
-| Database                                                  | user | password | owner |
-|-----------------------------------------------------------|------|----------|-------|
-| main (only modified after changes are verified on test)   |      |          |       |
-| test (for testing purposes)                               |      |          |       |
-| backup (only modified if changes made to main are desired)|      |          |       |
+
 
 
 ### File structure
